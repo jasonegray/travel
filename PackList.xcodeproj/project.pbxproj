@@ -13,6 +13,7 @@
 		11F96F14846B00669D5CE485 /* ItemInsight.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4635534DA022F06CB2DC68E /* ItemInsight.swift */; };
 		20B1F59084706451335AEBA2 /* MasterItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E173319E9FA785CD701E449 /* MasterItem.swift */; };
 		3C609348FADD98BE70EE2EB3 /* MasterItemRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F742F88F875248408C54E06 /* MasterItemRepository.swift */; };
+		41977EEBB0B361098BDFE9C0 /* ChecklistEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 220BA469B114F4CA9F76D5B9 /* ChecklistEngine.swift */; };
 		49C539B3EDBDF8214C8778B5 /* QuantityRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F46B8496E5A2B364C01053 /* QuantityRule.swift */; };
 		4CB8BA6D88C0FFD1768A41F6 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 715129D87A24E63D4FA7F554 /* Enums.swift */; };
 		4F1772C17B7DDF1963DD5D12 /* TripItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B392AB686CF4CA4FC72F3E6 /* TripItem.swift */; };
@@ -26,6 +27,7 @@
 		98E56A316F147171C2A4B7CC /* PendingSuggestionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D5D1649BA80085AB9AE5112 /* PendingSuggestionRepository.swift */; };
 		C2709F4DD7122B9B2E051E7E /* SwiftDataMasterItemRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B0049C3396D34C32E9C1B5A /* SwiftDataMasterItemRepository.swift */; };
 		C69B9B68F4E3A51AFCDFF16D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93C413942B93D93169C6F781 /* Assets.xcassets */; };
+		CE50DED818D50F946D8C0F8C /* ChecklistEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9DD7B960ABB165BAD88227 /* ChecklistEngineTests.swift */; };
 		D5E00EBF68E8B422F4564A5C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76ADB60C49104044689AF712 /* ContentView.swift */; };
 		DA8B3A345FFA9B0C8893EF2F /* TripSessionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11D2DC008310A0B5751D2B6D /* TripSessionRepository.swift */; };
 		E0B9B67C3CA1BD6BA979FF3C /* SwiftDataItemInsightRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E578BE0C4491E2CE40D78899 /* SwiftDataItemInsightRepository.swift */; };
@@ -43,8 +45,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0F9A9253E3E6A055F4A2F97B /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
+		0A9DD7B960ABB165BAD88227 /* ChecklistEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistEngineTests.swift; sourceTree = "<group>"; };
 		11D2DC008310A0B5751D2B6D /* TripSessionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSessionRepository.swift; sourceTree = "<group>"; };
+		220BA469B114F4CA9F76D5B9 /* ChecklistEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistEngine.swift; sourceTree = "<group>"; };
 		2B0049C3396D34C32E9C1B5A /* SwiftDataMasterItemRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataMasterItemRepository.swift; sourceTree = "<group>"; };
 		3D5D1649BA80085AB9AE5112 /* PendingSuggestionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingSuggestionRepository.swift; sourceTree = "<group>"; };
 		4B392AB686CF4CA4FC72F3E6 /* TripItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripItem.swift; sourceTree = "<group>"; };
@@ -92,7 +95,7 @@
 		1AD4FB8FB741C08B7BB35384 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				0F9A9253E3E6A055F4A2F97B /* .gitkeep */,
+				220BA469B114F4CA9F76D5B9 /* ChecklistEngine.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -174,6 +177,7 @@
 		F03F45756EC27775E5AFB255 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				0A9DD7B960ABB165BAD88227 /* ChecklistEngineTests.swift */,
 				D3EE44A2859D10DC98A781DC /* PackListTests.swift */,
 			);
 			path = Tests;
@@ -287,6 +291,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE50DED818D50F946D8C0F8C /* ChecklistEngineTests.swift in Sources */,
 				732C2F42D1A9F7532C162B9C /* PackListTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -295,6 +300,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41977EEBB0B361098BDFE9C0 /* ChecklistEngine.swift in Sources */,
 				D5E00EBF68E8B422F4564A5C /* ContentView.swift in Sources */,
 				4CB8BA6D88C0FFD1768A41F6 /* Enums.swift in Sources */,
 				11F96F14846B00669D5CE485 /* ItemInsight.swift in Sources */,
@@ -392,6 +398,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -410,6 +417,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
