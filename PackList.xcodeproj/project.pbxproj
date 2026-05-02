@@ -8,17 +8,28 @@
 
 /* Begin PBXBuildFile section */
 		0C60AAD2AF89792CCCA7F97C /* TripSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18C8E3DF2BAC53703E2E96B /* TripSession.swift */; };
+		0DB060D4C6B1488D7C1D5B1C /* TripItemRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A02A7347CFB68D84511C78D3 /* TripItemRepository.swift */; };
 		0F6D19B39FDEDE13574FCA9E /* PackListApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95D6D8FFFD3B47DCCE24824 /* PackListApp.swift */; };
 		11F96F14846B00669D5CE485 /* ItemInsight.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4635534DA022F06CB2DC68E /* ItemInsight.swift */; };
 		20B1F59084706451335AEBA2 /* MasterItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E173319E9FA785CD701E449 /* MasterItem.swift */; };
+		3C609348FADD98BE70EE2EB3 /* MasterItemRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F742F88F875248408C54E06 /* MasterItemRepository.swift */; };
 		49C539B3EDBDF8214C8778B5 /* QuantityRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F46B8496E5A2B364C01053 /* QuantityRule.swift */; };
 		4CB8BA6D88C0FFD1768A41F6 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 715129D87A24E63D4FA7F554 /* Enums.swift */; };
 		4F1772C17B7DDF1963DD5D12 /* TripItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B392AB686CF4CA4FC72F3E6 /* TripItem.swift */; };
+		51FE4F758881ACDC8BC76CC0 /* SwiftDataPendingSuggestionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EA7237A1890C8990BA9C852 /* SwiftDataPendingSuggestionRepository.swift */; };
+		563A3D38A4411B2251956D40 /* SwiftDataTripItemRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0A40905C8329393E1D3AA5 /* SwiftDataTripItemRepository.swift */; };
+		617F0F6F1AAE606CABE756E7 /* ItemInsightRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B194C4473A49789ECED2D9EF /* ItemInsightRepository.swift */; };
 		651889942C79EB3911D85E4D /* ReplaceabilityRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3AFD96EBEB15D7D1FD2A37 /* ReplaceabilityRule.swift */; };
 		6CAFB2A1EC1111E83BEAA99E /* PendingSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B42C07F95BAEB97E313D96 /* PendingSuggestion.swift */; };
+		6F53752846501D9650898894 /* RepositoryContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8FE75F40765FAADB8A1176 /* RepositoryContainer.swift */; };
 		732C2F42D1A9F7532C162B9C /* PackListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3EE44A2859D10DC98A781DC /* PackListTests.swift */; };
+		98E56A316F147171C2A4B7CC /* PendingSuggestionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D5D1649BA80085AB9AE5112 /* PendingSuggestionRepository.swift */; };
+		C2709F4DD7122B9B2E051E7E /* SwiftDataMasterItemRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B0049C3396D34C32E9C1B5A /* SwiftDataMasterItemRepository.swift */; };
 		C69B9B68F4E3A51AFCDFF16D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93C413942B93D93169C6F781 /* Assets.xcassets */; };
 		D5E00EBF68E8B422F4564A5C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76ADB60C49104044689AF712 /* ContentView.swift */; };
+		DA8B3A345FFA9B0C8893EF2F /* TripSessionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11D2DC008310A0B5751D2B6D /* TripSessionRepository.swift */; };
+		E0B9B67C3CA1BD6BA979FF3C /* SwiftDataItemInsightRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E578BE0C4491E2CE40D78899 /* SwiftDataItemInsightRepository.swift */; };
+		F17B532DFDBBD86410B81069 /* SwiftDataTripSessionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C981BFB10A6C71F74907257 /* SwiftDataTripSessionRepository.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,23 +44,32 @@
 
 /* Begin PBXFileReference section */
 		0F9A9253E3E6A055F4A2F97B /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
-		14212C8929052D367AAEAAF8 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
+		11D2DC008310A0B5751D2B6D /* TripSessionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSessionRepository.swift; sourceTree = "<group>"; };
+		2B0049C3396D34C32E9C1B5A /* SwiftDataMasterItemRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataMasterItemRepository.swift; sourceTree = "<group>"; };
+		3D5D1649BA80085AB9AE5112 /* PendingSuggestionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingSuggestionRepository.swift; sourceTree = "<group>"; };
 		4B392AB686CF4CA4FC72F3E6 /* TripItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripItem.swift; sourceTree = "<group>"; };
+		4C981BFB10A6C71F74907257 /* SwiftDataTripSessionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataTripSessionRepository.swift; sourceTree = "<group>"; };
 		4E173319E9FA785CD701E449 /* MasterItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterItem.swift; sourceTree = "<group>"; };
+		4F742F88F875248408C54E06 /* MasterItemRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterItemRepository.swift; sourceTree = "<group>"; };
 		50CC6DA1AAFDD4D9AB6C6E85 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		63B42C07F95BAEB97E313D96 /* PendingSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingSuggestion.swift; sourceTree = "<group>"; };
 		64F46B8496E5A2B364C01053 /* QuantityRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantityRule.swift; sourceTree = "<group>"; };
 		715129D87A24E63D4FA7F554 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		76ADB60C49104044689AF712 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		7EA7237A1890C8990BA9C852 /* SwiftDataPendingSuggestionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataPendingSuggestionRepository.swift; sourceTree = "<group>"; };
 		849288E1432F1A054F4D4E49 /* PackList.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PackList.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B0A40905C8329393E1D3AA5 /* SwiftDataTripItemRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataTripItemRepository.swift; sourceTree = "<group>"; };
 		93C413942B93D93169C6F781 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		A3DAD68C161DD2CC25AFAAFC /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
+		A02A7347CFB68D84511C78D3 /* TripItemRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripItemRepository.swift; sourceTree = "<group>"; };
 		A94FE458BD7A12AC86FCCB74 /* PackListTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = PackListTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B194C4473A49789ECED2D9EF /* ItemInsightRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemInsightRepository.swift; sourceTree = "<group>"; };
 		B95D6D8FFFD3B47DCCE24824 /* PackListApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackListApp.swift; sourceTree = "<group>"; };
 		C4635534DA022F06CB2DC68E /* ItemInsight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemInsight.swift; sourceTree = "<group>"; };
 		CF3AFD96EBEB15D7D1FD2A37 /* ReplaceabilityRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplaceabilityRule.swift; sourceTree = "<group>"; };
 		D3EE44A2859D10DC98A781DC /* PackListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackListTests.swift; sourceTree = "<group>"; };
+		DC8FE75F40765FAADB8A1176 /* RepositoryContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryContainer.swift; sourceTree = "<group>"; };
 		E49F0BDA6C45F55FC7F0C694 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		E578BE0C4491E2CE40D78899 /* SwiftDataItemInsightRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataItemInsightRepository.swift; sourceTree = "<group>"; };
 		E5ED70E357A6B8CA9FFC1CC0 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		F18C8E3DF2BAC53703E2E96B /* TripSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSession.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -116,7 +136,11 @@
 		8B546F4B226FA5984EB33E62 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
-				A3DAD68C161DD2CC25AFAAFC /* .gitkeep */,
+				B194C4473A49789ECED2D9EF /* ItemInsightRepository.swift */,
+				4F742F88F875248408C54E06 /* MasterItemRepository.swift */,
+				3D5D1649BA80085AB9AE5112 /* PendingSuggestionRepository.swift */,
+				A02A7347CFB68D84511C78D3 /* TripItemRepository.swift */,
+				11D2DC008310A0B5751D2B6D /* TripSessionRepository.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -166,7 +190,12 @@
 		F905BA73A04BE0A35285C8FC /* Repositories */ = {
 			isa = PBXGroup;
 			children = (
-				14212C8929052D367AAEAAF8 /* .gitkeep */,
+				DC8FE75F40765FAADB8A1176 /* RepositoryContainer.swift */,
+				E578BE0C4491E2CE40D78899 /* SwiftDataItemInsightRepository.swift */,
+				2B0049C3396D34C32E9C1B5A /* SwiftDataMasterItemRepository.swift */,
+				7EA7237A1890C8990BA9C852 /* SwiftDataPendingSuggestionRepository.swift */,
+				8B0A40905C8329393E1D3AA5 /* SwiftDataTripItemRepository.swift */,
+				4C981BFB10A6C71F74907257 /* SwiftDataTripSessionRepository.swift */,
 				8B546F4B226FA5984EB33E62 /* Protocols */,
 			);
 			path = Repositories;
@@ -269,13 +298,24 @@
 				D5E00EBF68E8B422F4564A5C /* ContentView.swift in Sources */,
 				4CB8BA6D88C0FFD1768A41F6 /* Enums.swift in Sources */,
 				11F96F14846B00669D5CE485 /* ItemInsight.swift in Sources */,
+				617F0F6F1AAE606CABE756E7 /* ItemInsightRepository.swift in Sources */,
 				20B1F59084706451335AEBA2 /* MasterItem.swift in Sources */,
+				3C609348FADD98BE70EE2EB3 /* MasterItemRepository.swift in Sources */,
 				0F6D19B39FDEDE13574FCA9E /* PackListApp.swift in Sources */,
 				6CAFB2A1EC1111E83BEAA99E /* PendingSuggestion.swift in Sources */,
+				98E56A316F147171C2A4B7CC /* PendingSuggestionRepository.swift in Sources */,
 				49C539B3EDBDF8214C8778B5 /* QuantityRule.swift in Sources */,
 				651889942C79EB3911D85E4D /* ReplaceabilityRule.swift in Sources */,
+				6F53752846501D9650898894 /* RepositoryContainer.swift in Sources */,
+				E0B9B67C3CA1BD6BA979FF3C /* SwiftDataItemInsightRepository.swift in Sources */,
+				C2709F4DD7122B9B2E051E7E /* SwiftDataMasterItemRepository.swift in Sources */,
+				51FE4F758881ACDC8BC76CC0 /* SwiftDataPendingSuggestionRepository.swift in Sources */,
+				563A3D38A4411B2251956D40 /* SwiftDataTripItemRepository.swift in Sources */,
+				F17B532DFDBBD86410B81069 /* SwiftDataTripSessionRepository.swift in Sources */,
 				4F1772C17B7DDF1963DD5D12 /* TripItem.swift in Sources */,
+				0DB060D4C6B1488D7C1D5B1C /* TripItemRepository.swift in Sources */,
 				0C60AAD2AF89792CCCA7F97C /* TripSession.swift in Sources */,
+				DA8B3A345FFA9B0C8893EF2F /* TripSessionRepository.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
