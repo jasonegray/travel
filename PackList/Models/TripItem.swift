@@ -16,6 +16,7 @@ final class TripItem {
     var flightAccessible: Bool
     var completedAt: Date?
     var snoozedUntil: Date?
+    var recommendedTiming: TaskTiming?
     var feedbackFlags: [FeedbackType]
     var source: TripItemSource
     var notes: String?
@@ -34,6 +35,7 @@ final class TripItem {
         flightAccessible: Bool = true,
         completedAt: Date? = nil,
         snoozedUntil: Date? = nil,
+        recommendedTiming: TaskTiming? = nil,
         feedbackFlags: [FeedbackType] = [],
         source: TripItemSource = .generated,
         notes: String? = nil
@@ -51,6 +53,7 @@ final class TripItem {
         self.flightAccessible = flightAccessible
         self.completedAt = completedAt
         self.snoozedUntil = snoozedUntil
+        self.recommendedTiming = recommendedTiming
         self.feedbackFlags = feedbackFlags
         self.source = source
         self.notes = notes

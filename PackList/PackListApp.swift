@@ -17,9 +17,6 @@ struct PackListApp: App {
     }
 }
 
-/// Bridges the SwiftData model context into the repository layer.
-/// Lives here so that RepositoryContainer is created exactly once,
-/// on the main actor, after the model container is ready.
 private struct AppRootView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var repositories: RepositoryContainer?
@@ -29,7 +26,11 @@ private struct AppRootView: View {
             .environment(\.repositories, repositories)
             .onAppear {
                 guard repositories == nil else { return }
-                repositories = RepositoryContainer(modelContext: modelContext)
+                let repos = RepositoryContainer(modelContext: modelContext)
+                repositories = repos
+                Task {
+                    await ImportService(repository: repos.masterItems).seedIfNeeded()
+                }
             }
     }
 }

@@ -150,6 +150,7 @@ struct ChecklistEngine {
             ),
             packingLocation: item.packingLocation ?? .carryOn,
             flightAccessible: item.flightAccessible,
+            recommendedTiming: item.recommendedTiming,
             source: .generated
         )
     }

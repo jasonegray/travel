@@ -22,9 +22,13 @@
 		617F0F6F1AAE606CABE756E7 /* ItemInsightRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B194C4473A49789ECED2D9EF /* ItemInsightRepository.swift */; };
 		651889942C79EB3911D85E4D /* ReplaceabilityRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3AFD96EBEB15D7D1FD2A37 /* ReplaceabilityRule.swift */; };
 		6CAFB2A1EC1111E83BEAA99E /* PendingSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B42C07F95BAEB97E313D96 /* PendingSuggestion.swift */; };
+		6EAEE6A4EC973B50035A6384 /* ImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CACB655272A95791F66BFF /* ImportService.swift */; };
+		6F0C749F7F4FD16D7179E9F2 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1207BA2945A0FAFFDEDA826 /* HomeViewModel.swift */; };
 		6F53752846501D9650898894 /* RepositoryContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8FE75F40765FAADB8A1176 /* RepositoryContainer.swift */; };
 		732C2F42D1A9F7532C162B9C /* PackListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3EE44A2859D10DC98A781DC /* PackListTests.swift */; };
+		79C7FC5697C79F9639F8BA72 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8024FC2863C181612B2B89A /* HomeView.swift */; };
 		98E56A316F147171C2A4B7CC /* PendingSuggestionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D5D1649BA80085AB9AE5112 /* PendingSuggestionRepository.swift */; };
+		9BB754CBC6E719F3411F7F17 /* master_items.json in Resources */ = {isa = PBXBuildFile; fileRef = 238B969C326344064ADA73EB /* master_items.json */; };
 		C2709F4DD7122B9B2E051E7E /* SwiftDataMasterItemRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B0049C3396D34C32E9C1B5A /* SwiftDataMasterItemRepository.swift */; };
 		C69B9B68F4E3A51AFCDFF16D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93C413942B93D93169C6F781 /* Assets.xcassets */; };
 		CE50DED818D50F946D8C0F8C /* ChecklistEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9DD7B960ABB165BAD88227 /* ChecklistEngineTests.swift */; };
@@ -48,7 +52,9 @@
 		0A9DD7B960ABB165BAD88227 /* ChecklistEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistEngineTests.swift; sourceTree = "<group>"; };
 		11D2DC008310A0B5751D2B6D /* TripSessionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSessionRepository.swift; sourceTree = "<group>"; };
 		220BA469B114F4CA9F76D5B9 /* ChecklistEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistEngine.swift; sourceTree = "<group>"; };
+		238B969C326344064ADA73EB /* master_items.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = master_items.json; sourceTree = "<group>"; };
 		2B0049C3396D34C32E9C1B5A /* SwiftDataMasterItemRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataMasterItemRepository.swift; sourceTree = "<group>"; };
+		33CACB655272A95791F66BFF /* ImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportService.swift; sourceTree = "<group>"; };
 		3D5D1649BA80085AB9AE5112 /* PendingSuggestionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingSuggestionRepository.swift; sourceTree = "<group>"; };
 		4B392AB686CF4CA4FC72F3E6 /* TripItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripItem.swift; sourceTree = "<group>"; };
 		4C981BFB10A6C71F74907257 /* SwiftDataTripSessionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataTripSessionRepository.swift; sourceTree = "<group>"; };
@@ -64,11 +70,13 @@
 		8B0A40905C8329393E1D3AA5 /* SwiftDataTripItemRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataTripItemRepository.swift; sourceTree = "<group>"; };
 		93C413942B93D93169C6F781 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A02A7347CFB68D84511C78D3 /* TripItemRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripItemRepository.swift; sourceTree = "<group>"; };
+		A8024FC2863C181612B2B89A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		A94FE458BD7A12AC86FCCB74 /* PackListTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = PackListTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B194C4473A49789ECED2D9EF /* ItemInsightRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemInsightRepository.swift; sourceTree = "<group>"; };
 		B95D6D8FFFD3B47DCCE24824 /* PackListApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackListApp.swift; sourceTree = "<group>"; };
 		C4635534DA022F06CB2DC68E /* ItemInsight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemInsight.swift; sourceTree = "<group>"; };
 		CF3AFD96EBEB15D7D1FD2A37 /* ReplaceabilityRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplaceabilityRule.swift; sourceTree = "<group>"; };
+		D1207BA2945A0FAFFDEDA826 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		D3EE44A2859D10DC98A781DC /* PackListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackListTests.swift; sourceTree = "<group>"; };
 		DC8FE75F40765FAADB8A1176 /* RepositoryContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryContainer.swift; sourceTree = "<group>"; };
 		E49F0BDA6C45F55FC7F0C694 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -92,10 +100,19 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		10B403022F82DCF4BE8F3D84 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				A8024FC2863C181612B2B89A /* HomeView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
 		1AD4FB8FB741C08B7BB35384 /* Services */ = {
 			isa = PBXGroup;
 			children = (
 				220BA469B114F4CA9F76D5B9 /* ChecklistEngine.swift */,
+				33CACB655272A95791F66BFF /* ImportService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -121,6 +138,7 @@
 			isa = PBXGroup;
 			children = (
 				50CC6DA1AAFDD4D9AB6C6E85 /* .gitkeep */,
+				10B403022F82DCF4BE8F3D84 /* Home */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -148,10 +166,19 @@
 			path = Protocols;
 			sourceTree = "<group>";
 		};
+		9DC8F422F80F5361D23FA8CA /* SeedData */ = {
+			isa = PBXGroup;
+			children = (
+				238B969C326344064ADA73EB /* master_items.json */,
+			);
+			path = SeedData;
+			sourceTree = "<group>";
+		};
 		A5976802A613C1F9C01ECDEC /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
 				E5ED70E357A6B8CA9FFC1CC0 /* .gitkeep */,
+				D1207BA2945A0FAFFDEDA826 /* HomeViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -187,6 +214,7 @@
 			isa = PBXGroup;
 			children = (
 				93C413942B93D93169C6F781 /* Assets.xcassets */,
+				9DC8F422F80F5361D23FA8CA /* SeedData */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -281,6 +309,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C69B9B68F4E3A51AFCDFF16D /* Assets.xcassets in Resources */,
+				9BB754CBC6E719F3411F7F17 /* master_items.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,6 +332,9 @@
 				41977EEBB0B361098BDFE9C0 /* ChecklistEngine.swift in Sources */,
 				D5E00EBF68E8B422F4564A5C /* ContentView.swift in Sources */,
 				4CB8BA6D88C0FFD1768A41F6 /* Enums.swift in Sources */,
+				79C7FC5697C79F9639F8BA72 /* HomeView.swift in Sources */,
+				6F0C749F7F4FD16D7179E9F2 /* HomeViewModel.swift in Sources */,
+				6EAEE6A4EC973B50035A6384 /* ImportService.swift in Sources */,
 				11F96F14846B00669D5CE485 /* ItemInsight.swift in Sources */,
 				617F0F6F1AAE606CABE756E7 /* ItemInsightRepository.swift in Sources */,
 				20B1F59084706451335AEBA2 /* MasterItem.swift in Sources */,
