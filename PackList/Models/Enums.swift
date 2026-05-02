@@ -13,7 +13,7 @@ enum WeatherProfile: String, Codable, CaseIterable {
 }
 
 enum TravelCompanion: String, Codable, CaseIterable {
-    case solo, spouse, kids, colleagues
+    case solo, spouse, kids, family, colleagues
 }
 
 enum ActivityType: String, Codable, CaseIterable {

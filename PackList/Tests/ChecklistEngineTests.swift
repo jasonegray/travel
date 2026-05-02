@@ -94,6 +94,18 @@ final class ChecklistEngineTests: XCTestCase {
         XCTAssertEqual(result.count, 2)
     }
 
+    func testTagMatch_kidsCompanion_activatesFamilyTag() {
+        let session = makeSession(companions: [.kids])
+        let active  = engine.activeTags(for: session)
+        XCTAssertTrue(active.contains(.family), ".kids companion must activate the .family tag")
+    }
+
+    func testTagMatch_familyCompanion_activatesFamilyTag() {
+        let session = makeSession(companions: [.family])
+        let active  = engine.activeTags(for: session)
+        XCTAssertTrue(active.contains(.family), ".family companion must activate the .family tag")
+    }
+
     func testTagMatch_japanRegion_activatesJapanAsiaInternational() {
         let session = makeSession(region: .japan)
         let active  = engine.activeTags(for: session)

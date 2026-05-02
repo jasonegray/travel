@@ -40,7 +40,9 @@ struct ChecklistEngine {
 
         // Trip context
         if session.business { tags.insert(.business) }
-        if session.companions.contains(.kids) { tags.insert(.family) }
+        if session.companions.contains(.kids) || session.companions.contains(.family) {
+            tags.insert(.family)
+        }
 
         // Region
         switch session.region {
