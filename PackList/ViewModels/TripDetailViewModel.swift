@@ -20,6 +20,7 @@ final class TripDetailViewModel {
         defer { isLoading = false }
         do {
             items = try await repository.fetchAll(for: trip.id)
+            print("[TripDetailViewModel] Loaded \(items.count) items for trip '\(trip.name)'")
         } catch {
             print("[TripDetailViewModel] Load failed: \(error)")
         }

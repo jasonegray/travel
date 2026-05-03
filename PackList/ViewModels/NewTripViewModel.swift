@@ -148,8 +148,11 @@ final class NewTripViewModel {
         do {
             let activeItems = try await masterItems.fetchActive()
             let generated   = ChecklistEngine().generateItems(for: session, from: activeItems)
-            session.items   = generated
             try await sessions.insert(session)
+            for item in generated {
+                try await tripItems.insert(item)
+            }
+            print("[NewTripViewModel] Created \(generated.count) TripItems for trip '\(session.name)'")
             isDone = true
         } catch {
             errorMessage = error.localizedDescription
