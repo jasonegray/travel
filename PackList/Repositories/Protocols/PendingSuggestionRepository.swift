@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 protocol PendingSuggestionRepository {
     func fetch(status: SuggestionStatus) async throws -> [PendingSuggestion]
     func fetch(tripId: UUID) async throws -> [PendingSuggestion]

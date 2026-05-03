@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 protocol MasterItemRepository {
     func fetchAll() async throws -> [MasterItem]
     func fetchActive() async throws -> [MasterItem]

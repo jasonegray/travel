@@ -72,6 +72,7 @@ struct NewTripView: View {
             if done { dismiss() }
         }
         .task(id: vm.isGenerating) {
+            print("TASK FIRED: isGenerating=\(vm.isGenerating), repos=\(repositories == nil ? "NIL" : "OK")")
             guard vm.isGenerating, let repos = repositories else { return }
             await vm.createTrip(
                 sessions:    repos.tripSessions,

@@ -1,6 +1,7 @@
 import Foundation
 import SwiftData
 
+@MainActor
 final class SwiftDataMasterItemRepository: MasterItemRepository {
     private let context: ModelContext
 

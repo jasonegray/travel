@@ -121,6 +121,7 @@ final class NewTripViewModel {
 
     // MARK: - Create trip
 
+    @MainActor
     func createTrip(
         sessions:    any TripSessionRepository,
         tripItems:   any TripItemRepository,
@@ -148,13 +149,17 @@ final class NewTripViewModel {
         do {
             let activeItems = try await masterItems.fetchActive()
             let generated   = ChecklistEngine().generateItems(for: session, from: activeItems)
+            print("ENGINE GENERATED: \(generated.count) items")
             try await sessions.insert(session)
             for item in generated {
                 try await tripItems.insert(item)
             }
-            print("[NewTripViewModel] Created \(generated.count) TripItems for trip '\(session.name)'")
+            print("SAVED TRIP: \(session.id), fetching back items...")
+            let fetchedBack = try await tripItems.fetchAll(for: session.id)
+            print("FETCHED BACK: \(fetchedBack.count) items")
             isDone = true
         } catch {
+            print("CREATE TRIP FAILED: \(error)")
             errorMessage = error.localizedDescription
             isGenerating = false
         }

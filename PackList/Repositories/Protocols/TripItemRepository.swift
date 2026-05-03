@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 protocol TripItemRepository {
     func fetchAll(for tripId: UUID) async throws -> [TripItem]
     func fetch(id: UUID) async throws -> TripItem?

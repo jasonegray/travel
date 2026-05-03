@@ -1,6 +1,7 @@
 import Foundation
 import SwiftData
 
+@MainActor
 final class SwiftDataPendingSuggestionRepository: PendingSuggestionRepository {
     private let context: ModelContext
 

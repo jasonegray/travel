@@ -1,6 +1,7 @@
 import Foundation
 import SwiftData
 
+@MainActor
 final class SwiftDataTripItemRepository: TripItemRepository {
     private let context: ModelContext
 

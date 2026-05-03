@@ -1,6 +1,7 @@
 import Foundation
 import SwiftData
 
+@MainActor
 final class SwiftDataItemInsightRepository: ItemInsightRepository {
     private let context: ModelContext
 

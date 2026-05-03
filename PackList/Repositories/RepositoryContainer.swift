@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 
+@MainActor
 final class RepositoryContainer {
     let masterItems: any MasterItemRepository
     let tripSessions: any TripSessionRepository
