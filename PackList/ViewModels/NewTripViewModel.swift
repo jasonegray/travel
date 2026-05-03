@@ -122,7 +122,9 @@ final class NewTripViewModel {
     func next() {
         switch currentStep {
         case .nameDestination:  currentStep = .dates
-        case .dates:            currentStep = .region
+        case .dates:
+            region = inferRegion(from: destination)
+            currentStep = .region
         case .region:           currentStep = .purpose
         case .purpose:          currentStep = .weather
         case .weather:          currentStep = .companions
@@ -157,6 +159,39 @@ final class NewTripViewModel {
         case .confirm:
             skipsMedicalStep ? (currentStep = .interac) : (currentStep = .medicalAppointments)
         }
+    }
+
+    private func inferRegion(from destination: String) -> TravelRegion {
+        let s = destination.lowercased()
+
+        if s.contains("canada") { return .canada }
+
+        if s.contains("united states") || s.contains(", usa") { return .us }
+
+        if s.contains("japan") { return .japan }
+
+        let europeKeywords = [
+            "france", "germany", "united kingdom", "england", "scotland", "wales", "ireland",
+            "italy", "spain", "netherlands", "portugal", "switzerland", "austria", "belgium",
+            "sweden", "norway", "denmark", "finland", "greece", "poland", "czechia",
+            "czech republic", "hungary", "romania", "croatia", "europe",
+            "paris", "london", "berlin", "rome", "madrid", "amsterdam", "barcelona",
+            "lisbon", "brussels", "zurich", "vienna", "prague", "milan", "munich",
+            "florence", "venice", "edinburgh", "dublin", "stockholm", "oslo", "copenhagen",
+        ]
+        if europeKeywords.contains(where: s.contains) { return .europe }
+
+        let asiaKeywords = [
+            "korea", "china", "thailand", "vietnam", "singapore", "india", "hong kong",
+            "taiwan", "indonesia", "malaysia", "philippines", "cambodia", "myanmar",
+            "laos", "sri lanka", "nepal", "bangladesh", "pakistan",
+            "seoul", "beijing", "shanghai", "guangzhou", "bangkok", "hanoi",
+            "ho chi minh", "mumbai", "delhi", "kolkata", "chennai", "kuala lumpur",
+            "jakarta", "manila", "taipei", "ho chi minh",
+        ]
+        if asiaKeywords.contains(where: s.contains) { return .asia }
+
+        return .other
     }
 
     // MARK: - Create trip

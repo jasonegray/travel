@@ -769,20 +769,26 @@ private struct FullScreenMapView: View {
     }
 
     var body: some View {
-        ZStack(alignment: .topTrailing) {
+        ZStack {
             Map(position: $position) {
                 Marker("", coordinate: coordinate)
             }
             .ignoresSafeArea()
 
-            Button { dismiss() } label: {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.title2)
-                    .symbolRenderingMode(.hierarchical)
-                    .foregroundStyle(.white)
-                    .shadow(color: .black.opacity(0.3), radius: 4, y: 2)
+            VStack {
+                HStack {
+                    Spacer()
+                    Button { dismiss() } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.title2)
+                            .symbolRenderingMode(.hierarchical)
+                            .foregroundStyle(.white)
+                            .shadow(color: .black.opacity(0.4), radius: 4, y: 2)
+                    }
+                    .padding()
+                }
+                Spacer()
             }
-            .padding()
         }
     }
 }
