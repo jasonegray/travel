@@ -57,6 +57,9 @@ struct ChecklistEngine {
         if session.interacPhone  { tags.insert(.interacPhone) }
         if session.interacLaptop { tags.insert(.interacLaptop) }
 
+        // Medical
+        if session.hasMedicalAppointment { tags.insert(.medicalAppointment) }
+
         // Duration
         if tripNights(for: session) > 5 { tags.insert(.longTrip) }
 

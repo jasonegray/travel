@@ -2,6 +2,7 @@ import SwiftUI
 
 struct HomeView: View {
     @State private var vm = HomeViewModel()
+    @State private var showNewTrip = false
     @Environment(\.repositories) private var repositories
 
     var body: some View {
@@ -35,7 +36,7 @@ struct HomeView: View {
                             .padding(.horizontal)
                         }
                     } else if !vm.isLoading {
-                        EmptyHomeState()
+                        EmptyHomeState(onNewTrip: { showNewTrip = true })
                             .frame(maxWidth: .infinity)
                             .padding(.horizontal)
                     }
@@ -45,6 +46,20 @@ struct HomeView: View {
                 .padding(.top, 8)
             }
             .navigationTitle("PackList")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: { showNewTrip = true }) {
+                        Image(systemName: "plus")
+                    }
+                }
+            }
+            .sheet(isPresented: $showNewTrip) {
+                NewTripView()
+            }
+            .onChange(of: showNewTrip) { _, isShowing in
+                guard !isShowing, let repos = repositories else { return }
+                Task { await vm.load(sessions: repos.tripSessions, tripItems: repos.tripItems) }
+            }
             .task(id: repositories != nil) {
                 guard let repos = repositories else { return }
                 await vm.load(sessions: repos.tripSessions, tripItems: repos.tripItems)
@@ -243,6 +258,8 @@ private struct UpNextRow: View {
 // MARK: - Empty State
 
 private struct EmptyHomeState: View {
+    let onNewTrip: () -> Void
+
     var body: some View {
         VStack(spacing: 20) {
             Spacer(minLength: 60)
@@ -261,7 +278,7 @@ private struct EmptyHomeState: View {
                     .multilineTextAlignment(.center)
             }
 
-            Button("New Trip") {}
+            Button("New Trip", action: onNewTrip)
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
 

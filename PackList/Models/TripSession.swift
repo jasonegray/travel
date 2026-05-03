@@ -20,6 +20,7 @@ final class TripSession {
     var business: Bool
     var interacPhone: Bool
     var interacLaptop: Bool
+    var hasMedicalAppointment: Bool
     var status: TripStatus
     var notes: String?
     var createdAt: Date
@@ -44,6 +45,7 @@ final class TripSession {
         business: Bool = false,
         interacPhone: Bool = false,
         interacLaptop: Bool = false,
+        hasMedicalAppointment: Bool = false,
         status: TripStatus = .planning,
         notes: String? = nil,
         createdAt: Date = Date(),
@@ -67,6 +69,7 @@ final class TripSession {
         self.business = business
         self.interacPhone = interacPhone
         self.interacLaptop = interacLaptop
+        self.hasMedicalAppointment = hasMedicalAppointment
         self.status = status
         self.notes = notes
         self.createdAt = createdAt
