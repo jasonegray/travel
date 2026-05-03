@@ -26,9 +26,6 @@ private struct AppRootView: View {
             .environment(\.repositories, repositories)
             .onAppear {
                 guard repositories == nil else { return }
-                #if DEBUG
-                UserDefaults.standard.removeObject(forKey: ImportService.seededKey)
-                #endif
                 let repos = RepositoryContainer(modelContext: modelContext)
                 repositories = repos
                 Task {

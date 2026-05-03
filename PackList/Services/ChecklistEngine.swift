@@ -118,14 +118,15 @@ struct ChecklistEngine {
 
     private func resolveDependencies(included: [MasterItem], from allItems: [MasterItem]) -> [MasterItem] {
         var result = included
+        var includedIds = Set(result.map(\.id))
         var changed = true
         while changed {
             changed = false
-            let includedIds = Set(result.map(\.id))
             for item in result {
                 for candidate in allItems
                     where candidate.requiredByItemId == item.id && !includedIds.contains(candidate.id) {
                     result.append(candidate)
+                    includedIds.insert(candidate.id)
                     changed = true
                 }
             }
