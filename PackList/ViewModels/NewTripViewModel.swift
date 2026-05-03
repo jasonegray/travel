@@ -59,6 +59,15 @@ final class NewTripViewModel {
 
     // MARK: - Derived
 
+    var wizardTitle: String {
+        let shortDest = destination
+            .components(separatedBy: ",").first?
+            .trimmingCharacters(in: .whitespaces) ?? ""
+        guard !shortDest.isEmpty else { return "New trip" }
+        guard currentStep.rawValue >= WizardStep.purpose.rawValue else { return shortDest }
+        return generatedTripName
+    }
+
     var skipsMedicalStep: Bool { region == .canada || region == .us }
     var totalSteps: Int { skipsMedicalStep ? 11 : 12 }
     var displayStep: Int { currentStep == .confirm ? totalSteps : currentStep.rawValue }

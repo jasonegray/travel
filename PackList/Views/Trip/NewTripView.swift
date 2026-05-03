@@ -54,6 +54,7 @@ struct NewTripView: View {
                     }
                 }
             }
+            .navigationTitle(vm.wizardTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
