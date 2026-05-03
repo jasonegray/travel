@@ -98,7 +98,6 @@ struct NewTripView: View {
         switch vm.currentStep {
         case .nameDestination:      NameDestinationStep(vm: vm)
         case .dates:                DatesStep(vm: vm)
-        case .region:               RegionStep(vm: vm)
         case .purpose:              PurposeStep(vm: vm)
         case .weather:              WeatherStep(vm: vm)
         case .companions:           CompanionsStep(vm: vm)
@@ -379,27 +378,7 @@ private struct DatesStep: View {
     }
 }
 
-// MARK: - Step 3: Region
-
-private struct RegionStep: View {
-    @Bindable var vm: NewTripViewModel
-
-    var body: some View {
-        StepShell(title: "Where in the world?") {
-            VStack(spacing: 10) {
-                ForEach(TravelRegion.allCases, id: \.self) { region in
-                    OptionCard(
-                        title: region.displayName,
-                        isSelected: vm.region == region,
-                        action: { vm.region = region }
-                    )
-                }
-            }
-        }
-    }
-}
-
-// MARK: - Step 4: Purpose
+// MARK: - Step 3: Purpose
 
 private struct PurposeStep: View {
     @Bindable var vm: NewTripViewModel
@@ -777,15 +756,20 @@ private struct FullScreenMapView: View {
 
             VStack {
                 HStack {
-                    Spacer()
                     Button { dismiss() } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title2)
-                            .symbolRenderingMode(.hierarchical)
-                            .foregroundStyle(.white)
-                            .shadow(color: .black.opacity(0.4), radius: 4, y: 2)
+                        ZStack {
+                            Circle()
+                                .fill(Color.white)
+                                .frame(width: 32, height: 32)
+                                .shadow(color: .black.opacity(0.25), radius: 4, y: 2)
+                            Image(systemName: "xmark")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundStyle(Color(.systemGray))
+                        }
+                        .frame(width: 44, height: 44)
                     }
-                    .padding()
+                    .padding(.leading, 12)
+                    Spacer()
                 }
                 Spacer()
             }

@@ -8,16 +8,15 @@ final class NewTripViewModel {
     enum WizardStep: Int, CaseIterable {
         case nameDestination = 1
         case dates = 2
-        case region = 3
-        case purpose = 4
-        case weather = 5
-        case companions = 6
-        case activities = 7
-        case carryOnOnly = 8
-        case laundry = 9
-        case interac = 10
-        case medicalAppointments = 11
-        case confirm = 12
+        case purpose = 3
+        case weather = 4
+        case companions = 5
+        case activities = 6
+        case carryOnOnly = 7
+        case laundry = 8
+        case interac = 9
+        case medicalAppointments = 10
+        case confirm = 11
     }
 
     enum InteracChoice: CaseIterable {
@@ -69,7 +68,7 @@ final class NewTripViewModel {
     }
 
     var skipsMedicalStep: Bool { region == .canada || region == .us }
-    var totalSteps: Int { skipsMedicalStep ? 11 : 12 }
+    var totalSteps: Int { skipsMedicalStep ? 10 : 11 }
     var displayStep: Int { currentStep == .confirm ? totalSteps : currentStep.rawValue }
     var canGoBack: Bool { currentStep != .nameDestination }
     var isLastStep: Bool { currentStep == .confirm }
@@ -124,8 +123,7 @@ final class NewTripViewModel {
         case .nameDestination:  currentStep = .dates
         case .dates:
             region = inferRegion(from: destination)
-            currentStep = .region
-        case .region:           currentStep = .purpose
+            currentStep = .purpose
         case .purpose:          currentStep = .weather
         case .weather:          currentStep = .companions
         case .companions:
@@ -147,8 +145,7 @@ final class NewTripViewModel {
         switch currentStep {
         case .nameDestination:      break
         case .dates:                currentStep = .nameDestination
-        case .region:               currentStep = .dates
-        case .purpose:              currentStep = .region
+        case .purpose:              currentStep = .dates
         case .weather:              currentStep = .purpose
         case .companions:           currentStep = .weather
         case .activities:           currentStep = .companions
