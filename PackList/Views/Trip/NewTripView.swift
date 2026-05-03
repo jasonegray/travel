@@ -684,6 +684,7 @@ final class LocationSearchCompleter: NSObject, MKLocalSearchCompleterDelegate {
 
 private struct DestinationMapView: View {
     let coordinate: CLLocationCoordinate2D
+    @State private var showFullScreen = false
 
     var body: some View {
         Map(position: .constant(.region(MKCoordinateRegion(
@@ -693,10 +694,47 @@ private struct DestinationMapView: View {
         )))) {
             Marker("", coordinate: coordinate)
         }
-        .disabled(true)
         .allowsHitTesting(false)
         .frame(height: 180)
         .clipShape(RoundedRectangle(cornerRadius: 12))
+        .contentShape(RoundedRectangle(cornerRadius: 12))
+        .onTapGesture { showFullScreen = true }
+        .fullScreenCover(isPresented: $showFullScreen) {
+            FullScreenMapView(coordinate: coordinate)
+        }
+    }
+}
+
+private struct FullScreenMapView: View {
+    let coordinate: CLLocationCoordinate2D
+    @Environment(\.dismiss) private var dismiss
+    @State private var position: MapCameraPosition
+
+    init(coordinate: CLLocationCoordinate2D) {
+        self.coordinate = coordinate
+        _position = State(initialValue: .region(MKCoordinateRegion(
+            center: coordinate,
+            latitudinalMeters: 40_000,
+            longitudinalMeters: 40_000
+        )))
+    }
+
+    var body: some View {
+        ZStack(alignment: .topTrailing) {
+            Map(position: $position) {
+                Marker("", coordinate: coordinate)
+            }
+            .ignoresSafeArea()
+
+            Button { dismiss() } label: {
+                Image(systemName: "xmark.circle.fill")
+                    .font(.title2)
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(.white)
+                    .shadow(color: .black.opacity(0.3), radius: 4, y: 2)
+            }
+            .padding()
+        }
     }
 }
 
