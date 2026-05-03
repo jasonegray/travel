@@ -266,7 +266,7 @@ private struct NameDestinationStep: View {
                         suggestionsDropdown
                     }
 
-                    if let coord = completer.selectedCoordinate {
+                    if completer.suggestions.isEmpty, let coord = completer.selectedCoordinate {
                         DestinationMapView(coordinate: coord)
                     }
                 }
@@ -693,6 +693,7 @@ private struct DestinationMapView: View {
         )))) {
             Marker("", coordinate: coordinate)
         }
+        .disabled(true)
         .allowsHitTesting(false)
         .frame(height: 180)
         .clipShape(RoundedRectangle(cornerRadius: 12))
