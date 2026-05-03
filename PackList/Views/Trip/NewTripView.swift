@@ -1,4 +1,5 @@
 import SwiftUI
+import MapKit
 
 // MARK: - Root
 
@@ -232,35 +233,49 @@ private struct BinaryCard: View {
     }
 }
 
-// MARK: - Step 1: Name + Destination
+// MARK: - Step 1: Destination + Name
 
 private struct NameDestinationStep: View {
     @Bindable var vm: NewTripViewModel
+    @State private var completer = LocationSearchCompleter()
+    @State private var destinationText = ""
+    @State private var autoFilledName = ""
 
     var body: some View {
-        StepShell(title: "Let's plan your trip.", subtitle: "Give it a name and tell us where you're headed.") {
+        StepShell(title: "Where are you headed?",
+                  subtitle: "Start typing to search for your destination.") {
             VStack(spacing: 16) {
+
+                // — Destination —
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Trip name")
-                        .font(.caption)
-                        .fontWeight(.medium)
-                        .foregroundStyle(.secondary)
-                        .textCase(.uppercase)
-                    TextField("e.g. Tokyo Golf Trip", text: $vm.tripName)
+                    fieldLabel("Destination")
+
+                    TextField("e.g. Orlando, Tokyo, Paris", text: $destinationText)
                         .textFieldStyle(.plain)
                         .padding()
                         .background(Color(.secondarySystemBackground))
                         .clipShape(RoundedRectangle(cornerRadius: 10))
-                        .submitLabel(.next)
+                        .submitLabel(.search)
+                        .autocorrectionDisabled()
+                        .onChange(of: destinationText) { _, text in
+                            vm.destination = text
+                            completer.updateQuery(text)
+                        }
+
+                    if !completer.suggestions.isEmpty {
+                        suggestionsDropdown
+                    }
+
+                    if let coord = completer.selectedCoordinate {
+                        DestinationMapView(coordinate: coord)
+                    }
                 }
 
+                // — Trip name —
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Destination")
-                        .font(.caption)
-                        .fontWeight(.medium)
-                        .foregroundStyle(.secondary)
-                        .textCase(.uppercase)
-                    TextField("e.g. Tokyo, Japan", text: $vm.destination)
+                    fieldLabel("Trip name")
+
+                    TextField("e.g. Orlando Golf Trip", text: $vm.tripName)
                         .textFieldStyle(.plain)
                         .padding()
                         .background(Color(.secondarySystemBackground))
@@ -269,6 +284,64 @@ private struct NameDestinationStep: View {
                 }
             }
         }
+        .onAppear {
+            if destinationText.isEmpty { destinationText = vm.destination }
+        }
+    }
+
+    // MARK: Suggestions
+
+    private var suggestionsDropdown: some View {
+        VStack(spacing: 0) {
+            ForEach(Array(completer.suggestions.prefix(5).enumerated()), id: \.offset) { idx, suggestion in
+                Button {
+                    Task { await pick(suggestion) }
+                } label: {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(suggestion.title)
+                            .font(.subheadline)
+                            .foregroundStyle(.primary)
+                        if !suggestion.subtitle.isEmpty {
+                            Text(suggestion.subtitle)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 10)
+                }
+                .buttonStyle(.plain)
+
+                if idx < min(completer.suggestions.count, 5) - 1 {
+                    Divider().padding(.leading, 12)
+                }
+            }
+        }
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+
+    // MARK: Helpers
+
+    @MainActor
+    private func pick(_ suggestion: MKLocalSearchCompletion) async {
+        let shortName = await completer.select(suggestion)
+        destinationText = completer.query
+        vm.destination  = completer.query
+        if vm.tripName.isEmpty || vm.tripName == autoFilledName {
+            vm.tripName    = shortName
+            autoFilledName = shortName
+        }
+    }
+
+    @ViewBuilder
+    private func fieldLabel(_ text: String) -> some View {
+        Text(text)
+            .font(.caption)
+            .fontWeight(.medium)
+            .foregroundStyle(.secondary)
+            .textCase(.uppercase)
     }
 }
 
@@ -552,6 +625,77 @@ private struct GeneratingStepView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity)
+    }
+}
+
+// MARK: - Location search completer
+
+@Observable
+final class LocationSearchCompleter: NSObject, MKLocalSearchCompleterDelegate {
+    var suggestions: [MKLocalSearchCompletion] = []
+    var selectedCoordinate: CLLocationCoordinate2D?
+    private(set) var query: String = ""
+
+    @ObservationIgnored private let completer = MKLocalSearchCompleter()
+
+    override init() {
+        super.init()
+        completer.delegate = self
+        completer.resultTypes = [.address, .pointOfInterest]
+    }
+
+    func updateQuery(_ text: String) {
+        query = text
+        if text.trimmingCharacters(in: .whitespaces).isEmpty {
+            suggestions = []
+            selectedCoordinate = nil
+            completer.queryFragment = ""
+        } else {
+            completer.queryFragment = text
+        }
+    }
+
+    @MainActor
+    func select(_ completion: MKLocalSearchCompletion) async -> String {
+        query = [completion.title, completion.subtitle]
+            .filter { !$0.isEmpty }
+            .joined(separator: ", ")
+        suggestions = []
+        let request = MKLocalSearch.Request(completion: completion)
+        if let response = try? await MKLocalSearch(request: request).start(),
+           let item = response.mapItems.first {
+            selectedCoordinate = item.placemark.coordinate
+        }
+        return completion.title
+            .components(separatedBy: ",").first?
+            .trimmingCharacters(in: .whitespaces) ?? completion.title
+    }
+
+    func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
+        suggestions = completer.results
+    }
+
+    func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
+        suggestions = []
+    }
+}
+
+// MARK: - Destination map preview
+
+private struct DestinationMapView: View {
+    let coordinate: CLLocationCoordinate2D
+
+    var body: some View {
+        Map(position: .constant(.region(MKCoordinateRegion(
+            center: coordinate,
+            latitudinalMeters: 40_000,
+            longitudinalMeters: 40_000
+        )))) {
+            Marker("", coordinate: coordinate)
+        }
+        .allowsHitTesting(false)
+        .frame(height: 180)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
 
