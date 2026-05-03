@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 
+// PackList — travel packing list manager
 @main
 struct PackListApp: App {
     var body: some Scene {
