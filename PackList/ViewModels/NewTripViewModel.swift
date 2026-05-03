@@ -148,7 +148,12 @@ final class NewTripViewModel {
 
         do {
             let activeItems = try await masterItems.fetchActive()
-            let generated   = ChecklistEngine().generateItems(for: session, from: activeItems)
+            print("MASTER ITEMS IN DB: \(activeItems.count)")
+            print("SEEDED FLAG: \(UserDefaults.standard.bool(forKey: "masterListSeeded"))")
+            let engine = ChecklistEngine()
+            let activeTags = engine.activeTags(for: session)
+            print("ACTIVE TAGS: \(activeTags.sorted { $0.rawValue < $1.rawValue })")
+            let generated   = engine.generateItems(for: session, from: activeItems)
             print("ENGINE GENERATED: \(generated.count) items")
             try await sessions.insert(session)
             for item in generated {
