@@ -66,6 +66,19 @@ final class HomeViewModel {
         )
     }
 
+    #if DEBUG
+    func deleteAllTrips(sessions: any TripSessionRepository) async {
+        do {
+            let all = try await sessions.fetchAll()
+            for trip in all { try await sessions.delete(trip) }
+            activeTrip = nil
+            items = []
+        } catch {
+            print("[HomeViewModel] deleteAllTrips failed: \(error)")
+        }
+    }
+    #endif
+
     func recommendedByDate(_ timing: TaskTiming?, departure: Date) -> Date {
         let cal = Calendar.current
         switch timing {
