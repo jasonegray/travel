@@ -148,23 +148,13 @@ final class NewTripViewModel {
 
         do {
             let activeItems = try await masterItems.fetchActive()
-            print("MASTER ITEMS IN DB: \(activeItems.count)")
-            print("SEEDED FLAG: \(UserDefaults.standard.bool(forKey: "masterListSeeded"))")
-            let engine = ChecklistEngine()
-            let activeTags = engine.activeTags(for: session)
-            print("ACTIVE TAGS: \(activeTags.sorted { $0.rawValue < $1.rawValue })")
-            let generated   = engine.generateItems(for: session, from: activeItems)
-            print("ENGINE GENERATED: \(generated.count) items")
+            let generated   = ChecklistEngine().generateItems(for: session, from: activeItems)
             try await sessions.insert(session)
             for item in generated {
                 try await tripItems.insert(item)
             }
-            print("SAVED TRIP: \(session.id), fetching back items...")
-            let fetchedBack = try await tripItems.fetchAll(for: session.id)
-            print("FETCHED BACK: \(fetchedBack.count) items")
             isDone = true
         } catch {
-            print("CREATE TRIP FAILED: \(error)")
             errorMessage = error.localizedDescription
             isGenerating = false
         }

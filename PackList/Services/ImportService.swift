@@ -13,20 +13,13 @@ final class ImportService {
     }
 
     func seedIfNeeded() async {
-        print("[ImportService] seedIfNeeded called — seededFlag=\(defaults.bool(forKey: Self.seededKey))")
-        guard !defaults.bool(forKey: Self.seededKey) else {
-            print("[ImportService] Already seeded, skipping")
-            return
-        }
+        guard !defaults.bool(forKey: Self.seededKey) else { return }
         do {
-            print("[ImportService] Starting seed...")
             let items = try Self.parseItems()
-            print("[ImportService] Parsed \(items.count) items from JSON")
             for item in items {
                 try await repository.insert(item)
             }
             defaults.set(true, forKey: Self.seededKey)
-            print("[ImportService] Seeded \(items.count) items successfully")
         } catch {
             print("[ImportService] Seed failed — will retry on next launch: \(error)")
         }

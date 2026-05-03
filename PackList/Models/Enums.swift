@@ -36,7 +36,7 @@ enum ItemTag: String, Codable, CaseIterable {
     case always, golf, beach, pool, workout, business, formal
     case cold, mild, warm, rainy, tropical
     case longHaul, overnightFlight, flightAccessible, wearOnPlane
-    case international, domestic, japan, asia, europe, us, korea
+    case international, domestic, japan, asia, europe, us, korea, canada
     case longTrip, shortTrip, airbnb
     case family, solo
     case medicalAppointment, injury, workKit

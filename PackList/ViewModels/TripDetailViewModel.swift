@@ -19,9 +19,7 @@ final class TripDetailViewModel {
         isLoading = true
         defer { isLoading = false }
         do {
-            print("LOADING ITEMS FOR TRIP: \(trip.id)")
             items = try await repository.fetchAll(for: trip.id)
-            print("LOADED: \(items.count) items")
         } catch {
             print("[TripDetailViewModel] Load failed: \(error)")
         }
