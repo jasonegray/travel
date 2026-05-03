@@ -106,6 +106,7 @@ struct NewTripView: View {
         case .laundry:              LaundryStep(vm: vm)
         case .interac:              InteracStep(vm: vm)
         case .medicalAppointments:  MedicalStep(vm: vm)
+        case .confirm:              ConfirmStep(vm: vm)
         }
     }
 }
@@ -233,54 +234,37 @@ private struct BinaryCard: View {
     }
 }
 
-// MARK: - Step 1: Destination + Name
+// MARK: - Step 1: Destination
 
 private struct NameDestinationStep: View {
     @Bindable var vm: NewTripViewModel
     @State private var completer = LocationSearchCompleter()
     @State private var destinationText = ""
-    @State private var autoFilledName = ""
 
     var body: some View {
         StepShell(title: "Where are you headed?",
                   subtitle: "Start typing to search for your destination.") {
-            VStack(spacing: 16) {
+            VStack(alignment: .leading, spacing: 8) {
+                fieldLabel("Destination")
 
-                // — Destination —
-                VStack(alignment: .leading, spacing: 8) {
-                    fieldLabel("Destination")
-
-                    TextField("e.g. Orlando, Tokyo, Paris", text: $destinationText)
-                        .textFieldStyle(.plain)
-                        .padding()
-                        .background(Color(.secondarySystemBackground))
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                        .submitLabel(.search)
-                        .autocorrectionDisabled()
-                        .onChange(of: destinationText) { _, text in
-                            vm.destination = text
-                            completer.updateQuery(text)
-                        }
-
-                    if !completer.suggestions.isEmpty {
-                        suggestionsDropdown
+                TextField("e.g. Orlando, Tokyo, Paris", text: $destinationText)
+                    .textFieldStyle(.plain)
+                    .padding()
+                    .background(Color(.secondarySystemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .submitLabel(.search)
+                    .autocorrectionDisabled()
+                    .onChange(of: destinationText) { _, text in
+                        vm.destination = text
+                        completer.updateQuery(text)
                     }
 
-                    if completer.suggestions.isEmpty, let coord = completer.selectedCoordinate {
-                        DestinationMapView(coordinate: coord)
-                    }
+                if !completer.suggestions.isEmpty {
+                    suggestionsDropdown
                 }
 
-                // — Trip name —
-                VStack(alignment: .leading, spacing: 8) {
-                    fieldLabel("Trip name")
-
-                    TextField("e.g. Orlando Golf Trip", text: $vm.tripName)
-                        .textFieldStyle(.plain)
-                        .padding()
-                        .background(Color(.secondarySystemBackground))
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                        .submitLabel(.done)
+                if completer.suggestions.isEmpty, let coord = completer.selectedCoordinate {
+                    DestinationMapView(coordinate: coord)
                 }
             }
         }
@@ -288,8 +272,6 @@ private struct NameDestinationStep: View {
             if destinationText.isEmpty { destinationText = vm.destination }
         }
     }
-
-    // MARK: Suggestions
 
     private var suggestionsDropdown: some View {
         VStack(spacing: 0) {
@@ -322,17 +304,11 @@ private struct NameDestinationStep: View {
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 
-    // MARK: Helpers
-
     @MainActor
     private func pick(_ suggestion: MKLocalSearchCompletion) async {
-        let shortName = await completer.select(suggestion)
+        await completer.select(suggestion)
         destinationText = completer.query
         vm.destination  = completer.query
-        if vm.tripName.isEmpty || vm.tripName == autoFilledName {
-            vm.tripName    = shortName
-            autoFilledName = shortName
-        }
     }
 
     @ViewBuilder
@@ -602,6 +578,78 @@ private struct MedicalStep: View {
             subtitle: "We'll add relevant items like your health card, referral letters, and any specific supplies."
         ) {
             BinaryPicker(yesLabel: "Yes", noLabel: "No", value: $vm.hasMedicalAppointment)
+        }
+    }
+}
+
+// MARK: - Confirm step
+
+private struct ConfirmStep: View {
+    @Bindable var vm: NewTripViewModel
+    @State private var isEditing = false
+    @FocusState private var nameFocused: Bool
+
+    var body: some View {
+        StepShell(title: "Ready to pack?",
+                  subtitle: "Here's your trip name — tap the pencil to change it.") {
+            VStack(alignment: .leading, spacing: 24) {
+
+                // Trip name
+                VStack(alignment: .leading, spacing: 10) {
+                    if isEditing {
+                        TextField("Trip name", text: $vm.tripName)
+                            .textFieldStyle(.plain)
+                            .font(.title3).fontWeight(.semibold)
+                            .padding()
+                            .background(Color(.secondarySystemBackground))
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .submitLabel(.done)
+                            .focused($nameFocused)
+                            .onSubmit { isEditing = false }
+                    } else {
+                        HStack(alignment: .center, spacing: 8) {
+                            Text(vm.finalTripName)
+                                .font(.title3).fontWeight(.semibold)
+                                .fixedSize(horizontal: false, vertical: true)
+                            Button {
+                                if vm.tripName.isEmpty { vm.tripName = vm.generatedTripName }
+                                isEditing = true
+                                nameFocused = true
+                            } label: {
+                                Image(systemName: "pencil.circle")
+                                    .font(.title3)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                }
+
+                // Trip summary
+                VStack(alignment: .leading, spacing: 12) {
+                    summaryRow("mappin.circle", vm.destination)
+                    summaryRow("calendar",
+                               "\(vm.departureDate.formatted(.dateTime.month(.abbreviated).day().year())) – \(vm.returnDate.formatted(.dateTime.month(.abbreviated).day().year()))")
+                    if !vm.purposes.isEmpty {
+                        summaryRow("tag", vm.purposes.map(\.displayName).joined(separator: ", "))
+                    }
+                    summaryRow("thermometer.medium", vm.weather.displayName)
+                }
+                .padding()
+                .background(Color(.secondarySystemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func summaryRow(_ icon: String, _ text: String) -> some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: icon)
+                .foregroundStyle(.secondary)
+                .frame(width: 20)
+            Text(text)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
         }
     }
 }

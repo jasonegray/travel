@@ -17,6 +17,7 @@ final class NewTripViewModel {
         case laundry = 9
         case interac = 10
         case medicalAppointments = 11
+        case confirm = 12
     }
 
     enum InteracChoice: CaseIterable {
@@ -59,19 +60,15 @@ final class NewTripViewModel {
     // MARK: - Derived
 
     var skipsMedicalStep: Bool { region == .canada || region == .us }
-    var totalSteps: Int { skipsMedicalStep ? 10 : 11 }
-    var displayStep: Int { currentStep.rawValue }
+    var totalSteps: Int { skipsMedicalStep ? 11 : 12 }
+    var displayStep: Int { currentStep == .confirm ? totalSteps : currentStep.rawValue }
     var canGoBack: Bool { currentStep != .nameDestination }
-
-    var isLastStep: Bool {
-        skipsMedicalStep ? currentStep == .interac : currentStep == .medicalAppointments
-    }
+    var isLastStep: Bool { currentStep == .confirm }
 
     var canContinue: Bool {
         switch currentStep {
         case .nameDestination:
-            return !tripName.trimmingCharacters(in: .whitespaces).isEmpty
-                && !destination.trimmingCharacters(in: .whitespaces).isEmpty
+            return !destination.trimmingCharacters(in: .whitespaces).isEmpty
         case .dates:
             let today = Calendar.current.startOfDay(for: .now)
             let dep   = Calendar.current.startOfDay(for: departureDate)
@@ -79,6 +76,36 @@ final class NewTripViewModel {
         default:
             return true
         }
+    }
+
+    // MARK: - Trip name
+
+    var generatedTripName: String {
+        let dest = destination
+            .components(separatedBy: ",").first?
+            .trimmingCharacters(in: .whitespaces) ?? destination
+        let purpose: String
+        if purposes.contains(.golf)          { purpose = "Golf" }
+        else if purposes.contains(.business) { purpose = "Business" }
+        else if purposes.contains(.personal) { purpose = "Personal" }
+        else if purposes.contains(.family)   { purpose = "Family" }
+        else                                 { purpose = "Trip" }
+        return "\(dest) · \(purpose) · \(formattedDateRange)"
+    }
+
+    var finalTripName: String {
+        tripName.trimmingCharacters(in: .whitespaces).isEmpty ? generatedTripName : tripName
+    }
+
+    private var formattedDateRange: String {
+        let cal = Calendar.current
+        let depMonth = departureDate.formatted(.dateTime.month(.abbreviated))
+        let retMonth = returnDate.formatted(.dateTime.month(.abbreviated))
+        let depDay   = cal.component(.day, from: departureDate)
+        let retDay   = cal.component(.day, from: returnDate)
+        return depMonth == retMonth
+            ? "\(depMonth) \(depDay)–\(retDay)"
+            : "\(depMonth) \(depDay)–\(retMonth) \(retDay)"
     }
 
     // MARK: - Navigation
@@ -97,8 +124,10 @@ final class NewTripViewModel {
         case .carryOnOnly:      currentStep = .laundry
         case .laundry:          currentStep = .interac
         case .interac:
-            skipsMedicalStep ? (isGenerating = true) : (currentStep = .medicalAppointments)
+            skipsMedicalStep ? (currentStep = .confirm) : (currentStep = .medicalAppointments)
         case .medicalAppointments:
+            currentStep = .confirm
+        case .confirm:
             isGenerating = true
         }
     }
@@ -116,6 +145,8 @@ final class NewTripViewModel {
         case .laundry:              currentStep = .carryOnOnly
         case .interac:              currentStep = .laundry
         case .medicalAppointments:  currentStep = .interac
+        case .confirm:
+            skipsMedicalStep ? (currentStep = .interac) : (currentStep = .medicalAppointments)
         }
     }
 
@@ -128,7 +159,7 @@ final class NewTripViewModel {
         masterItems: any MasterItemRepository
     ) async {
         let session = TripSession(
-            name:                 tripName.trimmingCharacters(in: .whitespaces),
+            name:                 finalTripName,
             destination:          destination.trimmingCharacters(in: .whitespaces),
             region:               region,
             departureDate:        departureDate,
