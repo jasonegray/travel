@@ -7,8 +7,8 @@ final class NewTripViewModel {
     // MARK: - Wizard step
 
     enum WizardStep: Int, CaseIterable {
-        case nameDestination = 1
-        case activities = 2
+        case activities = 1
+        case nameDestination = 2
         case dates = 3
         case carryOnOnly = 4
         case laundry = 5
@@ -50,7 +50,7 @@ final class NewTripViewModel {
 
     // MARK: - Flow state
 
-    var currentStep: WizardStep = .nameDestination
+    var currentStep: WizardStep = .activities
     var isGenerating = false
     var isDone = false
     var errorMessage: String?
@@ -58,23 +58,30 @@ final class NewTripViewModel {
     // MARK: - Derived
 
     var wizardTitle: String {
+        let label    = primaryActivityLabel
         let shortDest = destination
             .components(separatedBy: ",").first?
             .trimmingCharacters(in: .whitespaces) ?? ""
-        guard !shortDest.isEmpty else { return "New trip" }
-        guard currentStep.rawValue >= WizardStep.dates.rawValue else { return shortDest }
-        let label = primaryActivityLabel
+
+        if currentStep == .activities { return "New trip" }
+
+        // Step 2+ with no destination typed yet
+        if shortDest.isEmpty { return label.isEmpty ? "New trip" : label }
+
+        // Destination available
         return label.isEmpty ? shortDest : "\(shortDest) · \(label)"
     }
 
     var skipsMedicalStep: Bool { region == .canada || region == .us }
     var totalSteps: Int { skipsMedicalStep ? 7 : 8 }
     var displayStep: Int { currentStep == .confirm ? totalSteps : currentStep.rawValue }
-    var canGoBack: Bool { currentStep != .nameDestination }
+    var canGoBack: Bool { currentStep != .activities }
     var isLastStep: Bool { currentStep == .confirm }
 
     var canContinue: Bool {
         switch currentStep {
+        case .activities:
+            return true
         case .nameDestination:
             return !destination.trimmingCharacters(in: .whitespaces).isEmpty
         case .dates:
@@ -126,8 +133,8 @@ final class NewTripViewModel {
 
     func next() {
         switch currentStep {
-        case .nameDestination:  currentStep = .activities
-        case .activities:       currentStep = .dates
+        case .activities:       currentStep = .nameDestination
+        case .nameDestination:  currentStep = .dates
         case .dates:
             region = inferRegion(from: destination)
             fetchWeatherIfPossible()
@@ -145,9 +152,9 @@ final class NewTripViewModel {
 
     func back() {
         switch currentStep {
-        case .nameDestination:      break
-        case .activities:           currentStep = .nameDestination
-        case .dates:                currentStep = .activities
+        case .activities:           break
+        case .nameDestination:      currentStep = .activities
+        case .dates:                currentStep = .nameDestination
         case .carryOnOnly:          currentStep = .dates
         case .laundry:              currentStep = .carryOnOnly
         case .interac:              currentStep = .laundry
@@ -171,9 +178,7 @@ final class NewTripViewModel {
         let s = destination.lowercased()
 
         if s.contains("canada") { return .canada }
-
         if s.contains("united states") || s.contains(", usa") { return .us }
-
         if s.contains("japan") { return .japan }
 
         let europeKeywords = [

@@ -96,8 +96,8 @@ struct NewTripView: View {
     @ViewBuilder
     private var stepContent: some View {
         switch vm.currentStep {
-        case .nameDestination:      NameDestinationStep(vm: vm)
         case .activities:           ActivitiesStep(vm: vm)
+        case .nameDestination:      NameDestinationStep(vm: vm)
         case .dates:                DatesStep(vm: vm)
         case .carryOnOnly:          CarryOnStep(vm: vm)
         case .laundry:              LaundryStep(vm: vm)
@@ -231,18 +231,31 @@ private struct BinaryCard: View {
     }
 }
 
-// MARK: - Step 1: Destination
+// MARK: - Step 2: Destination + Map
 
 private struct NameDestinationStep: View {
     @Bindable var vm: NewTripViewModel
     @State private var completer = LocationSearchCompleter()
     @State private var destinationText = ""
+    @State private var mapPosition: MapCameraPosition = .automatic
+    @State private var poiAnnotations: [POIAnnotation] = []
+    @State private var selectedPOIId: UUID?
+
+    private var categories: [MKPointOfInterestCategory] {
+        poiCategories(for: vm.activities)
+    }
 
     var body: some View {
-        StepShell(title: "Where are you headed?",
-                  subtitle: "Start typing to search for your destination.") {
-            VStack(alignment: .leading, spacing: 8) {
-                fieldLabel("Destination")
+        VStack(spacing: 0) {
+            // Search header (non-scrollable)
+            VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Where are you headed?")
+                        .font(.title2).fontWeight(.bold)
+                    Text(poiSubtitle)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
 
                 TextField("e.g. Orlando, Tokyo, Paris", text: $destinationText)
                     .textFieldStyle(.plain)
@@ -259,16 +272,39 @@ private struct NameDestinationStep: View {
                 if !completer.suggestions.isEmpty {
                     suggestionsDropdown
                 }
+            }
+            .padding(.horizontal)
+            .padding(.top, 20)
+            .padding(.bottom, 12)
 
-                if completer.suggestions.isEmpty, let coord = completer.selectedCoordinate {
-                    DestinationMapView(coordinate: coord)
+            // Full-height interactive map
+            if completer.selectedCoordinate != nil {
+                Map(position: $mapPosition, selection: $selectedPOIId) {
+                    if let coord = completer.selectedCoordinate {
+                        Marker("", coordinate: coord)
+                            .tint(.red)
+                    }
+                    ForEach(poiAnnotations) { poi in
+                        Marker(poi.name, coordinate: poi.coordinate)
+                            .tag(poi.id)
+                            .tint(Color.accentColor)
+                    }
                 }
+                .mapStyle(categories.isEmpty
+                          ? .standard
+                          : .standard(pointsOfInterest: .including(categories)))
+                .frame(maxHeight: .infinity)
+                .task(id: poiSearchKey) { await searchPOIs() }
+            } else {
+                Spacer()
             }
         }
         .onAppear {
             if destinationText.isEmpty { destinationText = vm.destination }
         }
     }
+
+    // MARK: - Suggestions dropdown
 
     private var suggestionsDropdown: some View {
         VStack(spacing: 0) {
@@ -301,25 +337,73 @@ private struct NameDestinationStep: View {
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 
+    // MARK: - Actions
+
     @MainActor
     private func pick(_ suggestion: MKLocalSearchCompletion) async {
         await completer.select(suggestion)
         destinationText          = completer.query
         vm.destination           = completer.query
         vm.destinationCoordinate = completer.selectedCoordinate
+        if let coord = completer.selectedCoordinate {
+            mapPosition = .region(MKCoordinateRegion(
+                center: coord,
+                latitudinalMeters: 30_000,
+                longitudinalMeters: 30_000
+            ))
+        }
     }
 
-    @ViewBuilder
-    private func fieldLabel(_ text: String) -> some View {
-        Text(text)
-            .font(.caption)
-            .fontWeight(.medium)
-            .foregroundStyle(.secondary)
-            .textCase(.uppercase)
+    // MARK: - POI search
+
+    private var poiSearchKey: POISearchKey? {
+        guard let coord = completer.selectedCoordinate else { return nil }
+        return POISearchKey(lat: coord.latitude, lon: coord.longitude, activities: vm.activities)
+    }
+
+    private func searchPOIs() async {
+        guard let coord = completer.selectedCoordinate, !categories.isEmpty else {
+            poiAnnotations = []
+            return
+        }
+        selectedPOIId = nil
+
+        let request = MKLocalSearch.Request()
+        request.pointOfInterestFilter = MKPointOfInterestFilter(including: categories)
+        request.resultTypes = .pointOfInterest
+        request.region = MKCoordinateRegion(
+            center: coord,
+            latitudinalMeters: 25_000,
+            longitudinalMeters: 25_000
+        )
+
+        let items = (try? await MKLocalSearch(request: request).start())?.mapItems ?? []
+        poiAnnotations = items.prefix(30).compactMap { item in
+            guard let name = item.name, !name.isEmpty else { return nil }
+            return POIAnnotation(name: name, coordinate: item.placemark.coordinate)
+        }
+    }
+
+    // MARK: - Helpers
+
+    private var poiSubtitle: String {
+        guard !categories.isEmpty, completer.selectedCoordinate != nil else {
+            return "Search for your destination."
+        }
+        var labels: [String] = []
+        let a = vm.activities
+        if a.contains(.golf)         { labels.append("golf courses") }
+        if a.contains(.beach)        { labels.append("beaches") }
+        if a.contains(.pool)         { labels.append("pools") }
+        if a.contains(.hiking)       { labels.append("parks & trails") }
+        if a.contains(.formalDinner) { labels.append("restaurants") }
+        if a.contains(.workout)      { labels.append("gyms") }
+        if a.contains(.sightseeing)  { labels.append("attractions") }
+        return "Showing \(labels.joined(separator: ", ")) nearby."
     }
 }
 
-// MARK: - Step 2: Dates
+// MARK: - Step 3: Dates
 
 private struct DatesStep: View {
     @Bindable var vm: NewTripViewModel
@@ -376,7 +460,7 @@ private struct DatesStep: View {
     }
 }
 
-// MARK: - Step 2: Activities
+// MARK: - Step 1: Activities
 
 private struct ActivitiesStep: View {
     @Bindable var vm: NewTripViewModel
@@ -638,73 +722,33 @@ final class LocationSearchCompleter: NSObject, MKLocalSearchCompleterDelegate {
     }
 }
 
-// MARK: - Destination map preview
+// MARK: - POI support
 
-private struct DestinationMapView: View {
+private struct POIAnnotation: Identifiable {
+    let id = UUID()
+    let name: String
     let coordinate: CLLocationCoordinate2D
-    @State private var showFullScreen = false
-
-    var body: some View {
-        Map(position: .constant(.region(MKCoordinateRegion(
-            center: coordinate,
-            latitudinalMeters: 40_000,
-            longitudinalMeters: 40_000
-        )))) {
-            Marker("", coordinate: coordinate)
-        }
-        .allowsHitTesting(false)
-        .frame(height: 180)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .contentShape(RoundedRectangle(cornerRadius: 12))
-        .onTapGesture { showFullScreen = true }
-        .fullScreenCover(isPresented: $showFullScreen) {
-            FullScreenMapView(coordinate: coordinate)
-        }
-    }
 }
 
-private struct FullScreenMapView: View {
-    let coordinate: CLLocationCoordinate2D
-    @Environment(\.dismiss) private var dismiss
-    @State private var position: MapCameraPosition
+private struct POISearchKey: Equatable {
+    let lat: Double
+    let lon: Double
+    let activities: Set<ActivityType>
+}
 
-    init(coordinate: CLLocationCoordinate2D) {
-        self.coordinate = coordinate
-        _position = State(initialValue: .region(MKCoordinateRegion(
-            center: coordinate,
-            latitudinalMeters: 40_000,
-            longitudinalMeters: 40_000
-        )))
-    }
+private func poiCategories(for activities: Set<ActivityType>) -> [MKPointOfInterestCategory] {
+    var seen  = Set<MKPointOfInterestCategory>()
+    var cats  = [MKPointOfInterestCategory]()
+    func add(_ c: MKPointOfInterestCategory) { if seen.insert(c).inserted { cats.append(c) } }
 
-    var body: some View {
-        ZStack {
-            Map(position: $position) {
-                Marker("", coordinate: coordinate)
-            }
-            .ignoresSafeArea()
-
-            VStack {
-                HStack {
-                    Button { dismiss() } label: {
-                        ZStack {
-                            Circle()
-                                .fill(Color.white)
-                                .frame(width: 32, height: 32)
-                                .shadow(color: .black.opacity(0.25), radius: 4, y: 2)
-                            Image(systemName: "xmark")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundStyle(Color(.systemGray))
-                        }
-                        .frame(width: 44, height: 44)
-                    }
-                    .padding(.leading, 12)
-                    Spacer()
-                }
-                Spacer()
-            }
-        }
-    }
+    if activities.contains(.golf), #available(iOS 18, *) { add(.golf) }
+    if activities.contains(.beach)        { add(.beach); add(.marina) }
+    if activities.contains(.pool)         { add(.fitnessCenter); add(.aquarium) }
+    if activities.contains(.hiking)       { add(.nationalPark); add(.park); add(.campground) }
+    if activities.contains(.formalDinner) { add(.restaurant) }
+    if activities.contains(.workout)      { add(.fitnessCenter) }
+    if activities.contains(.sightseeing)  { add(.museum); add(.theater) }
+    return cats
 }
 
 // MARK: - Enum display extensions
