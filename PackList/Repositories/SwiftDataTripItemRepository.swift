@@ -28,6 +28,10 @@ final class SwiftDataTripItemRepository: TripItemRepository {
         try context.save()
     }
 
+    func update(_ item: TripItem) async throws {
+        try context.save()
+    }
+
     func delete(_ item: TripItem) async throws {
         context.delete(item)
         try context.save()

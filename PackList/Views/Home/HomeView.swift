@@ -15,11 +15,16 @@ struct HomeView: View {
                         .padding(.horizontal)
 
                     if let trip = vm.activeTrip {
-                        ActiveTripCard(
-                            trip: trip,
-                            packingProgress: vm.packingProgress,
-                            prepProgress: vm.prepProgress
-                        )
+                        NavigationLink {
+                            TripDetailView(trip: trip)
+                        } label: {
+                            ActiveTripCard(
+                                trip: trip,
+                                packingProgress: vm.packingProgress,
+                                prepProgress: vm.prepProgress
+                            )
+                        }
+                        .buttonStyle(.plain)
                         .padding(.horizontal)
 
                         if !vm.bagsSummary.isEmpty {
@@ -355,14 +360,14 @@ extension PackingLocation {
 
     var sortOrder: Int {
         switch self {
-        case .pocket:            return 0
-        case .wearing:           return 1
-        case .passportWallet:    return 2
-        case .carryOn:           return 3
-        case .flightAccessPouch: return 4
+        case .wearing:           return 0
+        case .pocket:            return 1
+        case .backpack:          return 2
+        case .flightAccessPouch: return 3
+        case .carryOn:           return 4
         case .techPouch:         return 5
         case .toiletryBag:       return 6
-        case .backpack:          return 7
+        case .passportWallet:    return 7
         case .golfBag:           return 8
         case .checkedBag:        return 9
         }
