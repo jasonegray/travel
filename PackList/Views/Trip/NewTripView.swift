@@ -97,11 +97,8 @@ struct NewTripView: View {
     private var stepContent: some View {
         switch vm.currentStep {
         case .nameDestination:      NameDestinationStep(vm: vm)
-        case .dates:                DatesStep(vm: vm)
-        case .purpose:              PurposeStep(vm: vm)
-        case .weather:              WeatherStep(vm: vm)
-        case .companions:           CompanionsStep(vm: vm)
         case .activities:           ActivitiesStep(vm: vm)
+        case .dates:                DatesStep(vm: vm)
         case .carryOnOnly:          CarryOnStep(vm: vm)
         case .laundry:              LaundryStep(vm: vm)
         case .interac:              InteracStep(vm: vm)
@@ -307,8 +304,9 @@ private struct NameDestinationStep: View {
     @MainActor
     private func pick(_ suggestion: MKLocalSearchCompletion) async {
         await completer.select(suggestion)
-        destinationText = completer.query
-        vm.destination  = completer.query
+        destinationText          = completer.query
+        vm.destination           = completer.query
+        vm.destinationCoordinate = completer.selectedCoordinate
     }
 
     @ViewBuilder
@@ -378,75 +376,7 @@ private struct DatesStep: View {
     }
 }
 
-// MARK: - Step 3: Purpose
-
-private struct PurposeStep: View {
-    @Bindable var vm: NewTripViewModel
-
-    var body: some View {
-        StepShell(title: "What's the purpose?", subtitle: "Select all that apply.") {
-            VStack(spacing: 10) {
-                ForEach(TripPurpose.allCases, id: \.self) { purpose in
-                    let selected = vm.purposes.contains(purpose)
-                    OptionCard(
-                        title: purpose.displayName,
-                        isSelected: selected,
-                        action: {
-                            if selected { vm.purposes.remove(purpose) }
-                            else         { vm.purposes.insert(purpose) }
-                        }
-                    )
-                }
-            }
-        }
-    }
-}
-
-// MARK: - Step 5: Weather
-
-private struct WeatherStep: View {
-    @Bindable var vm: NewTripViewModel
-
-    var body: some View {
-        StepShell(title: "What's the weather like?") {
-            VStack(spacing: 10) {
-                ForEach(WeatherProfile.allCases, id: \.self) { w in
-                    OptionCard(
-                        title: w.displayName,
-                        isSelected: vm.weather == w,
-                        action: { vm.weather = w }
-                    )
-                }
-            }
-        }
-    }
-}
-
-// MARK: - Step 6: Companions
-
-private struct CompanionsStep: View {
-    @Bindable var vm: NewTripViewModel
-
-    var body: some View {
-        StepShell(title: "Who's coming with you?", subtitle: "Select all that apply.") {
-            VStack(spacing: 10) {
-                ForEach(TravelCompanion.allCases, id: \.self) { companion in
-                    let selected = vm.companions.contains(companion)
-                    OptionCard(
-                        title: companion.displayName,
-                        isSelected: selected,
-                        action: {
-                            if selected { vm.companions.remove(companion) }
-                            else         { vm.companions.insert(companion) }
-                        }
-                    )
-                }
-            }
-        }
-    }
-}
-
-// MARK: - Step 7: Activities
+// MARK: - Step 2: Activities
 
 private struct ActivitiesStep: View {
     @Bindable var vm: NewTripViewModel
@@ -503,7 +433,7 @@ private struct ActivityChip: View {
     }
 }
 
-// MARK: - Step 8: Carry-on only
+// MARK: - Step 4: Carry-on only
 
 private struct CarryOnStep: View {
     @Bindable var vm: NewTripViewModel
@@ -515,7 +445,7 @@ private struct CarryOnStep: View {
     }
 }
 
-// MARK: - Step 9: Laundry
+// MARK: - Step 5: Laundry
 
 private struct LaundryStep: View {
     @Bindable var vm: NewTripViewModel
@@ -527,7 +457,7 @@ private struct LaundryStep: View {
     }
 }
 
-// MARK: - Step 10: Interac
+// MARK: - Step 6: Interac
 
 private struct InteracStep: View {
     @Bindable var vm: NewTripViewModel
@@ -547,7 +477,7 @@ private struct InteracStep: View {
     }
 }
 
-// MARK: - Step 11: Medical appointments
+// MARK: - Step 7: Medical appointments
 
 private struct MedicalStep: View {
     @Bindable var vm: NewTripViewModel
@@ -609,8 +539,8 @@ private struct ConfirmStep: View {
                     summaryRow("mappin.circle", vm.destination)
                     summaryRow("calendar",
                                "\(vm.departureDate.formatted(.dateTime.month(.abbreviated).day().year())) – \(vm.returnDate.formatted(.dateTime.month(.abbreviated).day().year()))")
-                    if !vm.purposes.isEmpty {
-                        summaryRow("tag", vm.purposes.map(\.displayName).joined(separator: ", "))
+                    if !vm.activities.isEmpty {
+                        summaryRow("tag", vm.activities.map(\.displayName).joined(separator: ", "))
                     }
                     summaryRow("thermometer.medium", vm.weather.displayName)
                 }

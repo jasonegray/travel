@@ -1,4 +1,5 @@
 import Foundation
+import CoreLocation
 
 @Observable
 final class NewTripViewModel {
@@ -7,16 +8,13 @@ final class NewTripViewModel {
 
     enum WizardStep: Int, CaseIterable {
         case nameDestination = 1
-        case dates = 2
-        case purpose = 3
-        case weather = 4
-        case companions = 5
-        case activities = 6
-        case carryOnOnly = 7
-        case laundry = 8
-        case interac = 9
-        case medicalAppointments = 10
-        case confirm = 11
+        case activities = 2
+        case dates = 3
+        case carryOnOnly = 4
+        case laundry = 5
+        case interac = 6
+        case medicalAppointments = 7
+        case confirm = 8
     }
 
     enum InteracChoice: CaseIterable {
@@ -37,6 +35,7 @@ final class NewTripViewModel {
 
     var tripName = ""
     var destination = ""
+    var destinationCoordinate: CLLocationCoordinate2D?
     var departureDate: Date = Calendar.current.date(byAdding: .day, value: 7, to: .now) ?? .now
     var returnDate:    Date = Calendar.current.date(byAdding: .day, value: 10, to: .now) ?? .now
     var region: TravelRegion = .canada
@@ -63,12 +62,13 @@ final class NewTripViewModel {
             .components(separatedBy: ",").first?
             .trimmingCharacters(in: .whitespaces) ?? ""
         guard !shortDest.isEmpty else { return "New trip" }
-        guard currentStep.rawValue >= WizardStep.purpose.rawValue else { return shortDest }
-        return generatedTripName
+        guard currentStep.rawValue >= WizardStep.dates.rawValue else { return shortDest }
+        let label = primaryActivityLabel
+        return label.isEmpty ? shortDest : "\(shortDest) · \(label)"
     }
 
     var skipsMedicalStep: Bool { region == .canada || region == .us }
-    var totalSteps: Int { skipsMedicalStep ? 10 : 11 }
+    var totalSteps: Int { skipsMedicalStep ? 7 : 8 }
     var displayStep: Int { currentStep == .confirm ? totalSteps : currentStep.rawValue }
     var canGoBack: Bool { currentStep != .nameDestination }
     var isLastStep: Bool { currentStep == .confirm }
@@ -92,17 +92,23 @@ final class NewTripViewModel {
         let dest = destination
             .components(separatedBy: ",").first?
             .trimmingCharacters(in: .whitespaces) ?? destination
-        let purpose: String
-        if purposes.contains(.golf)          { purpose = "Golf" }
-        else if purposes.contains(.business) { purpose = "Business" }
-        else if purposes.contains(.personal) { purpose = "Personal" }
-        else if purposes.contains(.family)   { purpose = "Family" }
-        else                                 { purpose = "Trip" }
-        return "\(dest) · \(purpose) · \(formattedDateRange)"
+        let label = primaryActivityLabel.isEmpty ? "Trip" : primaryActivityLabel
+        return "\(dest) · \(label) · \(formattedDateRange)"
     }
 
     var finalTripName: String {
         tripName.trimmingCharacters(in: .whitespaces).isEmpty ? generatedTripName : tripName
+    }
+
+    private var primaryActivityLabel: String {
+        if activities.contains(.golf)         { return "Golf" }
+        if activities.contains(.beach)        { return "Beach" }
+        if activities.contains(.pool)         { return "Pool" }
+        if activities.contains(.hiking)       { return "Hiking" }
+        if activities.contains(.formalDinner) { return "Dinner" }
+        if activities.contains(.workout)      { return "Workout" }
+        if activities.contains(.sightseeing)  { return "Sightseeing" }
+        return ""
     }
 
     private var formattedDateRange: String {
@@ -120,16 +126,12 @@ final class NewTripViewModel {
 
     func next() {
         switch currentStep {
-        case .nameDestination:  currentStep = .dates
+        case .nameDestination:  currentStep = .activities
+        case .activities:       currentStep = .dates
         case .dates:
             region = inferRegion(from: destination)
-            currentStep = .purpose
-        case .purpose:          currentStep = .weather
-        case .weather:          currentStep = .companions
-        case .companions:
-            if purposes.contains(.golf) { activities.insert(.golf) }
-            currentStep = .activities
-        case .activities:       currentStep = .carryOnOnly
+            fetchWeatherIfPossible()
+            currentStep = .carryOnOnly
         case .carryOnOnly:      currentStep = .laundry
         case .laundry:          currentStep = .interac
         case .interac:
@@ -144,17 +146,24 @@ final class NewTripViewModel {
     func back() {
         switch currentStep {
         case .nameDestination:      break
-        case .dates:                currentStep = .nameDestination
-        case .purpose:              currentStep = .dates
-        case .weather:              currentStep = .purpose
-        case .companions:           currentStep = .weather
-        case .activities:           currentStep = .companions
-        case .carryOnOnly:          currentStep = .activities
+        case .activities:           currentStep = .nameDestination
+        case .dates:                currentStep = .activities
+        case .carryOnOnly:          currentStep = .dates
         case .laundry:              currentStep = .carryOnOnly
         case .interac:              currentStep = .laundry
         case .medicalAppointments:  currentStep = .interac
         case .confirm:
             skipsMedicalStep ? (currentStep = .interac) : (currentStep = .medicalAppointments)
+        }
+    }
+
+    private func fetchWeatherIfPossible() {
+        guard let coord = destinationCoordinate else { return }
+        let dep = departureDate
+        let ret = returnDate
+        Task { @MainActor [weak self] in
+            let profile = await WeatherService.fetchProfile(for: coord, from: dep, to: ret)
+            self?.weather = profile
         }
     }
 
@@ -184,7 +193,7 @@ final class NewTripViewModel {
             "laos", "sri lanka", "nepal", "bangladesh", "pakistan",
             "seoul", "beijing", "shanghai", "guangzhou", "bangkok", "hanoi",
             "ho chi minh", "mumbai", "delhi", "kolkata", "chennai", "kuala lumpur",
-            "jakarta", "manila", "taipei", "ho chi minh",
+            "jakarta", "manila", "taipei",
         ]
         if asiaKeywords.contains(where: s.contains) { return .asia }
 
