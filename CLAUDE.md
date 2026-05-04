@@ -1,0 +1,150 @@
+# PackList — Claude Code Standards & Project Context
+
+## Project overview
+Native iOS app (Swift, SwiftUI, SwiftData, iOS 17+) for intelligent travel packing lists. Solo developer project for personal use. Owned by Jason Gray.
+
+## Architecture
+- Pattern: MVVM + Repository abstraction
+- Persistence: SwiftData (v1) — all data access via repository protocols only, never access ModelContext directly outside repositories
+- Sync: local-first, sync backend TBD — never couple UI or business logic to a specific backend
+- Checklist engine: pure struct, no SwiftData imports, no side effects — takes TripSession + [MasterItem], returns [TripItem]
+- AI is non-blocking and non-required — the app must function fully without any AI calls
+
+## Code standards
+- Swift 5.9+, @Observable macro for ViewModels (not ObservableObject)
+- All repository operations must run on @MainActor
+- No force unwraps — use guard let, if let, or provide safe defaults
+- No print statements in committed code — use os.log or remove before committing
+- Errors must be surfaced to the user — never silently swallow a catch block
+- No hardcoded strings visible to the user — use constants or localization keys
+
+## Naming conventions
+- ViewModels: [Feature]ViewModel.swift
+- Views: [Feature]View.swift
+- Repositories: SwiftData[Entity]Repository.swift implementing [Entity]Repository protocol
+- Services: [Name]Service.swift
+- Tests: [Target]Tests.swift
+
+## Git workflow
+- Branch naming: feature/issue-[number]-short-description or fix/issue-[number]-short-description
+- Every commit must reference an issue number: "Fix duplicate items in trip list (#1)"
+- Always push after committing: git push origin [branch]
+- Open a PR for every feature or fix — never commit directly to main
+- PR titles must match the issue title
+
+## Testing
+- ChecklistEngine must maintain 100% test coverage on core logic
+- New repository methods need at least one integration test
+- UI is not unit tested — manual testing on simulator is sufficient for v0.1
+
+## SwiftUI / HIG standards
+- Follow Apple Human Interface Guidelines strictly
+- Minimum tap target: 44x44pt
+- Support Dynamic Type — never hardcode font sizes
+- No custom navigation patterns — use NavigationStack and sheet/fullScreenCover
+- Animations: keep subtle, use .animation(.easeInOut(duration: 0.2)) as default
+
+## Project structure
+```
+PackList/
+├── Models/           # SwiftData @Model classes and supporting structs
+├── Repositories/
+│   ├── Protocols/    # Repository protocols — no SwiftData imports here
+│   └── SwiftData*Repository.swift files
+├── Services/         # ChecklistEngine, ImportService, etc.
+├── ViewModels/       # @Observable ViewModels
+├── Views/            # SwiftUI views only, no business logic
+│   ├── Home/
+│   ├── Trip/
+│   ├── Packing/
+│   ├── Tasks/
+│   ├── MasterList/
+│   └── Suggestions/
+├── Resources/
+│   └── SeedData/     # master_items.json
+└── Tests/
+```
+
+## Key data model decisions
+- TripItem.completedAt: Date? replaces isChecked: Bool — nil means incomplete
+- MasterItem.requiredByItemId: UUID? — dependency chain for accessories
+- TripSession.parentTripId: UUID? — self-referencing FK for trip cloning
+- ItemInsight — materialized aggregate per (MasterItem × TripPurpose × Region) — never query raw TripItem history in the UI layer
+- flightAccessible: Bool is a dedicated field, not a tag — drives flight prep view
+
+## Current milestone
+v0.1 Alpha — Daily Driver. See GitHub Issues for backlog: https://github.com/jasonegray/projects/1
+
+## Things Jason cares about
+- Clean, minimal, Apple-quality UI — if it doesn't feel native, redo it
+- No debug code in commits
+- Every PR should be reviewable — small, focused, one thing at a time
+- The master list is sacred — nothing changes it without explicit user approval
+- Performance matters — the packing list must feel instant, no loading spinners on local data
+
+---
+
+## How Claude Code should behave
+
+### Before coding
+Before implementing any change:
+1. Inspect all relevant files that will be touched
+2. Summarize the intended change and which files will be modified
+3. Wait for confirmation if the change touches models, repositories, seed data, or core services
+4. Never introduce a new architectural pattern without explicit approval from Jason
+
+### Destructive change protocol
+Always ask before:
+- Modifying SwiftData @Model classes (requires migration planning)
+- Changing or regenerating master_items.json
+- Deleting any file from the project
+- Changing repository protocol signatures
+- Modifying ChecklistEngine logic that has passing tests
+- Any change that would invalidate existing persisted data
+
+State clearly: "This change is destructive — [what it affects]. Confirm before I proceed?"
+
+### PR checklist
+Every PR must include confirmation that all of the following pass before opening:
+
+**Code quality**
+- [ ] No force unwraps (!) anywhere in changed files
+- [ ] No print() statements — use os.log or remove
+- [ ] No TODO or FIXME comments left in — resolve or create a GitHub issue
+- [ ] No hardcoded user-facing strings
+
+**Architecture**
+- [ ] No direct ModelContext access outside of SwiftData*Repository files
+- [ ] No business logic in Views
+- [ ] No SwiftData imports in Services or ViewModels
+- [ ] Repository protocols unchanged unless explicitly approved
+
+**Testing**
+- [ ] All existing tests pass (run test suite before opening PR)
+- [ ] New repository methods have at least one test
+- [ ] ChecklistEngine changes have corresponding test coverage
+
+**Error handling**
+- [ ] No silent catch blocks — errors are logged or surfaced to user
+- [ ] Network failures handled gracefully
+- [ ] Nil cases handled — no assumptions about optional values
+
+**UI / HIG**
+- [ ] Tap targets minimum 44x44pt
+- [ ] No hardcoded font sizes — use Dynamic Type styles
+- [ ] Follows NavigationStack / sheet patterns — no custom navigation hacks
+- [ ] Tested in both light and dark mode
+- [ ] Animations are subtle — default to .easeInOut(duration: 0.2)
+
+**Git**
+- [ ] Branch named: feature/issue-[number]-description or fix/issue-[number]-description
+- [ ] Commit messages reference issue number
+- [ ] No merge commits on the branch — rebase if needed
+- [ ] PR title matches the GitHub issue title exactly
+
+### Communication style
+- Be explicit about what you are about to do before doing it
+- If something is ambiguous, ask — do not assume
+- If a simpler solution exists, propose it before implementing the complex one
+- Flag anything that looks like technical debt, even if not in scope
+- One PR per issue — do not bundle unrelated changes
