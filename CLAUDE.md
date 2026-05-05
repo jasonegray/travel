@@ -1,3 +1,4 @@
+<!-- PackList CLAUDE.md v1.0 — Last updated: May 2026 -->
 # PackList — Claude Code Standards & Project Context
 
 ## Project overview
