@@ -6,7 +6,9 @@ macOS sips is used for resizing (built-in).
 """
 
 import os
+import shutil
 import subprocess
+import sys
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
@@ -16,17 +18,20 @@ ICON_SET_DIR = os.path.join(
     "AppIcon.appiconset"
 )
 
-SIZES = [20, 29, 38, 40, 58, 60, 76, 80, 87, 120, 152, 167, 180, 1024]
-RSVG = "/opt/homebrew/bin/rsvg-convert"
+SIZES = [20, 29, 40, 58, 60, 76, 80, 87, 120, 152, 167, 180, 1024]
 
 
 def main():
+    rsvg = shutil.which("rsvg-convert")
+    if not rsvg:
+        sys.exit("rsvg-convert not found — run: brew install librsvg")
+
     os.makedirs(ICON_SET_DIR, exist_ok=True)
 
     master_path = os.path.join(ICON_SET_DIR, "Icon-1024.png")
     print(f"Rendering master from {SVG_PATH} ...")
     subprocess.run(
-        [RSVG, "-w", "1024", "-h", "1024", SVG_PATH, "-o", master_path],
+        [rsvg, "-w", "1024", "-h", "1024", SVG_PATH, "-o", master_path],
         check=True,
     )
     print("Master rendered at 1024x1024")
