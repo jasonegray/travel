@@ -1,4 +1,8 @@
 import Foundation
+import OSLog
+
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.jasonegray.PackList",
+                            category: "ImportService")
 
 final class ImportService {
 
@@ -15,17 +19,42 @@ final class ImportService {
     func seedIfNeeded() async {
         guard !defaults.bool(forKey: Self.seededKey) else { return }
         do {
+            let existing = try await repository.fetchAll()
+            if !existing.isEmpty {
+                // Items already exist — flag was missing or reset. Deduplicate then repair.
+                await removeDuplicateImportedItems(from: existing)
+                let remaining = try await repository.fetchAll()
+                logger.info("Seed repair complete — \(remaining.count) master items in database")
+                defaults.set(true, forKey: Self.seededKey)
+                return
+            }
             let items = try Self.parseItems()
             for item in items {
                 try await repository.insert(item)
             }
             defaults.set(true, forKey: Self.seededKey)
         } catch {
-            print("[ImportService] Seed failed — will retry on next launch: \(error)")
+            logger.error("Seed failed — will retry on next launch: \(error)")
         }
     }
 
     // MARK: - Private
+
+    private func removeDuplicateImportedItems(from items: [MasterItem]) async {
+        let sorted = items.sorted { $0.createdAt < $1.createdAt }
+        var seen = Set<String>()
+        for item in sorted where item.source == .imported {
+            if seen.contains(item.name) {
+                do {
+                    try await repository.delete(item)
+                } catch {
+                    logger.error("Failed to delete duplicate '\(item.name)': \(error)")
+                }
+            } else {
+                seen.insert(item.name)
+            }
+        }
+    }
 
     private static func parseItems() throws -> [MasterItem] {
         guard let url = Bundle.main.url(forResource: "master_items", withExtension: "json")
