@@ -1,4 +1,8 @@
 import Foundation
+import OSLog
+
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.jasonegray.PackList",
+                            category: "ImportService")
 
 final class ImportService {
 
@@ -15,17 +19,45 @@ final class ImportService {
     func seedIfNeeded() async {
         guard !defaults.bool(forKey: Self.seededKey) else { return }
         do {
-            let items = try Self.parseItems()
-            for item in items {
+            // Remove duplicates first if a prior failed seed left stale records
+            let existing = try await repository.fetchAll()
+            if !existing.isEmpty {
+                await removeDuplicateImportedItems(from: existing)
+            }
+
+            // Insert only seed items not already present — safe for empty DB,
+            // partial seed, or a fully seeded DB with duplicates removed above
+            let seedItems = try Self.parseItems()
+            let presentNames = Set((try await repository.fetchAll()).map(\.name))
+            for item in seedItems where !presentNames.contains(item.name) {
                 try await repository.insert(item)
             }
+
+            let finalCount = presentNames.count + seedItems.filter { !presentNames.contains($0.name) }.count
+            logger.info("Seed complete — \(finalCount) master items in database")
             defaults.set(true, forKey: Self.seededKey)
         } catch {
-            print("[ImportService] Seed failed — will retry on next launch: \(error)")
+            logger.error("Seed failed — will retry on next launch: \(error)")
         }
     }
 
     // MARK: - Private
+
+    private func removeDuplicateImportedItems(from items: [MasterItem]) async {
+        let sorted = items.sorted { $0.createdAt < $1.createdAt }
+        var seen = Set<String>()
+        for item in sorted where item.source == .imported {
+            if seen.contains(item.name) {
+                do {
+                    try await repository.delete(item)
+                } catch {
+                    logger.error("Failed to delete duplicate '\(item.name)': \(error)")
+                }
+            } else {
+                seen.insert(item.name)
+            }
+        }
+    }
 
     private static func parseItems() throws -> [MasterItem] {
         guard let url = Bundle.main.url(forResource: "master_items", withExtension: "json")
