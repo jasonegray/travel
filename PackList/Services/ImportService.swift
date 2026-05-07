@@ -19,19 +19,22 @@ final class ImportService {
     func seedIfNeeded() async {
         guard !defaults.bool(forKey: Self.seededKey) else { return }
         do {
+            // Remove duplicates first if a prior failed seed left stale records
             let existing = try await repository.fetchAll()
             if !existing.isEmpty {
-                // Items already exist — flag was missing or reset. Deduplicate then repair.
                 await removeDuplicateImportedItems(from: existing)
-                let remaining = try await repository.fetchAll()
-                logger.info("Seed repair complete — \(remaining.count) master items in database")
-                defaults.set(true, forKey: Self.seededKey)
-                return
             }
-            let items = try Self.parseItems()
-            for item in items {
+
+            // Insert only seed items not already present — safe for empty DB,
+            // partial seed, or a fully seeded DB with duplicates removed above
+            let seedItems = try Self.parseItems()
+            let presentNames = Set((try await repository.fetchAll()).map(\.name))
+            for item in seedItems where !presentNames.contains(item.name) {
                 try await repository.insert(item)
             }
+
+            let finalCount = presentNames.count + seedItems.filter { !presentNames.contains($0.name) }.count
+            logger.info("Seed complete — \(finalCount) master items in database")
             defaults.set(true, forKey: Self.seededKey)
         } catch {
             logger.error("Seed failed — will retry on next launch: \(error)")
