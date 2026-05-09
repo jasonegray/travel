@@ -38,7 +38,7 @@ enum ItemTag: String, Codable, CaseIterable {
     case longHaul, overnightFlight, flightAccessible, wearOnPlane
     case international, domestic, japan, asia, europe, us, korea, canada
     case longTrip, shortTrip, airbnb
-    case family, solo
+    case family, solo, personal, casual
     case medicalAppointment, injury, workKit
     case interacPhone, interacLaptop, level19Laptop
     case situational, conditional
