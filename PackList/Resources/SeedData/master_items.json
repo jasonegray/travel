@@ -1,2178 +1,5813 @@
 [
   {
-    "name": "Passport",
-    "category": "documents",
-    "tags": ["always"],
-    "flightAccessible": true,
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "passportWallet",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "replaceability": "impossible" }
-    ]
-  },
-  {
-    "name": "Driver's License",
-    "category": "documents",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "passportWallet",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "replaceability": "veryHard" }
-    ]
-  },
-  {
-    "name": "Credit Card (Primary)",
-    "category": "documents",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "passportWallet",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "veryHard" },
-      { "replaceability": "hard" }
-    ]
-  },
-  {
-    "name": "Credit Card (Backup)",
-    "category": "documents",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "passportWallet",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "veryHard" },
-      { "replaceability": "hard" }
-    ]
-  },
-  {
-    "name": "Debit Card",
-    "category": "documents",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "passportWallet",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "replaceability": "veryHard" }
-    ]
-  },
-  {
-    "name": "Cash (Local Currency)",
-    "category": "documents",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "passportWallet",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "easy" },
-      { "replaceability": "easy" }
-    ]
-  },
-  {
-    "name": "Travel Insurance Documents",
-    "category": "documents",
-    "tags": ["longHaul", "international"],
-    "flightAccessible": true,
-    "defaultQuantity": 1,
-    "packingLocation": "passportWallet",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "replaceability": "easy" }
-    ]
-  },
-  {
-    "name": "Health / Vaccination Records",
-    "category": "documents",
-    "tags": ["international"],
-    "flightAccessible": true,
-    "defaultQuantity": 1,
-    "packingLocation": "passportWallet",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "replaceability": "veryHard" }
-    ]
-  },
-  {
-    "name": "Hotel Confirmation Printout",
-    "category": "documents",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "carryOn",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "replaceability": "easy" }
-    ]
-  },
-  {
-    "name": "NEXUS / Global Entry Card",
-    "category": "documents",
-    "tags": ["us", "canada"],
-    "defaultQuantity": 1,
-    "packingLocation": "passportWallet",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "replaceability": "veryHard" }
-    ]
-  },
-  {
-    "name": "International Driving Permit",
-    "category": "documents",
-    "tags": ["international"],
-    "defaultQuantity": 1,
-    "packingLocation": "passportWallet",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "replaceability": "veryHard" }
-    ]
-  },
-  {
-    "name": "Emergency Contact Card",
-    "category": "documents",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "passportWallet",
-    "source": "imported"
-  },
-  {
-    "name": "Medical Information Card",
-    "category": "documents",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "passportWallet",
-    "source": "imported"
-  },
-
-  {
+    "id": "BAE49AE5-C0CA-4E4B-8C32-8906769A6B1F",
     "name": "Underwear",
     "category": "clothing",
-    "tags": ["always"],
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
-    "defaultQuantity": 5,
-    "packingLocation": "checkedBag",
-    "source": "imported",
-    "quantityRules": [
-      {
-        "contextTags": [],
-        "laundryAvailable": true,
-        "formula": { "type": "halfDays", "roundUp": true }
-      },
-      {
-        "contextTags": [],
-        "laundryAvailable": false,
-        "formula": { "type": "custom", "base": 1, "perDay": 1.0, "roundUp": false }
-      }
-    ]
-  },
-  {
-    "name": "Casual Socks",
-    "category": "clothing",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 5,
-    "packingLocation": "checkedBag",
-    "source": "imported",
-    "quantityRules": [
-      {
-        "contextTags": [],
-        "laundryAvailable": true,
-        "formula": { "type": "halfDays", "roundUp": true }
-      },
-      {
-        "contextTags": [],
-        "laundryAvailable": false,
-        "formula": { "type": "custom", "base": 1, "perDay": 1.0, "roundUp": false }
-      }
-    ]
-  },
-  {
-    "name": "Dress Socks",
-    "category": "clothing",
-    "tags": ["business", "formal"],
-    "defaultQuantity": 3,
-    "packingLocation": "checkedBag",
-    "source": "imported",
-    "quantityRules": [
-      {
-        "contextTags": ["business"],
-        "formula": { "type": "fixed", "n": 3 }
-      }
-    ]
-  },
-  {
-    "name": "T-Shirts",
-    "category": "clothing",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 4,
-    "packingLocation": "checkedBag",
-    "source": "imported",
-    "quantityRules": [
-      {
-        "contextTags": [],
-        "laundryAvailable": true,
-        "formula": { "type": "halfDays", "roundUp": true }
-      },
-      {
-        "contextTags": [],
-        "laundryAvailable": false,
-        "formula": { "type": "perDay" }
-      }
-    ]
-  },
-  {
-    "name": "Dress Shirts",
-    "category": "clothing",
-    "tags": ["business", "formal"],
-    "defaultQuantity": 3,
-    "packingLocation": "checkedBag",
-    "source": "imported",
-    "quantityRules": [
-      {
-        "contextTags": ["business"],
-        "laundryAvailable": true,
-        "formula": { "type": "halfDays", "roundUp": true }
-      },
-      {
-        "contextTags": ["business"],
-        "formula": { "type": "fixed", "n": 3 }
-      }
-    ]
-  },
-  {
-    "name": "Casual Pants / Jeans",
-    "category": "clothing",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 2,
-    "packingLocation": "checkedBag",
-    "source": "imported",
-    "quantityRules": [
-      {
-        "contextTags": [],
-        "formula": { "type": "fixed", "n": 2 }
-      }
-    ]
-  },
-  {
-    "name": "Dress Pants",
-    "category": "clothing",
-    "tags": ["business", "formal"],
-    "defaultQuantity": 2,
-    "packingLocation": "checkedBag",
-    "source": "imported"
-  },
-  {
-    "name": "Shorts",
-    "category": "clothing",
-    "tags": ["warm", "beach", "pool"],
-    "defaultQuantity": 3,
-    "packingLocation": "checkedBag",
-    "source": "imported",
-    "quantityRules": [
-      {
-        "contextTags": ["warm"],
-        "laundryAvailable": true,
-        "formula": { "type": "halfDays", "roundUp": true }
-      },
-      {
-        "contextTags": ["warm"],
-        "formula": { "type": "fixed", "n": 3 }
-      }
-    ]
-  },
-  {
-    "name": "Sleepwear",
-    "category": "clothing",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 2,
-    "packingLocation": "checkedBag",
-    "source": "imported",
-    "quantityRules": [
-      {
-        "contextTags": [],
-        "laundryAvailable": true,
-        "formula": { "type": "fixed", "n": 1 }
-      },
-      {
-        "contextTags": [],
-        "formula": { "type": "fixed", "n": 2 }
-      }
-    ]
-  },
-  {
-    "name": "Light Hoodie / Layer",
-    "category": "clothing",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
-    "source": "imported"
-  },
-  {
-    "name": "Warm Jacket",
-    "category": "clothing",
-    "tags": ["cold"],
-    "defaultQuantity": 1,
-    "packingLocation": "wearing",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "hard" },
-      { "regions": ["europe"], "replaceability": "easy" },
-      { "replaceability": "hard" }
-    ]
-  },
-  {
-    "name": "Rain Jacket",
-    "category": "clothing",
-    "tags": ["rainy"],
-    "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "replaceability": "easy" }
-    ]
-  },
-  {
-    "name": "Belt",
-    "category": "clothing",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
-    "source": "imported"
-  },
-  {
-    "name": "Blazer / Sport Coat",
-    "category": "clothing",
-    "tags": ["business", "formal"],
-    "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
-    "source": "imported"
-  },
-  {
-    "name": "Tie",
-    "category": "clothing",
-    "tags": ["business", "formal"],
-    "defaultQuantity": 2,
-    "packingLocation": "checkedBag",
-    "source": "imported"
-  },
-  {
-    "name": "Swimsuit",
-    "category": "clothing",
-    "tags": ["beach", "pool"],
-    "defaultQuantity": 2,
-    "packingLocation": "checkedBag",
-    "source": "imported"
-  },
-  {
-    "name": "Beach Cover-Up",
-    "category": "clothing",
-    "tags": ["beach", "pool", "warm"],
-    "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
-    "source": "imported"
-  },
-  {
-    "name": "Thermal Base Layer",
-    "category": "clothing",
-    "tags": ["cold"],
-    "defaultQuantity": 2,
-    "packingLocation": "checkedBag",
-    "source": "imported"
-  },
-  {
-    "name": "Winter Hat / Beanie",
-    "category": "clothing",
-    "tags": ["cold"],
-    "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "replaceability": "easy" }
-    ]
-  },
-  {
-    "name": "Gloves",
-    "category": "clothing",
-    "tags": ["cold"],
-    "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "replaceability": "easy" }
-    ]
-  },
-  {
-    "name": "Scarf",
-    "category": "clothing",
-    "tags": ["cold"],
-    "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "replaceability": "easy" }
-    ]
-  },
-  {
-    "name": "Formal Outfit",
-    "category": "clothing",
-    "tags": ["formal", "business"],
-    "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
-    "source": "imported"
-  },
-  {
-    "name": "Sunglasses",
-    "category": "clothing",
-    "tags": ["warm", "beach", "golf"],
     "defaultQuantity": 1,
     "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [
+      {
+        "contextTags": [
+          "golf"
+        ],
+        "laundryAvailable": true,
+        "formula": {
+          "type": "halfDays",
+          "roundUp": true
+        }
+      },
+      {
+        "contextTags": [],
+        "laundryAvailable": null,
+        "formula": {
+          "type": "perDay"
+        }
+      }
+    ],
     "replaceabilityRules": [
-      { "replaceability": "easy" }
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "Watch / Smartwatch",
+    "id": "AEF2EB68-4454-40A9-B8B4-5F71B785A9B0",
+    "name": "Hotel flip flops",
     "category": "clothing",
-    "tags": ["always"],
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
     "defaultQuantity": 1,
-    "packingLocation": "wearing",
-    "source": "imported"
-  },
-
-  {
-    "name": "Casual Walking Shoes",
-    "category": "clothing",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
-    "source": "imported"
-  },
-  {
-    "name": "Dress Shoes",
-    "category": "clothing",
-    "tags": ["business", "formal"],
-    "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "replaceability": "hard" }
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
+    "id": "3E037842-72FE-459C-8E4E-1905B402E950",
+    "name": "Slippers",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "longHaul"
+    ],
+    "flightAccessible": true,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "flightAccessPouch",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "242945BD-8958-4F21-8D13-3B0C22DF3959",
+    "name": "Compression socks",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "longHaul"
+    ],
+    "flightAccessible": true,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "flightAccessPouch",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "C1A158BE-4332-4433-AAE5-D71CB1DBD346",
     "name": "Sandals",
     "category": "clothing",
-    "tags": ["warm", "beach"],
+    "itemType": "physical",
+    "tags": [
+      "beach",
+      "warm"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
     "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "replaceability": "easy" }
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "Flip Flops / Shower Sandals",
+    "id": "66DEC52E-AD1C-4FE9-97EA-BB4E7978C992",
+    "name": "Running shoes",
     "category": "clothing",
-    "tags": ["beach", "pool", "workout"],
-    "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "replaceability": "easy" }
-    ]
-  },
-
-  {
-    "name": "Golf Clubs",
-    "category": "golf",
-    "tags": ["golf"],
+    "itemType": "physical",
+    "tags": [
+      "workout"
+    ],
     "flightAccessible": false,
+    "isAlwaysInclude": false,
     "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "replaceability": "veryHard" }
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "Golf Shoes",
-    "category": "golf",
-    "tags": ["golf"],
+    "id": "62EDA5C7-E78F-4B96-93A4-5FE67608E8D8",
+    "name": "Old man shoes",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "always",
+      "wearOnPlane"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
     "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "hard" },
-      { "replaceability": "easy" }
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "Golf Glove",
-    "category": "golf",
-    "tags": ["golf"],
-    "defaultQuantity": 2,
-    "packingLocation": "golfBag",
+    "id": "17C2D379-45C2-43C7-A171-D386816DD2D1",
+    "name": "Nice dress shoes",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "formal",
+      "business"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "hard" },
-      { "replaceability": "easy" }
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "Golf Shirts",
-    "category": "golf",
-    "tags": ["golf"],
-    "defaultQuantity": 4,
-    "packingLocation": "checkedBag",
+    "id": "7AE690DB-25CF-4C86-A3BA-8EAFC0C71FB9",
+    "name": "Track pants",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "always",
+      "wearOnPlane"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "13068D90-BBB5-4B9D-93E8-889D93160D1C",
+    "name": "Shorts (general)",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "warm",
+      "beach"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "0D4797FD-2ED3-4A58-9A20-CDAB62BF7E13",
+    "name": "Swim shorts",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "beach",
+      "pool"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "20A89E17-86E7-4104-8191-23708FF80BC5",
+    "name": "T-shirt (general)",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
     "quantityRules": [
       {
-        "contextTags": ["golf"],
+        "contextTags": [],
         "laundryAvailable": true,
-        "formula": { "type": "halfDays", "roundUp": true }
+        "formula": {
+          "type": "halfDays",
+          "roundUp": true
+        }
       },
       {
-        "contextTags": ["golf"],
+        "contextTags": [],
+        "laundryAvailable": null,
+        "formula": {
+          "type": "perDay"
+        }
+      }
+    ],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "5E7A4222-60B3-43DD-A3D3-B56AB505B7AF",
+    "name": "Uniqlo sleeping shirt",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "686EBE02-D43A-44E7-A68A-22D95666E91C",
+    "name": "Workout shirt",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "workout"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "2DDE93F7-F091-44DC-BDD1-67F01CB0A3C0",
+    "name": "Golf shirt",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [
+      {
+        "contextTags": [
+          "golf"
+        ],
+        "laundryAvailable": true,
+        "formula": {
+          "type": "halfDays",
+          "roundUp": true
+        }
+      },
+      {
+        "contextTags": [
+          "golf"
+        ],
         "laundryAvailable": false,
-        "formula": { "type": "perDay" }
+        "formula": {
+          "type": "perDay"
+        }
+      }
+    ],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
       }
     ]
   },
   {
-    "name": "Golf Pants / Shorts",
-    "category": "golf",
-    "tags": ["golf"],
-    "defaultQuantity": 3,
-    "packingLocation": "checkedBag",
+    "id": "38149A9B-53F2-4368-83A0-82E9371F998B",
+    "name": "Tee shirt (sunscreen/beach)",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "beach",
+      "warm"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "E3ED91B2-611A-434A-B86A-0E0E49B70D28",
+    "name": "Dress shirt",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "formal",
+      "business"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "C6EB7CAE-D8FA-412F-B62B-35F8823312C1",
+    "name": "Undershirt",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "formal",
+      "business"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "DE4F0A9C-4A9A-4087-BAFA-E0CCE96AD25F",
+    "name": "Jeans/pants",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "D94C56D1-1B1E-4FA7-A368-E26CFD65909D",
+    "name": "Dress pants",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "formal",
+      "business"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "34A176B0-DFEA-42B7-8A37-7BDFFCA2AC8D",
+    "name": "Sweater",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "cold",
+      "mild",
+      "wearOnPlane"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "D026911C-E639-4D03-97E7-C28F19A7FC72",
+    "name": "Hoodie",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "cold",
+      "mild"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "1957FD0C-4167-40C6-90F5-624698B74984",
+    "name": "Light jacket",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "mild"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "70A13E55-3FD3-408F-97D3-3DC79494F982",
+    "name": "Puffer vest (no sleeves)",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "cold"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "F2220FC3-2E27-4B61-934E-B6DD0D3ED63D",
+    "name": "Puffer jacket (with sleeves)",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "cold"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "3B5CF29D-E5E7-468D-95A3-36DA21BABF0F",
+    "name": "Coat",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "cold"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "B22A0DE1-E85C-46BF-87EA-689B45CC0CCC",
+    "name": "Suit jacket/blazer",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "formal",
+      "business"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "E0F01A32-0843-48BB-9FE6-ED240BBBD87B",
+    "name": "Suit vest",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "formal",
+      "business"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "18FEFAB3-233F-4BA7-A35E-A213DE7EC240",
+    "name": "Tie",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "formal"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "D94F0639-C5DB-4A84-A258-68BE1509184C",
+    "name": "Level19 vest",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "business"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "3DC05F98-830C-42F6-B1F7-F89E8EE89B3D",
+    "name": "Belt",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "8A50FC94-1D64-4C79-8867-357BFE57317F",
+    "name": "Socks",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
     "quantityRules": [
       {
-        "contextTags": ["golf"],
+        "contextTags": [
+          "golf"
+        ],
         "laundryAvailable": true,
-        "formula": { "type": "halfDays", "roundUp": true }
+        "formula": {
+          "type": "halfDays",
+          "roundUp": true
+        }
       },
       {
-        "contextTags": ["golf"],
-        "formula": { "type": "fixed", "n": 3 }
+        "contextTags": [],
+        "laundryAvailable": null,
+        "formula": {
+          "type": "perDay"
+        }
+      }
+    ],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
       }
     ]
   },
   {
-    "name": "Golf Hat / Cap",
-    "category": "golf",
-    "tags": ["golf"],
-    "defaultQuantity": 2,
-    "packingLocation": "golfBag",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "replaceability": "easy" }
-    ]
-  },
-  {
-    "name": "Golf Balls",
-    "category": "golf",
-    "tags": ["golf"],
-    "defaultQuantity": 12,
-    "packingLocation": "golfBag",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "hard" },
-      { "replaceability": "easy" }
-    ]
-  },
-  {
-    "name": "Golf Tees",
-    "category": "golf",
-    "tags": ["golf"],
-    "defaultQuantity": 20,
-    "packingLocation": "golfBag",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "replaceability": "easy" }
-    ]
-  },
-  {
-    "name": "Golf Towel",
-    "category": "golf",
-    "tags": ["golf"],
-    "defaultQuantity": 2,
-    "packingLocation": "golfBag",
-    "source": "imported"
-  },
-  {
-    "name": "Golf Umbrella",
-    "category": "golf",
-    "tags": ["golf"],
+    "id": "FFB9ECD5-E1A2-4EF4-BEA2-849F674A6384",
+    "name": "Dress socks",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "formal",
+      "business"
+    ],
     "flightAccessible": false,
+    "isAlwaysInclude": false,
     "defaultQuantity": 1,
-    "packingLocation": "golfBag",
-    "source": "imported"
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
   },
   {
-    "name": "Golf Rain Jacket",
-    "category": "golf",
-    "tags": ["golf", "rainy"],
-    "defaultQuantity": 1,
-    "packingLocation": "golfBag",
-    "source": "imported"
-  },
-  {
-    "name": "Golf Bag Rain Cover",
-    "category": "golf",
-    "tags": ["golf"],
+    "id": "58F9410A-159B-4B33-8343-1793F9D6F0D3",
+    "name": "Hat (casual)",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
     "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "68992101-CF9D-4B0D-9ABC-E3B358A9BFEF",
+    "name": "Winter hat",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "cold"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "923FB9A4-5896-4BC6-8288-64AC7377B6E2",
+    "name": "Winter gloves",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "cold"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "220CA78C-EB6C-4250-B581-C8D7954F2DB7",
+    "name": "Scarf",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "cold"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "6D53FA74-5E61-4FAE-B990-7204B128CD05",
+    "name": "Small umbrella",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "rainy"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "backpack",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "DA670478-CCE0-4133-8BB7-08162CDA7C28",
+    "name": "Shoe horn",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "D75179B6-0381-4DB5-B236-BA2C68494DE2",
+    "name": "Laundry pods",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "golf",
+      "airbnb"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "AD2F8500-C118-4FCC-A24E-BF6D655316F2",
+    "name": "Comfortable outfit top (appointment)",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "medicalAppointment"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "D0A1DCDF-C634-4E5C-82DC-40B53FD6BF82",
+    "name": "Comfortable outfit bottom (appointment)",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "medicalAppointment"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "0C3F11C6-1BA9-41B3-9431-4CA1CA8049CD",
+    "name": "Workout shorts",
+    "category": "clothing",
+    "itemType": "physical",
+    "tags": [
+      "workout"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "C6BF7C15-71DB-41E8-9C79-1E95A04E57AB",
+    "name": "Golf clubs (in golf bag)",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
     "defaultQuantity": 1,
     "packingLocation": "golfBag",
-    "source": "imported"
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": [
+          "golf"
+        ],
+        "replaceability": "veryHard"
+      }
+    ]
   },
-
   {
-    "name": "Phone",
-    "category": "tech",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
+    "id": "B40F5D5E-5338-4294-ABE1-906A5C24AA3B",
+    "name": "Golf hat",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
     "defaultQuantity": 1,
-    "packingLocation": "pocket",
-    "source": "imported"
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
   },
   {
-    "name": "Laptop",
+    "id": "39EABE04-93FA-43F8-BB85-BBF256413C7C",
+    "name": "Golf gloves",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "EBB05803-3935-4E8B-9C6B-96883ABBF298",
+    "name": "Rain golf gloves",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf",
+      "rainy"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "D7923625-7AC1-4DAF-9CF5-CDBB9DAD8C13",
+    "name": "Golf glasses",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "589A8CE6-14C3-4C95-AE41-EF32D3ABF66E",
+    "name": "Golf shoes (nice)",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "1FEDD233-8F2E-4BF7-8EE0-69547F2ED6B9",
+    "name": "Golf shoes (beater)",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "E1C0E102-C7F8-461E-97B7-473EE312B8A8",
+    "name": "Waterproof golf shoes",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf",
+      "rainy"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "7BBFEE31-6263-4428-870F-5CA0990D718F",
+    "name": "Golf shorts",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf",
+      "warm"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [
+      {
+        "contextTags": [
+          "golf"
+        ],
+        "laundryAvailable": true,
+        "formula": {
+          "type": "halfDays",
+          "roundUp": false
+        }
+      },
+      {
+        "contextTags": [
+          "golf"
+        ],
+        "laundryAvailable": false,
+        "formula": {
+          "type": "perDay"
+        }
+      }
+    ],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "22304E38-47DC-4557-9208-13B38B901E90",
+    "name": "Golf pants",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf",
+      "cold"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "B30952B1-046F-4F64-9A2E-850D15862F9B",
+    "name": "Golf layers",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf",
+      "cold"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "47540B8F-4994-4E4B-8AB4-92E1E193A178",
+    "name": "Rain jacket (golf)",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf",
+      "rainy"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "D3F4F45E-3AFE-4D2D-AEE2-95A5B11BDEE2",
+    "name": "Rain pants (golf)",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf",
+      "rainy"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "864AD0FA-5A4C-40F4-9A25-88A6E53C23F1",
+    "name": "Golf bag rain cover",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf",
+      "rainy"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "381CCB4D-8C23-474D-837D-A9A8E8BEFD49",
+    "name": "Umbrella (golf)",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf",
+      "rainy"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "BD14A314-8784-4E5B-B36B-728256A158C7",
+    "name": "Tees",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "7F2AA5FE-91A1-4583-AA55-DCFC82A14F7A",
+    "name": "Golf balls",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "1B99500D-18DD-4CB7-95E0-3E4DF936B078",
+    "name": "Ball marker",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "4014B09C-5025-4277-AD43-BEF17FD3E082",
+    "name": "Ball line drawer",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "9B09127E-F879-4351-9BA7-739B98A90184",
+    "name": "Towel",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "61C3F997-3C65-401B-AB53-AB100BAB21F9",
+    "name": "Rangefinder",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "hard"
+      }
+    ]
+  },
+  {
+    "id": "78E14B3B-AD87-4A46-BDC3-6FF86CF3CA21",
+    "name": "Rangefinder charger",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "techPouch",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "C383EE7F-1516-4A27-9210-41227851ABA4",
+    "name": "Golf watch (GPS)",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "hard"
+      }
+    ]
+  },
+  {
+    "id": "9D3FFCCC-BFBC-467E-B766-88725C094FB2",
+    "name": "Golf watch charger",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "techPouch",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "35029522-92B3-415C-AC88-41C2BF9C3F15",
+    "name": "Arccos sensors (on clubs)",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "89076848-63EC-4FA5-9F30-51D10964724C",
+    "name": "Extra Arccos connectors",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "2AD91606-A575-48EB-ACFD-636E4E4A12FB",
+    "name": "AirTag (golf bag)",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "823FDADB-4169-41E4-93D0-600534D6ECB3",
+    "name": "UV arm sleeves",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "8CC0550E-7CCE-48CC-BB61-6B5201B9A090",
+    "name": "Driver head wrench",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "hard"
+      }
+    ]
+  },
+  {
+    "id": "330CF057-C8B7-4FCF-B45D-9796883390B6",
+    "name": "Liquor stick (flask)",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf",
+      "situational"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "665962CE-19CF-4D81-9354-6D63F6B561FC",
+    "name": "Poker chips",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "3A76F87A-462A-4D9B-A951-175041F9D080",
+    "name": "Hand warmer packages",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf",
+      "cold"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "3F0AE76D-42E4-4F26-B6B9-4FD7D1B442EC",
+    "name": "Speaker + charger",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "C9454529-FC02-457A-9335-283B312CE0E6",
+    "name": "Hat washer",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "golfBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "3EE5A271-7347-4792-9B86-928C3F678CC3",
+    "name": "Golf book (reading)",
+    "category": "golf",
+    "itemType": "physical",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "backpack",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "E003C140-1FAC-4844-8CAD-A96ABC981C05",
+    "name": "iPhone",
     "category": "tech",
-    "tags": ["always", "business"],
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
     "defaultQuantity": 1,
     "packingLocation": "carryOn",
-    "source": "imported"
-  },
-  {
-    "name": "Laptop Charger",
-    "category": "tech",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "techPouch",
-    "source": "imported"
-  },
-  {
-    "name": "Phone Charger Cable",
-    "category": "tech",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "techPouch",
-    "source": "imported"
-  },
-  {
-    "name": "USB Power Brick",
-    "category": "tech",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "techPouch",
-    "source": "imported"
-  },
-  {
-    "name": "Universal Power Adapter",
-    "category": "tech",
-    "tags": ["international", "longHaul"],
-    "flightAccessible": true,
-    "defaultQuantity": 1,
-    "packingLocation": "techPouch",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "hard" },
-      { "regions": ["europe"], "replaceability": "easy" },
-      { "replaceability": "hard" }
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "veryHard"
+      }
     ]
   },
   {
-    "name": "Power Bank",
+    "id": "4E5C2120-31AE-41B2-8CD0-BD155FE65A01",
+    "name": "iPad",
     "category": "tech",
-    "tags": ["always", "longHaul"],
+    "itemType": "physical",
+    "tags": [
+      "personal",
+      "longTrip"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "backpack",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "hard"
+      }
+    ]
+  },
+  {
+    "id": "84B0E8BD-9D80-4A75-8119-9A81C8AC9E05",
+    "name": "MacBook",
+    "category": "tech",
+    "itemType": "physical",
+    "tags": [
+      "business",
+      "longTrip",
+      "level19Laptop"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "backpack",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "hard"
+      }
+    ]
+  },
+  {
+    "id": "CC74A31F-CD32-4F3A-A7C5-6A566B3F60AD",
+    "name": "Interac phone",
+    "category": "tech",
+    "itemType": "physical",
+    "tags": [
+      "interacPhone"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "backpack",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "veryHard"
+      }
+    ]
+  },
+  {
+    "id": "B4FA6A8F-2D05-44B4-BF1E-CD412B2211F5",
+    "name": "Interac laptop",
+    "category": "tech",
+    "itemType": "physical",
+    "tags": [
+      "interacLaptop"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "backpack",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "hard"
+      }
+    ]
+  },
+  {
+    "id": "D058B08B-D9F6-4F3F-95FB-1DFF0DA3538D",
+    "name": "Kindle",
+    "category": "tech",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "backpack",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "8478E37A-DA69-4942-AC08-30978D353B1B",
+    "name": "AirPods Pro",
+    "category": "tech",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "backpack",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "hard"
+      }
+    ]
+  },
+  {
+    "id": "BB1DB263-046C-4686-91CA-3333DC288091",
+    "name": "AirPods Max",
+    "category": "tech",
+    "itemType": "physical",
+    "tags": [
+      "always",
+      "longHaul"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "backpack",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "hard"
+      }
+    ]
+  },
+  {
+    "id": "C3A66582-4187-42C7-8E86-E5A6725DAB8F",
+    "name": "AirPods Beats",
+    "category": "tech",
+    "itemType": "physical",
+    "tags": [
+      "workout"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "backpack",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "E095F3E3-8C4B-4306-98D3-E19945D39A9F",
+    "name": "Portable charger",
+    "category": "tech",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
     "flightAccessible": true,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "backpack",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "51AA2C10-FC3D-445B-9435-82FA97F76231",
+    "name": "iPhone charger (USB-C)",
+    "category": "tech",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "techPouch",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "22F45159-57E4-4750-9B0B-8D7E48409D3A",
+    "name": "iPad charger",
+    "category": "tech",
+    "itemType": "physical",
+    "tags": [
+      "personal",
+      "longTrip"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "techPouch",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "AAFB1208-2E86-478A-9817-BB604DDC98C1",
+    "name": "MacBook charger",
+    "category": "tech",
+    "itemType": "physical",
+    "tags": [
+      "business",
+      "longTrip",
+      "level19Laptop"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "techPouch",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "EB42AFA6-0557-4E9A-9949-4F269993B1D3",
+    "name": "Interac laptop charger",
+    "category": "tech",
+    "itemType": "physical",
+    "tags": [
+      "interacLaptop"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "techPouch",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "E6B7AAF4-8C45-4732-8240-0EEDFD29E41C",
+    "name": "Interac phone charger",
+    "category": "tech",
+    "itemType": "physical",
+    "tags": [
+      "interacPhone"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "techPouch",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "B246DA97-7536-4015-9C4A-702029877171",
+    "name": "Headphone charger cable",
+    "category": "tech",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "techPouch",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": "For AirPods Max",
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "EFC42811-F03D-490F-BD86-9562C1CC2A4D",
+    "name": "Headphone connector (3.5mm)",
+    "category": "tech",
+    "itemType": "physical",
+    "tags": [
+      "interacPhone"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "techPouch",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": "For Interac phone",
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "6CCAF0F2-9FAE-4AE5-976B-5845AC2D672A",
+    "name": "Whoop + charger",
+    "category": "tech",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
     "defaultQuantity": 1,
     "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "hard" },
-      { "replaceability": "easy" }
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "USB-C Cables (multi-pack)",
+    "id": "6C4BA725-A4AB-434F-B026-A82937CE0E70",
+    "name": "Watch travel holder",
     "category": "tech",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "techPouch",
-    "source": "imported"
-  },
-  {
-    "name": "Earbuds / AirPods",
-    "category": "tech",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": true,
-    "defaultQuantity": 1,
-    "packingLocation": "carryOn",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "hard" },
-      { "regions": ["europe"], "replaceability": "easy" },
-      { "replaceability": "easy" }
-    ]
-  },
-  {
-    "name": "Noise-Cancelling Headphones",
-    "category": "tech",
-    "tags": ["longHaul", "overnightFlight"],
-    "flightAccessible": true,
-    "defaultQuantity": 1,
-    "packingLocation": "carryOn",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "hard" },
-      { "replaceability": "easy" }
-    ]
-  },
-  {
-    "name": "Camera",
-    "category": "tech",
-    "tags": ["always"],
-    "defaultQuantity": 1,
-    "packingLocation": "carryOn",
-    "source": "imported"
-  },
-  {
-    "name": "Camera Charger",
-    "category": "tech",
-    "tags": ["always"],
-    "defaultQuantity": 1,
-    "packingLocation": "techPouch",
-    "source": "imported"
-  },
-  {
-    "name": "iPad / Tablet",
-    "category": "tech",
-    "tags": ["longHaul", "longTrip", "overnightFlight"],
-    "flightAccessible": true,
-    "defaultQuantity": 1,
-    "packingLocation": "carryOn",
-    "source": "imported"
-  },
-  {
-    "name": "Watch Charger",
-    "category": "tech",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "techPouch",
-    "source": "imported"
-  },
-  {
-    "name": "eReader (Kindle)",
-    "category": "tech",
-    "tags": ["longHaul", "longTrip"],
-    "flightAccessible": true,
-    "defaultQuantity": 1,
-    "packingLocation": "carryOn",
-    "source": "imported"
-  },
-  {
-    "name": "Travel Power Strip",
-    "category": "tech",
-    "tags": ["longTrip", "business"],
-    "defaultQuantity": 1,
-    "packingLocation": "techPouch",
-    "source": "imported"
-  },
-  {
-    "name": "Pocket WiFi / Portable Hotspot",
-    "category": "tech",
-    "tags": ["international", "longHaul"],
-    "flightAccessible": true,
-    "defaultQuantity": 1,
-    "packingLocation": "techPouch",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "easy" },
-      { "regions": ["europe"], "replaceability": "easy" },
-      { "replaceability": "hard" }
-    ]
-  },
-  {
-    "name": "Cable Organizer / Tech Pouch",
-    "category": "tech",
-    "tags": ["always"],
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
     "defaultQuantity": 1,
     "packingLocation": "carryOn",
-    "source": "imported"
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
   },
   {
-    "name": "Screen Wipes / Microfiber Cloth",
+    "id": "0AD5C064-E668-4D03-904A-E84E4055DA40",
+    "name": "Blood pressure monitor",
     "category": "tech",
-    "tags": ["always"],
-    "defaultQuantity": 2,
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "hard"
+      }
+    ]
+  },
+  {
+    "id": "AB35F345-B1BD-4FAD-91DA-A97F9EC92A83",
+    "name": "Light therapy lamp + plug",
+    "category": "tech",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "07422BAA-16F2-4F2F-B3A5-1D5B75D97214",
+    "name": "Wall plug (universal adapter)",
+    "category": "tech",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
     "packingLocation": "techPouch",
-    "source": "imported"
-  },
-
-  {
-    "name": "Toothbrush",
-    "category": "hygiene",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "easy" },
-      { "replaceability": "easy" }
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "Toothpaste",
-    "category": "hygiene",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
+    "id": "6B7F650E-EE9B-4E70-8867-54A05A78ADCF",
+    "name": "Euro plug adapter",
+    "category": "tech",
+    "itemType": "physical",
+    "tags": [
+      "europe"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
     "defaultQuantity": 1,
-    "packingLocation": "toiletryBag",
+    "packingLocation": "techPouch",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "easy" },
-      { "replaceability": "easy" }
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "Shampoo",
-    "category": "hygiene",
-    "tags": ["always"],
+    "id": "38492CD6-73F6-4B0C-8E37-B2AB05EE1912",
+    "name": "Old USB charging cable (hotel backup)",
+    "category": "tech",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
     "defaultQuantity": 1,
-    "packingLocation": "toiletryBag",
+    "packingLocation": "techPouch",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "easy" },
-      { "replaceability": "easy" }
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "Conditioner",
-    "category": "hygiene",
-    "tags": ["always"],
+    "id": "4132C409-BE42-4E15-983F-877A79EF5191",
+    "name": "AirTags (luggage)",
+    "category": "tech",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
     "defaultQuantity": 1,
-    "packingLocation": "toiletryBag",
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": "Installed in bags",
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "replaceability": "easy" }
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "Body Wash / Soap",
-    "category": "hygiene",
-    "tags": ["always"],
+    "id": "3FFE0269-3A3A-4204-A052-9947502E08FA",
+    "name": "Key fob",
+    "category": "tech",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
     "defaultQuantity": 1,
-    "packingLocation": "toiletryBag",
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "replaceability": "easy" }
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "veryHard"
+      }
     ]
   },
   {
-    "name": "Deodorant",
-    "category": "hygiene",
-    "tags": ["always"],
+    "id": "EA39C33C-CC2D-459E-A67F-D4AD91B8072C",
+    "name": "Protein shots",
+    "category": "health",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
     "defaultQuantity": 1,
-    "packingLocation": "toiletryBag",
+    "packingLocation": "backpack",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "hard" },
-      { "replaceability": "easy" }
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "Razor",
-    "category": "hygiene",
-    "tags": ["always"],
+    "id": "5E3AB1BD-CEDB-4527-A858-D49D186FE2CD",
+    "name": "Hydration packs",
+    "category": "health",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
     "defaultQuantity": 1,
-    "packingLocation": "toiletryBag",
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "replaceability": "easy" }
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "Shaving Cream / Gel",
-    "category": "hygiene",
-    "tags": ["always"],
+    "id": "0DF778E1-5D2A-4205-8C98-7BD7AD4687E9",
+    "name": "Walking water container + powder stacker",
+    "category": "health",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
     "defaultQuantity": 1,
-    "packingLocation": "toiletryBag",
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "replaceability": "easy" }
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "Face Wash",
-    "category": "hygiene",
-    "tags": ["always"],
+    "id": "5FFB8C57-B46B-47E7-B105-B8C417A7F520",
+    "name": "Ketone supplement",
+    "category": "health",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
     "defaultQuantity": 1,
-    "packingLocation": "toiletryBag",
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "hard" },
-      { "replaceability": "easy" }
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "Moisturizer",
-    "category": "hygiene",
-    "tags": ["always"],
+    "id": "9B86C039-4176-40E6-9772-7BC18B90E11A",
+    "name": "Vitamin C",
+    "category": "health",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
     "defaultQuantity": 1,
     "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "hard" },
-      { "replaceability": "easy" }
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "Sunscreen",
-    "category": "hygiene",
-    "tags": ["warm", "beach", "golf"],
+    "id": "5DBD87AF-8A86-4DDB-9752-E3D8321BC772",
+    "name": "Vitamin D",
+    "category": "health",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
     "defaultQuantity": 1,
     "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "hard" },
-      { "replaceability": "easy" }
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "Hairbrush / Comb",
-    "category": "hygiene",
-    "tags": ["always"],
+    "id": "BBFE46A5-0009-49DA-A17F-6770EDCA328B",
+    "name": "Magnesium gummies",
+    "category": "health",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
     "defaultQuantity": 1,
-    "packingLocation": "toiletryBag",
-    "source": "imported"
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
   },
   {
-    "name": "Nail Clippers",
-    "category": "hygiene",
-    "tags": ["always"],
+    "id": "C51F5C4C-371F-404A-9124-6AD5AD0F3DBD",
+    "name": "Fibre gummies",
+    "category": "health",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
     "defaultQuantity": 1,
-    "packingLocation": "toiletryBag",
-    "source": "imported"
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
   },
   {
-    "name": "Tweezers",
-    "category": "hygiene",
-    "tags": ["always"],
-    "defaultQuantity": 1,
-    "packingLocation": "toiletryBag",
-    "source": "imported"
-  },
-  {
-    "name": "Cologne / Perfume",
-    "category": "hygiene",
-    "tags": ["always"],
-    "defaultQuantity": 1,
-    "packingLocation": "toiletryBag",
-    "source": "imported"
-  },
-  {
-    "name": "Dental Floss",
-    "category": "hygiene",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "toiletryBag",
-    "source": "imported"
-  },
-  {
-    "name": "Lip Balm",
-    "category": "hygiene",
-    "tags": ["always", "longHaul", "cold"],
+    "id": "75805E91-1FF9-45C7-AAB2-5A198ADCA925",
+    "name": "Sleep aid drink",
+    "category": "health",
+    "itemType": "physical",
+    "tags": [
+      "overnightFlight",
+      "longHaul"
+    ],
     "flightAccessible": true,
+    "isAlwaysInclude": false,
     "defaultQuantity": 1,
     "packingLocation": "flightAccessPouch",
-    "source": "imported"
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
   },
   {
-    "name": "Q-Tips / Cotton Swabs",
-    "category": "hygiene",
-    "tags": ["always"],
+    "id": "D420F448-6BF6-4687-91E4-D1AE2647F535",
+    "name": "Physio hand equipment",
+    "category": "health",
+    "itemType": "physical",
+    "tags": [
+      "injury"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "hard"
+      }
+    ]
+  },
+  {
+    "id": "4B98B7EA-A2FD-4D91-BF35-AE59DA6EEE34",
+    "name": "Tensor bands",
+    "category": "health",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "27535E23-F472-41CE-BF41-2B4F3BADD1BB",
+    "name": "Heating pad (back)",
+    "category": "health",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "DE50F0C7-D0C5-4C72-904D-C6EFC3BF5990",
+    "name": "Prevacid",
+    "category": "meds",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
     "defaultQuantity": 1,
     "packingLocation": "toiletryBag",
-    "source": "imported"
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": [
+          "asia",
+          "japan"
+        ],
+        "tripPurposes": null,
+        "replaceability": "veryHard"
+      },
+      {
+        "regions": [
+          "europe"
+        ],
+        "tripPurposes": null,
+        "replaceability": "hard"
+      },
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
   },
   {
-    "name": "Dry Shampoo",
-    "category": "hygiene",
-    "tags": ["longTrip"],
+    "id": "0B0D0DC2-5F06-452B-820A-EF260E443592",
+    "name": "Tums",
+    "category": "meds",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
     "defaultQuantity": 1,
     "packingLocation": "toiletryBag",
-    "source": "imported"
-  },
-
-  {
-    "name": "Tylenol / Advil",
-    "category": "meds",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": true,
-    "defaultQuantity": 1,
-    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "veryHard" },
-      { "regions": ["europe"], "replaceability": "hard" },
-      { "replaceability": "easy" }
+      {
+        "regions": [
+          "asia",
+          "japan"
+        ],
+        "tripPurposes": null,
+        "replaceability": "veryHard"
+      },
+      {
+        "regions": [
+          "europe"
+        ],
+        "tripPurposes": null,
+        "replaceability": "hard"
+      },
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "Antihistamine",
+    "id": "94E25D9F-DCBB-4D27-B51A-0E24CA172142",
+    "name": "Pepto pills",
     "category": "meds",
-    "tags": ["always"],
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
-    "flightAccessible": true,
     "defaultQuantity": 1,
-    "packingLocation": "carryOn",
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "veryHard" },
-      { "regions": ["europe"], "replaceability": "hard" },
-      { "replaceability": "easy" }
+      {
+        "regions": [
+          "asia",
+          "japan"
+        ],
+        "tripPurposes": null,
+        "replaceability": "veryHard"
+      },
+      {
+        "regions": [
+          "europe"
+        ],
+        "tripPurposes": null,
+        "replaceability": "hard"
+      },
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "Antidiarrheal (Imodium)",
+    "id": "9805C13F-4BF5-462F-8C1B-B74984A4605E",
+    "name": "GasX",
     "category": "meds",
-    "tags": ["always"],
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
-    "flightAccessible": true,
     "defaultQuantity": 1,
-    "packingLocation": "carryOn",
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "veryHard" },
-      { "regions": ["europe"], "replaceability": "hard" },
-      { "replaceability": "easy" }
+      {
+        "regions": [
+          "asia",
+          "japan"
+        ],
+        "tripPurposes": null,
+        "replaceability": "veryHard"
+      },
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "Antacid (Tums / Pepto)",
+    "id": "3A95AA8C-B515-4B73-A0AD-00EB0BF3CE20",
+    "name": "Imodium",
     "category": "meds",
-    "tags": ["always"],
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
-    "flightAccessible": true,
     "defaultQuantity": 1,
-    "packingLocation": "carryOn",
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "veryHard" },
-      { "regions": ["europe"], "replaceability": "hard" },
-      { "replaceability": "easy" }
+      {
+        "regions": [
+          "asia",
+          "japan"
+        ],
+        "tripPurposes": null,
+        "replaceability": "veryHard"
+      },
+      {
+        "regions": [
+          "europe"
+        ],
+        "tripPurposes": null,
+        "replaceability": "hard"
+      },
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "Cold & Flu Medicine",
+    "id": "DD04D54B-E79D-4977-AAB9-157478DD7844",
+    "name": "Advil (ibuprofen)",
     "category": "meds",
-    "tags": ["always"],
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
-    "flightAccessible": true,
     "defaultQuantity": 1,
-    "packingLocation": "carryOn",
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "veryHard" },
-      { "regions": ["europe"], "replaceability": "hard" },
-      { "replaceability": "easy" }
+      {
+        "regions": [
+          "asia",
+          "japan"
+        ],
+        "tripPurposes": null,
+        "replaceability": "veryHard"
+      },
+      {
+        "regions": [
+          "europe"
+        ],
+        "tripPurposes": null,
+        "replaceability": "hard"
+      },
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "Prescription Medications",
+    "id": "EC6815C4-F7C5-47BD-B80A-186335DC0250",
+    "name": "Tylenol (acetaminophen)",
     "category": "meds",
-    "tags": ["always"],
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
-    "flightAccessible": true,
     "defaultQuantity": 1,
-    "packingLocation": "carryOn",
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "veryHard" },
-      { "regions": ["europe"], "replaceability": "veryHard" },
-      { "replaceability": "veryHard" }
+      {
+        "regions": [
+          "asia",
+          "japan"
+        ],
+        "tripPurposes": null,
+        "replaceability": "veryHard"
+      },
+      {
+        "regions": [
+          "europe"
+        ],
+        "tripPurposes": null,
+        "replaceability": "hard"
+      },
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "Vitamins / Supplements",
+    "id": "62409666-757F-4754-92F8-B52772DE3154",
+    "name": "Migraine meds",
     "category": "meds",
-    "tags": ["always"],
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
-    "flightAccessible": true,
     "defaultQuantity": 1,
-    "packingLocation": "carryOn",
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "veryHard" },
-      { "replaceability": "hard" }
+      {
+        "regions": [
+          "asia",
+          "japan"
+        ],
+        "tripPurposes": null,
+        "replaceability": "veryHard"
+      },
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "hard"
+      }
     ]
   },
   {
+    "id": "66CBC5B6-5C09-4B9B-947F-963D1BC87523",
+    "name": "Benadryl",
+    "category": "meds",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": [
+          "asia",
+          "japan"
+        ],
+        "tripPurposes": null,
+        "replaceability": "veryHard"
+      },
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "7E9893A8-FDEB-44F5-8522-9CA9299B2F46",
+    "name": "Allergy nasal spray/meds",
+    "category": "meds",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": [
+          "asia",
+          "japan"
+        ],
+        "tripPurposes": null,
+        "replaceability": "veryHard"
+      },
+      {
+        "regions": [
+          "europe"
+        ],
+        "tripPurposes": null,
+        "replaceability": "hard"
+      },
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "36C6685B-6B8E-48B9-80AC-A49588F30DA7",
+    "name": "Cold and flu meds",
+    "category": "meds",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": [
+          "asia",
+          "japan"
+        ],
+        "tripPurposes": null,
+        "replaceability": "veryHard"
+      },
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "A9F919E4-A255-40C2-8184-EEA8F0416706",
     "name": "Melatonin",
     "category": "meds",
-    "tags": ["longHaul", "overnightFlight"],
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
     "flightAccessible": true,
+    "isAlwaysInclude": true,
     "defaultQuantity": 1,
     "packingLocation": "flightAccessPouch",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "veryHard" },
-      { "regions": ["europe"], "replaceability": "hard" },
-      { "replaceability": "easy" }
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "Sleep Mask",
-    "category": "health",
-    "tags": ["longHaul", "overnightFlight"],
-    "flightAccessible": true,
+    "id": "A9757539-8F7F-4FBC-930B-5CF82E2846EC",
+    "name": "Stain remover pen",
+    "category": "meds",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
     "defaultQuantity": 1,
-    "packingLocation": "flightAccessPouch",
+    "packingLocation": "backpack",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "easy" },
-      { "replaceability": "easy" }
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
+    "id": "1DF1F802-053E-40B7-AD3C-984BC2B56217",
+    "name": "Electric toothbrush",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "587D61A5-7A61-4B42-9DD0-132F08C9E3D6",
+    "name": "Travel toothpaste",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "3E1A3EB0-C802-4959-B59C-7DC437D37146",
+    "name": "Floss",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "280D9AEB-7BB3-4895-BA85-6D7A98E06CB3",
+    "name": "Travel shaver",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "5C448618-1E7A-44AC-B4A3-D44E008D5184",
+    "name": "Deodorant",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "55E36A83-8AC1-4AF8-84BB-E851236B9630",
+    "name": "Hair gel (tube)",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "58E4BE7F-64D4-43AA-B40C-E63459EEC8B3",
+    "name": "Comb",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "1581BBB1-DD68-43E4-81EF-AB9A0F6B2751",
+    "name": "Q-tips",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "43A29565-C754-4B34-81BA-16AA13898399",
+    "name": "Nail clippers",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "17B61B56-4FC5-4D5F-959A-CDE6CF3A3480",
+    "name": "Travel soap",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "airbnb"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "272812BA-C048-48F0-BC95-38E41405B7C2",
+    "name": "Travel shampoo",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "airbnb"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "B290C588-D9F0-44DF-B96B-954082AB6C3A",
+    "name": "Sunscreen",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "warm",
+      "beach"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "A7622DA6-959E-4F81-A500-9D5988EB5183",
+    "name": "Aloe vera",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "warm",
+      "beach"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "F029C4F8-CF70-411D-8DAC-341C65BFD859",
+    "name": "Sweat powder",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "warm"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "8D3A42D3-E975-4593-A152-21AAA7A49DF9",
+    "name": "Vaseline",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "E7B5EFB7-B5D2-4B3D-892E-A3CF51A77215",
+    "name": "Rash cream",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "80F2B278-19DE-4381-B7E1-752198706B4F",
+    "name": "Dude wipes",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "backpack",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "4B76FDC1-0C98-4A65-9BC7-812E28D632A1",
+    "name": "Lightweight moisturizer",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "always",
+      "longHaul"
+    ],
+    "flightAccessible": true,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "flightAccessPouch",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "1513E345-FCE5-4C28-99F2-BC0284F2646A",
+    "name": "Lip balm",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "always",
+      "longHaul"
+    ],
+    "flightAccessible": true,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "flightAccessPouch",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "1DFBBBC9-E13C-4F6F-A435-F645723E03C3",
+    "name": "Facial wipes (Cetaphil/Micellar)",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "longHaul",
+      "asia"
+    ],
+    "flightAccessible": true,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "flightAccessPouch",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "6CB41CE7-CE3A-4C66-834E-BB92BB2E61D4",
+    "name": "Dry shampoo",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "longHaul"
+    ],
+    "flightAccessible": true,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "flightAccessPouch",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "504863C1-95A8-49A6-8F9A-046429D3F64C",
+    "name": "Saline nasal spray",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "longHaul"
+    ],
+    "flightAccessible": true,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "flightAccessPouch",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "8437B944-6BEB-4B35-A4A5-04E64F02D020",
+    "name": "Nasal gel",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "longHaul"
+    ],
+    "flightAccessible": true,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "flightAccessPouch",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "7BA54147-3B4C-43A5-9BB5-52EA2915E9E5",
+    "name": "Travel hand soap chips",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "international",
+      "asia"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "toiletryBag",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "AC85C01B-498A-43ED-BFA7-B76CAF9017E9",
+    "name": "Handkerchief / small towels",
+    "category": "hygiene",
+    "itemType": "physical",
+    "tags": [
+      "asia",
+      "japan"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "backpack",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "5D0A9223-8AA8-4616-A1DD-F8B27EDB2EF3",
+    "name": "Passport",
+    "category": "documents",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "impossible"
+      }
+    ]
+  },
+  {
+    "id": "590DB929-EBDD-4115-9619-42EDF82E2395",
+    "name": "Physical Visa credit card",
+    "category": "documents",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "veryHard"
+      }
+    ]
+  },
+  {
+    "id": "29FA3E9E-5826-4E78-8945-720E7C87B5C1",
+    "name": "Wallet",
+    "category": "documents",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "impossible"
+      }
+    ]
+  },
+  {
+    "id": "E1A502EA-61A9-4035-896D-4D0E71221E32",
+    "name": "Health card (OHIP)",
+    "category": "documents",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "veryHard"
+      }
+    ]
+  },
+  {
+    "id": "379E4A37-25F8-41A7-B2E6-645E3C677FD0",
+    "name": "Local currency cash",
+    "category": "documents",
+    "itemType": "physical",
+    "tags": [
+      "international"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "A5711166-0976-4B6C-A209-0F6AB08A2351",
+    "name": "Visa printed (if required)",
+    "category": "documents",
+    "itemType": "physical",
+    "tags": [
+      "international"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "veryHard"
+      }
+    ]
+  },
+  {
+    "id": "C893276B-8A3E-466A-943D-89EC00795103",
+    "name": "Printed hotel addresses (Japanese)",
+    "category": "documents",
+    "itemType": "physical",
+    "tags": [
+      "japan"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "0131F022-F3C9-47B7-B5AE-1598F42C948A",
+    "name": "JR Pass voucher",
+    "category": "documents",
+    "itemType": "physical",
+    "tags": [
+      "japan"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": [
+          "japan"
+        ],
+        "tripPurposes": null,
+        "replaceability": "veryHard"
+      }
+    ]
+  },
+  {
+    "id": "8A0FE3DA-04DF-424F-A8C6-37EF022B3678",
+    "name": "Coin pouch",
+    "category": "documents",
+    "itemType": "physical",
+    "tags": [
+      "japan",
+      "europe",
+      "asia"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "2726CF8B-0B11-4DCD-B057-C32E1E19CFDA",
+    "name": "Apple Wallet Suica / physical Suica",
+    "category": "documents",
+    "itemType": "physical",
+    "tags": [
+      "japan"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "39177667-D067-4B8E-9F1E-62857AF5F3B4",
+    "name": "Visit Japan Web QR codes (screenshots)",
+    "category": "documents",
+    "itemType": "physical",
+    "tags": [
+      "japan"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "257E6491-050A-4A22-A350-DC3F5B7ECA41",
+    "name": "Watch",
+    "category": "misc",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "hard"
+      }
+    ]
+  },
+  {
+    "id": "30050C6B-AAF6-4CE1-AF91-30600DBDF2FD",
+    "name": "House key",
+    "category": "misc",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "impossible"
+      }
+    ]
+  },
+  {
+    "id": "69824A35-0B2D-4271-A48E-511C7397FEDB",
+    "name": "Pen",
+    "category": "misc",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "backpack",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "4EA9474D-77B2-46FC-B9C3-71F2E3E6316B",
+    "name": "Kleenex",
+    "category": "misc",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "backpack",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "5E252276-27E2-43BB-ADFA-AEC185B554EC",
+    "name": "Blue light glasses",
+    "category": "misc",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "backpack",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "9CC16D8F-EA33-488C-AEB7-FFCBE5739329",
+    "name": "Glasses (prescription)",
+    "category": "misc",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "backpack",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "veryHard"
+      }
+    ]
+  },
+  {
+    "id": "79271334-7FC3-4536-9064-B0D1DB75E0A9",
+    "name": "Sleep mask",
+    "category": "misc",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": true,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": "flightAccessPouch",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "D5504AD3-F14E-4643-98D9-D64049EE148B",
     "name": "Earplugs",
-    "category": "health",
-    "tags": ["longHaul", "overnightFlight"],
+    "category": "misc",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
     "flightAccessible": true,
-    "defaultQuantity": 2,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
     "packingLocation": "flightAccessPouch",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "replaceability": "easy" }
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
     ]
   },
   {
-    "name": "Neck Pillow",
-    "category": "health",
-    "tags": ["longHaul", "overnightFlight"],
+    "id": "574E810D-7918-450B-B1BC-0A5A3E88EE2E",
+    "name": "Neck pillow",
+    "category": "misc",
+    "itemType": "physical",
+    "tags": [
+      "longHaul",
+      "overnightFlight"
+    ],
     "flightAccessible": true,
+    "isAlwaysInclude": false,
     "defaultQuantity": 1,
-    "packingLocation": "carryOn",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "easy" },
-      { "replaceability": "easy" }
-    ]
-  },
-  {
-    "name": "Compression Socks",
-    "category": "health",
-    "tags": ["longHaul", "overnightFlight"],
-    "flightAccessible": true,
-    "defaultQuantity": 2,
     "packingLocation": "flightAccessPouch",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "replaceability": "easy" }
-    ]
-  },
-  {
-    "name": "Hand Sanitizer",
-    "category": "health",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": true,
-    "defaultQuantity": 1,
-    "packingLocation": "carryOn",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "replaceability": "easy" }
-    ]
-  },
-  {
-    "name": "Band-Aids / First Aid Kit",
-    "category": "health",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": true,
-    "defaultQuantity": 1,
-    "packingLocation": "carryOn",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "hard" },
-      { "replaceability": "easy" }
-    ]
-  },
-  {
-    "name": "Eye Drops",
-    "category": "health",
-    "tags": ["longHaul", "always"],
-    "flightAccessible": true,
-    "defaultQuantity": 1,
-    "packingLocation": "carryOn",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "hard" },
-      { "replaceability": "easy" }
-    ]
-  },
-  {
-    "name": "Throat Lozenges",
-    "category": "health",
-    "tags": ["always"],
-    "flightAccessible": true,
-    "defaultQuantity": 1,
-    "packingLocation": "carryOn",
-    "source": "imported"
-  },
-  {
-    "name": "Prescription Glasses",
-    "category": "health",
-    "tags": ["always"],
-    "defaultQuantity": 1,
-    "packingLocation": "carryOn",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "replaceability": "veryHard" }
-    ]
-  },
-  {
-    "name": "Contact Lenses",
-    "category": "health",
-    "tags": ["always"],
-    "flightAccessible": true,
-    "defaultQuantity": 1,
-    "packingLocation": "toiletryBag",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "hard" },
-      { "replaceability": "hard" }
-    ]
-  },
-  {
-    "name": "Contact Lens Solution",
-    "category": "health",
-    "tags": ["always"],
-    "flightAccessible": true,
-    "defaultQuantity": 1,
-    "packingLocation": "toiletryBag",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "hard" },
-      { "replaceability": "easy" }
-    ]
-  },
-
-  {
-    "name": "Carry-On Bag",
-    "category": "misc",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "source": "imported"
-  },
-  {
-    "name": "Checked Luggage",
-    "category": "misc",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "source": "imported"
-  },
-  {
-    "name": "Packing Cubes",
-    "category": "misc",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
-    "source": "imported"
-  },
-  {
-    "name": "Laundry Bag",
-    "category": "misc",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
-    "source": "imported"
-  },
-  {
-    "name": "TSA Padlock",
-    "category": "misc",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": true,
-    "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
-    "source": "imported"
-  },
-  {
-    "name": "Travel Umbrella",
-    "category": "misc",
-    "tags": ["rainy", "always"],
-    "defaultQuantity": 1,
-    "packingLocation": "carryOn",
-    "source": "imported",
-    "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "easy" },
-      { "replaceability": "easy" }
-    ]
-  },
-  {
-    "name": "Day Pack / Backpack",
-    "category": "misc",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
-    "source": "imported"
-  },
-  {
-    "name": "Reusable Water Bottle",
-    "category": "misc",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "carryOn",
-    "source": "imported"
-  },
-  {
-    "name": "Travel Snacks",
-    "category": "misc",
-    "tags": ["always", "longHaul"],
-    "isAlwaysInclude": true,
-    "flightAccessible": true,
-    "defaultQuantity": 1,
-    "packingLocation": "carryOn",
-    "source": "imported"
-  },
-  {
-    "name": "Passport Wallet / Travel Wallet",
-    "category": "misc",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": true,
-    "defaultQuantity": 1,
-    "packingLocation": "carryOn",
-    "source": "imported"
-  },
-  {
-    "name": "Luggage Tags",
-    "category": "misc",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 2,
-    "packingLocation": "checkedBag",
-    "source": "imported"
-  },
-  {
-    "name": "Luggage Scale",
-    "category": "misc",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
-    "source": "imported"
-  },
-  {
-    "name": "Stain Remover Pen",
-    "category": "misc",
-    "tags": ["longTrip", "business"],
-    "defaultQuantity": 1,
-    "packingLocation": "carryOn",
-    "source": "imported"
-  },
-  {
-    "name": "Ziplock / Travel Bags (assorted)",
-    "category": "misc",
-    "tags": ["always"],
-    "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
-    "source": "imported"
-  },
-  {
-    "name": "Safety Pins",
-    "category": "misc",
-    "tags": ["always"],
-    "defaultQuantity": 4,
-    "packingLocation": "checkedBag",
-    "source": "imported"
-  },
-  {
-    "name": "Travel Sewing Kit",
-    "category": "misc",
-    "tags": ["longTrip"],
-    "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
-    "source": "imported"
-  },
-  {
-    "name": "Portable Laundry Detergent",
-    "category": "misc",
-    "tags": ["longTrip", "airbnb"],
-    "defaultQuantity": 1,
-    "packingLocation": "toiletryBag",
-    "source": "imported"
-  },
-  {
-    "name": "Beach Towel",
-    "category": "misc",
-    "tags": ["beach", "pool"],
-    "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
-    "source": "imported"
-  },
-  {
-    "name": "Swim Goggles",
-    "category": "misc",
-    "tags": ["pool", "beach"],
-    "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
-    "source": "imported"
-  },
-  {
-    "name": "Playing Cards / Travel Game",
-    "category": "misc",
-    "tags": ["longTrip", "family"],
-    "flightAccessible": true,
-    "defaultQuantity": 1,
-    "packingLocation": "carryOn",
-    "source": "imported"
-  },
-  {
-    "name": "Glasses Case",
-    "category": "misc",
-    "tags": ["always"],
-    "defaultQuantity": 1,
-    "packingLocation": "carryOn",
-    "source": "imported"
-  },
-
-  {
-    "name": "Workout Shoes",
-    "category": "workoutClothing",
-    "tags": ["workout"],
-    "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
-    "source": "imported"
-  },
-  {
-    "name": "Workout Shorts",
-    "category": "workoutClothing",
-    "tags": ["workout"],
-    "defaultQuantity": 3,
-    "packingLocation": "checkedBag",
-    "source": "imported",
-    "quantityRules": [
       {
-        "contextTags": ["workout"],
-        "laundryAvailable": true,
-        "formula": { "type": "fixed", "n": 2 }
-      },
-      {
-        "contextTags": ["workout"],
-        "formula": { "type": "fixed", "n": 3 }
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
       }
     ]
   },
   {
-    "name": "Workout T-Shirts",
-    "category": "workoutClothing",
-    "tags": ["workout"],
-    "defaultQuantity": 3,
-    "packingLocation": "checkedBag",
-    "source": "imported",
-    "quantityRules": [
-      {
-        "contextTags": ["workout"],
-        "laundryAvailable": true,
-        "formula": { "type": "fixed", "n": 2 }
-      },
-      {
-        "contextTags": ["workout"],
-        "formula": { "type": "fixed", "n": 3 }
-      }
-    ]
-  },
-  {
-    "name": "Gym Towel",
-    "category": "workoutClothing",
-    "tags": ["workout"],
-    "defaultQuantity": 2,
-    "packingLocation": "checkedBag",
-    "source": "imported"
-  },
-  {
-    "name": "Resistance Bands",
-    "category": "workoutClothing",
-    "tags": ["workout"],
+    "id": "A7C4D783-A6CB-411D-8FE2-E367070E9CB3",
+    "name": "Airplane seat inflatable cushion",
+    "category": "misc",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": true,
+    "isAlwaysInclude": true,
     "defaultQuantity": 1,
-    "packingLocation": "checkedBag",
+    "packingLocation": "flightAccessPouch",
+    "recommendedTiming": null,
+    "isActive": true,
     "source": "imported",
+    "notes": null,
+    "quantityRules": [],
     "replaceabilityRules": [
-      { "regions": ["japan", "asia"], "replaceability": "hard" },
-      { "replaceability": "easy" }
-    ]
-  },
-  {
-    "name": "Workout Socks",
-    "category": "workoutClothing",
-    "tags": ["workout"],
-    "defaultQuantity": 3,
-    "packingLocation": "checkedBag",
-    "source": "imported",
-    "quantityRules": [
       {
-        "contextTags": ["workout"],
-        "laundryAvailable": true,
-        "formula": { "type": "fixed", "n": 2 }
-      },
-      {
-        "contextTags": ["workout"],
-        "formula": { "type": "fixed", "n": 3 }
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
       }
     ]
   },
-
   {
-    "name": "Check Passport Expiry",
-    "category": "documents",
-    "itemType": "task",
-    "tags": ["always"],
+    "id": "F8BF007E-75C9-4061-A69D-B8D916B78D0E",
+    "name": "Book (reading)",
+    "category": "misc",
+    "itemType": "physical",
+    "tags": [
+      "personal"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "backpack",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
+  },
+  {
+    "id": "F0D6B8A5-0B04-4BCF-B656-78A2968854AE",
+    "name": "Snacks",
+    "category": "misc",
+    "itemType": "physical",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
-    "flightAccessible": false,
     "defaultQuantity": 1,
-    "recommendedTiming": "weekBefore",
-    "source": "imported"
+    "packingLocation": "backpack",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
   },
   {
-    "name": "Check Visa Requirements",
-    "category": "documents",
-    "itemType": "task",
-    "tags": ["international"],
+    "id": "6934029F-2D60-4014-A9BC-D133473914FF",
+    "name": "Reusable shopping bag (foldable)",
+    "category": "misc",
+    "itemType": "physical",
+    "tags": [
+      "always",
+      "international"
+    ],
     "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "weekBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Book Travel Insurance",
-    "category": "documents",
-    "itemType": "task",
-    "tags": ["always"],
     "isAlwaysInclude": true,
-    "flightAccessible": false,
     "defaultQuantity": 1,
-    "recommendedTiming": "weekBefore",
-    "source": "imported"
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
   },
   {
-    "name": "Notify Bank of Travel",
-    "category": "documents",
-    "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
+    "id": "79F02DFD-9573-4588-A2A5-E900921312A2",
+    "name": "Foldable duffel (souvenirs)",
+    "category": "misc",
+    "itemType": "physical",
+    "tags": [
+      "international",
+      "longTrip"
+    ],
     "flightAccessible": false,
+    "isAlwaysInclude": false,
     "defaultQuantity": 1,
-    "recommendedTiming": "weekBefore",
-    "source": "imported"
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
   },
   {
-    "name": "Order / Exchange Foreign Currency",
-    "category": "documents",
-    "itemType": "task",
-    "tags": ["international"],
+    "id": "4B9058B7-EDD7-4A1A-A858-79EEBFFC7C37",
+    "name": "Fanny pack",
+    "category": "misc",
+    "itemType": "physical",
+    "tags": [
+      "beach",
+      "casual"
+    ],
     "flightAccessible": false,
+    "isAlwaysInclude": false,
     "defaultQuantity": 1,
-    "recommendedTiming": "weekBefore",
-    "source": "imported"
+    "packingLocation": "carryOn",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": [
+      {
+        "regions": null,
+        "tripPurposes": null,
+        "replaceability": "easy"
+      }
+    ]
   },
   {
-    "name": "Download Offline Maps",
-    "category": "tech",
-    "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "weekBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Book Airport Transfer",
+    "id": "5AE0107C-DA28-4506-BBAF-3BB3DB024B1D",
+    "name": "Haircut",
     "category": "misc",
     "itemType": "task",
-    "tags": ["always"],
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
-    "flightAccessible": false,
     "defaultQuantity": 1,
+    "packingLocation": null,
     "recommendedTiming": "weekBefore",
-    "source": "imported"
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
   },
   {
-    "name": "Arrange Pet Care",
-    "category": "misc",
-    "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "weekBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Stop Mail / Newspaper Delivery",
-    "category": "misc",
-    "itemType": "task",
-    "tags": ["longTrip"],
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "weekBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Set Up Email Auto-Reply",
-    "category": "misc",
-    "itemType": "task",
-    "tags": ["business", "longTrip"],
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "weekBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Print Hotel / Accommodation Confirmation",
-    "category": "documents",
-    "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "weekBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Refill Prescriptions",
+    "id": "3BDD199D-C3D8-4DFC-AED7-07ADCAA747C0",
+    "name": "Fill allergy nasal meds prescription",
     "category": "meds",
     "itemType": "task",
-    "tags": ["always"],
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
-    "flightAccessible": false,
     "defaultQuantity": 1,
+    "packingLocation": null,
     "recommendedTiming": "weekBefore",
-    "source": "imported"
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
   },
   {
-    "name": "Research Local Customs & Etiquette",
-    "category": "misc",
-    "itemType": "task",
-    "tags": ["international"],
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "weekBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Purchase Local SIM / eSIM",
-    "category": "tech",
-    "itemType": "task",
-    "tags": ["international"],
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "weekBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Book Golf Tee Times",
-    "category": "golf",
-    "itemType": "task",
-    "tags": ["golf"],
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "weekBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Confirm Golf Club Rental or Shipping",
-    "category": "golf",
-    "itemType": "task",
-    "tags": ["golf"],
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "weekBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Book Restaurant Reservations",
-    "category": "misc",
-    "itemType": "task",
-    "tags": ["longTrip", "business", "formal"],
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "weekBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Research Golf Course Dress Code",
-    "category": "golf",
-    "itemType": "task",
-    "tags": ["golf", "japan", "international"],
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "weekBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Back Up Phone & Laptop",
-    "category": "tech",
-    "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "threeDaysBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Do Laundry",
-    "category": "clothing",
-    "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "threeDaysBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Check Weather Forecast",
-    "category": "misc",
-    "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "threeDaysBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Download Entertainment (Movies, Podcasts)",
-    "category": "tech",
-    "itemType": "task",
-    "tags": ["longHaul", "overnightFlight"],
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "threeDaysBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Reconfirm Hotel Booking",
-    "category": "misc",
-    "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "threeDaysBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Reconfirm Golf Bookings",
-    "category": "golf",
-    "itemType": "task",
-    "tags": ["golf"],
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "threeDaysBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Check TSA / Customs Restrictions",
+    "id": "9D7A26AB-EAC5-4933-8610-F4E00B8C543C",
+    "name": "Check passport validity",
     "category": "documents",
     "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
+    "tags": [
+      "always"
+    ],
     "flightAccessible": false,
+    "isAlwaysInclude": true,
     "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "weekBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "54D6547A-15E1-4376-B7EE-40D6901A255A",
+    "name": "Check visa / eTA requirements",
+    "category": "documents",
+    "itemType": "task",
+    "tags": [
+      "international"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "weekBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "ACF99828-69DD-4A0E-9FAE-FF12A6312063",
+    "name": "Apply for eTA / visa if required",
+    "category": "documents",
+    "itemType": "task",
+    "tags": [
+      "international"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "weekBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "B19BF917-9950-4E48-B972-67C62F0E228F",
+    "name": "Check AirTag batteries",
+    "category": "tech",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "weekBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "4B7AD2EC-3BCE-497A-97D0-9AB83DE39CEF",
+    "name": "Replace golf bag AirTag battery if needed",
+    "category": "golf",
+    "itemType": "task",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "weekBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "7BC21F9B-4CA6-4066-8912-923FCD0A1774",
+    "name": "Pause Amazon subscriptions (Shake & Bake)",
+    "category": "misc",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "weekBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": "Boxes on porch signal empty house; perishables spoil",
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "52AF8E95-313C-4107-BE1E-ADE354D87C52",
+    "name": "Pay Amex",
+    "category": "misc",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "weekBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "BD8D997D-899B-4779-9292-8D56DAC39C16",
+    "name": "Confirm golf tee times",
+    "category": "golf",
+    "itemType": "task",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "weekBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "0252CCA8-894E-451E-AD64-1C8A49E6BAD2",
+    "name": "Book airport transfer",
+    "category": "misc",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "weekBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "E322D250-347D-4AC5-8925-41C834B32213",
+    "name": "Download offline maps",
+    "category": "tech",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "weekBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "69B77761-01CC-4E49-8770-16204EE050CB",
+    "name": "Download shows / Netflix offline",
+    "category": "tech",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "weekBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "17CB5C9A-76E9-4E77-8E66-BE0501C0171D",
+    "name": "Download Audible / podcasts",
+    "category": "tech",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "weekBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "C705DFA7-7F51-4F1D-9CCC-993922D30FDE",
+    "name": "Check lounge access / benefits",
+    "category": "misc",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "weekBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "286D574F-A4E4-4FC1-AD94-ABE49D59B83B",
+    "name": "Confirm hotel booking",
+    "category": "misc",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "weekBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "EB2F58A8-6B8A-4B3A-BDBD-94A77E77DE6C",
+    "name": "Check weather at destination",
+    "category": "misc",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "weekBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "2B67AD44-9491-4FB4-8EFC-F1E1CB9DAEF3",
+    "name": "Set up Visit Japan Web / QR codes",
+    "category": "misc",
+    "itemType": "task",
+    "tags": [
+      "japan"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "weekBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "25C77B8E-2032-479F-940C-4F34BDF81335",
+    "name": "Set up Apple Wallet Suica",
+    "category": "misc",
+    "itemType": "task",
+    "tags": [
+      "japan"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "weekBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "4D27D576-2FFB-4A76-8FBE-1EB48AABEF9B",
+    "name": "Confirm all Arccos sensors connected to clubs",
+    "category": "golf",
+    "itemType": "task",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": null,
     "recommendedTiming": "threeDaysBefore",
-    "source": "imported"
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
   },
   {
-    "name": "Charge Laptop",
+    "id": "7082F423-06E9-4DA7-9E03-A57C228670B3",
+    "name": "Confirm itinerary",
+    "category": "misc",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "threeDaysBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "115F9389-7925-4CA5-85DE-66AB1600FD78",
+    "name": "Download local map (offline)",
     "category": "tech",
     "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
+    "tags": [
+      "always"
+    ],
     "flightAccessible": false,
+    "isAlwaysInclude": true,
     "defaultQuantity": 1,
-    "recommendedTiming": "dayBefore",
-    "source": "imported"
+    "packingLocation": null,
+    "recommendedTiming": "threeDaysBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
   },
   {
-    "name": "Charge Phone",
+    "id": "C2951226-46D7-46A9-B677-18F5C8F68FA5",
+    "name": "Shave",
+    "category": "misc",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "dayBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "2F16ED9F-6B51-420D-BECF-42EA9B4FCE42",
+    "name": "Clip nails",
+    "category": "misc",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "dayBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "39A87D90-7BCA-40E5-8137-F58ADD38821B",
+    "name": "Charge AirPods Max",
     "category": "tech",
     "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
+    "tags": [
+      "always"
+    ],
     "flightAccessible": false,
+    "isAlwaysInclude": true,
     "defaultQuantity": 1,
+    "packingLocation": null,
     "recommendedTiming": "dayBefore",
-    "source": "imported"
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
   },
   {
-    "name": "Charge Earbuds / Headphones",
+    "id": "BF0FE7FB-C30F-4060-AA89-51FF6CC500DA",
+    "name": "Charge AirPods Pro",
     "category": "tech",
     "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
+    "tags": [
+      "always"
+    ],
     "flightAccessible": false,
+    "isAlwaysInclude": true,
     "defaultQuantity": 1,
+    "packingLocation": null,
     "recommendedTiming": "dayBefore",
-    "source": "imported"
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
   },
   {
-    "name": "Charge Power Bank",
+    "id": "7A111965-E1FF-481D-B304-AC9883F2089D",
+    "name": "Charge AirPods Beats",
     "category": "tech",
     "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
+    "tags": [
+      "workout"
+    ],
     "flightAccessible": false,
+    "isAlwaysInclude": false,
     "defaultQuantity": 1,
+    "packingLocation": null,
     "recommendedTiming": "dayBefore",
-    "source": "imported"
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
   },
   {
-    "name": "Charge Camera",
+    "id": "11752CD9-D78A-447F-9241-12B6F7D852F9",
+    "name": "Charge shaver",
+    "category": "hygiene",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "dayBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "C4EA9602-30D7-451B-8066-69F8829762AF",
+    "name": "Charge iPad",
     "category": "tech",
     "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
+    "tags": [
+      "personal",
+      "longTrip"
+    ],
     "flightAccessible": false,
+    "isAlwaysInclude": false,
     "defaultQuantity": 1,
+    "packingLocation": null,
     "recommendedTiming": "dayBefore",
-    "source": "imported"
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
   },
   {
-    "name": "Charge Smartwatch",
+    "id": "77A5126D-E316-40E8-9916-82CDECCD8043",
+    "name": "Charge Whoop",
     "category": "tech",
     "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
+    "tags": [
+      "always"
+    ],
     "flightAccessible": false,
+    "isAlwaysInclude": true,
     "defaultQuantity": 1,
+    "packingLocation": null,
     "recommendedTiming": "dayBefore",
-    "source": "imported"
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
   },
   {
-    "name": "Charge iPad / Tablet",
+    "id": "828A3229-736D-4898-B06A-AA44E17F9ACB",
+    "name": "Charge electric toothbrush",
+    "category": "hygiene",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "dayBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "DED41C58-0E41-443D-9CF8-CD2E8EE06125",
+    "name": "Charge MacBook",
     "category": "tech",
     "itemType": "task",
-    "tags": ["longHaul", "overnightFlight"],
+    "tags": [
+      "business",
+      "longTrip",
+      "level19Laptop"
+    ],
     "flightAccessible": false,
+    "isAlwaysInclude": false,
     "defaultQuantity": 1,
+    "packingLocation": null,
     "recommendedTiming": "dayBefore",
-    "source": "imported"
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
   },
   {
-    "name": "Pack Bags",
-    "category": "misc",
+    "id": "978FB1A8-264C-430C-A617-ED3C76F7D692",
+    "name": "Charge Interac laptop",
+    "category": "tech",
     "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
+    "tags": [
+      "interacLaptop"
+    ],
     "flightAccessible": false,
+    "isAlwaysInclude": false,
     "defaultQuantity": 1,
+    "packingLocation": null,
     "recommendedTiming": "dayBefore",
-    "source": "imported"
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
   },
   {
-    "name": "Set Travel Day Outfit Aside",
-    "category": "clothing",
-    "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "dayBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Set Multiple Alarms",
-    "category": "misc",
-    "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "dayBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Confirm Ride to Airport",
-    "category": "misc",
-    "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "dayBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Weigh Checked Luggage",
-    "category": "misc",
-    "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "dayBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Prepare Medications for Carry-On",
-    "category": "meds",
-    "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "dayBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Check Online for Flight",
-    "category": "documents",
-    "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "dayBefore",
-    "source": "imported"
-  },
-  {
-    "name": "Final Passport & Documents Check",
-    "category": "documents",
-    "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "morningOf",
-    "source": "imported"
-  },
-  {
-    "name": "Check Flight Status",
-    "category": "misc",
-    "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "morningOf",
-    "source": "imported"
-  },
-  {
-    "name": "Take Morning Medications",
-    "category": "meds",
-    "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "morningOf",
-    "source": "imported"
-  },
-  {
-    "name": "Leave for Airport on Time",
-    "category": "misc",
-    "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "morningOf",
-    "source": "imported"
-  },
-  {
-    "name": "Check Bag at Counter",
-    "category": "misc",
-    "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "atAirport",
-    "source": "imported"
-  },
-  {
-    "name": "Clear Security / Customs",
-    "category": "misc",
-    "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "atAirport",
-    "source": "imported"
-  },
-  {
-    "name": "Find Gate & Confirm Boarding Time",
-    "category": "misc",
-    "itemType": "task",
-    "tags": ["always"],
-    "isAlwaysInclude": true,
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "atAirport",
-    "source": "imported"
-  },
-  {
-    "name": "Pick Up Pre-Ordered Local Currency",
-    "category": "documents",
-    "itemType": "task",
-    "tags": ["international"],
-    "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "atAirport",
-    "source": "imported"
-  },
-  {
-    "name": "Take Melatonin",
-    "category": "meds",
-    "itemType": "task",
-    "tags": ["longHaul", "overnightFlight"],
-    "flightAccessible": true,
-    "defaultQuantity": 1,
-    "recommendedTiming": "onPlane",
-    "source": "imported"
-  },
-  {
-    "name": "Put On Compression Socks",
+    "id": "64968EC5-B71A-4A83-8696-96C9B5A27469",
+    "name": "Charge blood pressure monitor",
     "category": "health",
     "itemType": "task",
-    "tags": ["longHaul", "overnightFlight"],
-    "flightAccessible": true,
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
     "defaultQuantity": 1,
-    "recommendedTiming": "onPlane",
-    "source": "imported"
+    "packingLocation": null,
+    "recommendedTiming": "dayBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
   },
   {
-    "name": "Stay Hydrated (drink water regularly)",
-    "category": "health",
+    "id": "FA42C3A2-6F13-4FC5-BE71-23822BBB3BA2",
+    "name": "Charge speaker",
+    "category": "golf",
     "itemType": "task",
-    "tags": ["longHaul"],
-    "flightAccessible": true,
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
     "defaultQuantity": 1,
-    "recommendedTiming": "onPlane",
-    "source": "imported"
+    "packingLocation": null,
+    "recommendedTiming": "dayBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
   },
   {
-    "name": "Set Watch to Destination Time Zone",
-    "category": "misc",
+    "id": "E0694434-5588-45A4-A3FD-13FA3D33AE07",
+    "name": "Charge golf watch",
+    "category": "golf",
     "itemType": "task",
-    "tags": ["longHaul", "international"],
-    "flightAccessible": true,
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
     "defaultQuantity": 1,
-    "recommendedTiming": "onPlane",
-    "source": "imported"
+    "packingLocation": null,
+    "recommendedTiming": "dayBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
   },
   {
-    "name": "Activate Local SIM / eSIM",
+    "id": "F104AB3F-648F-41B0-B037-F4C408E756C9",
+    "name": "Charge portable charger",
     "category": "tech",
     "itemType": "task",
-    "tags": ["international"],
+    "tags": [
+      "always"
+    ],
     "flightAccessible": false,
-    "defaultQuantity": 1,
-    "recommendedTiming": "uponArrival",
-    "source": "imported"
-  },
-  {
-    "name": "Notify Someone of Safe Arrival",
-    "category": "misc",
-    "itemType": "task",
-    "tags": ["always"],
     "isAlwaysInclude": true,
-    "flightAccessible": false,
     "defaultQuantity": 1,
-    "recommendedTiming": "uponArrival",
-    "source": "imported"
+    "packingLocation": null,
+    "recommendedTiming": "dayBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
   },
   {
-    "name": "Check In at Hotel",
+    "id": "A702A0D4-3C50-4A90-978A-3F41E246922C",
+    "name": "Check in to flight",
     "category": "misc",
     "itemType": "task",
-    "tags": ["always"],
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
     "isAlwaysInclude": true,
-    "flightAccessible": false,
     "defaultQuantity": 1,
-    "recommendedTiming": "uponArrival",
-    "source": "imported"
+    "packingLocation": null,
+    "recommendedTiming": "dayBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": "24-hour window",
+    "quantityRules": [],
+    "replaceabilityRules": []
   },
   {
-    "name": "Confirm Onward Transport / Connections",
+    "id": "E7372185-A8A9-453F-B158-B8439E5B8684",
+    "name": "Check in to hotel",
     "category": "misc",
     "itemType": "task",
-    "tags": ["international", "longHaul"],
+    "tags": [
+      "always"
+    ],
     "flightAccessible": false,
+    "isAlwaysInclude": true,
     "defaultQuantity": 1,
-    "recommendedTiming": "uponArrival",
-    "source": "imported"
+    "packingLocation": null,
+    "recommendedTiming": "dayBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
   },
   {
-    "name": "Exchange Currency at Destination",
-    "category": "documents",
+    "id": "755923AB-B778-4560-AE9F-428E7F3A36EC",
+    "name": "Pack bags",
+    "category": "misc",
     "itemType": "task",
-    "tags": ["international"],
+    "tags": [
+      "always"
+    ],
     "flightAccessible": false,
+    "isAlwaysInclude": true,
     "defaultQuantity": 1,
-    "recommendedTiming": "uponArrival",
-    "source": "imported"
+    "packingLocation": null,
+    "recommendedTiming": "dayBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
   },
   {
-    "name": "Locate Nearest Hospital / Pharmacy",
+    "id": "91371373-A45A-48FF-B397-7AEE84D87211",
+    "name": "Download boarding pass",
+    "category": "misc",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "dayBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "6334CEFC-3369-4DD9-BEBB-8D64A33DD897",
+    "name": "Pause air cleaning (guest bedroom)",
+    "category": "misc",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "dayBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "7A21F791-C4DD-4407-AD8F-C37E3445C3E9",
+    "name": "Pause air cleaning (office)",
+    "category": "misc",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "dayBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "6EDC87DA-6AE1-49C1-AE8C-3B600FE175C0",
+    "name": "Shut down office computer",
+    "category": "misc",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "dayBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "666521DC-8AF2-4002-8BFA-711E02E9DE04",
+    "name": "Shut down Interac laptop",
+    "category": "tech",
+    "itemType": "task",
+    "tags": [
+      "interacLaptop"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "dayBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "EE3E3B08-A977-49C4-9CCC-C08141215E69",
+    "name": "Move golf clubs inside if stored elsewhere",
+    "category": "golf",
+    "itemType": "task",
+    "tags": [
+      "golf"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "dayBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "F52DDA08-388A-488C-8882-96257D44187D",
+    "name": "Car in garage",
+    "category": "misc",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "dayBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "58C78710-7D20-48B1-B070-37BB2DCFC1BF",
+    "name": "Turn on humidifiers",
+    "category": "misc",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "dayBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "9512B827-6BC5-45FF-85CD-D7BE85EF080A",
+    "name": "Adjust house temperature",
+    "category": "misc",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "dayBefore",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "66E7F69A-D16A-497A-909B-5A81D7E534BF",
+    "name": "Buy travel snacks / energy bars",
     "category": "health",
     "itemType": "task",
-    "tags": ["international", "longHaul"],
+    "tags": [
+      "always"
+    ],
     "flightAccessible": false,
+    "isAlwaysInclude": true,
     "defaultQuantity": 1,
-    "recommendedTiming": "uponArrival",
-    "source": "imported"
+    "packingLocation": null,
+    "recommendedTiming": "atAirport",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "F6FFFA79-7865-43AE-AC3A-08A05D79D549",
+    "name": "Buy Red Bull or protein coffee",
+    "category": "health",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "atAirport",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "87EF2CCB-9BB3-4415-9E64-57139E575200",
+    "name": "Buy travel Tums / travel shampoo if needed",
+    "category": "misc",
+    "itemType": "task",
+    "tags": [
+      "always"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": true,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "atAirport",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "C9D4FC2C-6D2F-4208-8F8D-734C8D7DEFB8",
+    "name": "Exchange currency if not done",
+    "category": "documents",
+    "itemType": "task",
+    "tags": [
+      "international"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "atAirport",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "7B0CD45A-9600-494D-8344-46357589FFC2",
+    "name": "Activate JR Pass",
+    "category": "misc",
+    "itemType": "task",
+    "tags": [
+      "japan"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": null,
+    "recommendedTiming": "atAirport",
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
   }
 ]
