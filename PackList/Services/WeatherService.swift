@@ -3,6 +3,13 @@ import CoreLocation
 
 struct WeatherService {
 
+    private static let session: URLSession = {
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = 8
+        config.timeoutIntervalForResource = 10
+        return URLSession(configuration: config)
+    }()
+
     static func fetchProfile(
         for coordinate: CLLocationCoordinate2D,
         from departure: Date,
@@ -36,7 +43,7 @@ struct WeatherService {
             start: start, end: end,
             extra: "daily=temperature_2m_max,precipitation_probability_max&forecast_days=16"
         )
-        let (data, _) = try await URLSession.shared.data(from: url)
+        let (data, _) = try await session.data(from: url)
         let r = try JSONDecoder().decode(ForecastResponse.self, from: data)
         let avgTemp   = average(r.daily.temperature2mMax) ?? 15
         let avgPrecip = average(r.daily.precipitationProbabilityMax) ?? 0
@@ -59,7 +66,7 @@ struct WeatherService {
             start: histStart, end: histEnd,
             extra: "daily=temperature_2m_max,precipitation_sum"
         )
-        let (data, _) = try await URLSession.shared.data(from: url)
+        let (data, _) = try await session.data(from: url)
         let r = try JSONDecoder().decode(ArchiveResponse.self, from: data)
         let avgTemp      = average(r.daily.temperature2mMax) ?? 15
         let avgPrecipMm  = average(r.daily.precipitationSum) ?? 0
