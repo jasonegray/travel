@@ -149,3 +149,22 @@ Every PR must include confirmation that all of the following pass before opening
 - If a simpler solution exists, propose it before implementing the complex one
 - Flag anything that looks like technical debt, even if not in scope
 - One PR per issue — do not bundle unrelated changes
+
+---
+
+## Project board workflow — mandatory for every issue
+
+**When starting work on an issue:**
+- Move the issue to In Progress on the project board
+- Apply the correct terminal label (T1, T2, T3, T4)
+
+**When opening a PR:**
+- Ensure the issue is In Progress on the board
+- PR description must include "Closes #[issue number]"
+
+**When a PR is merged:**
+- Issue automatically closes if "Closes #N" is in PR description
+- If it does not auto-close, manually close and move to Done
+- Remove the terminal label
+
+Never leave an issue in Backlog while actively working on it. Never leave a merged PR with its issue still open.
