@@ -37,6 +37,7 @@ struct ChecklistEngine {
             tags.formUnion([.beach, .pool])
         }
         if session.activities.contains(.workout) { tags.insert(.workout) }
+        if session.activities.contains(.conference) { tags.formUnion([.conference, .business]) }
 
         // Trip context
         if session.business { tags.insert(.business) }
