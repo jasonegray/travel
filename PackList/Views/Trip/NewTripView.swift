@@ -298,11 +298,12 @@ private struct NameDestinationStep: View {
                 .overlay(alignment: .topLeading) {
                     Button {
                         completer.selectedCoordinate = nil
+                        vm.destinationCoordinate = nil
                         poiAnnotations = []
                     } label: {
                         Image(systemName: "xmark")
                             .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(.primary)
+                            .foregroundStyle(.black)
                             .frame(width: 44, height: 44)
                             .background(Circle().fill(.white))
                             .shadow(color: .black.opacity(0.15), radius: 4, x: 0, y: 2)
