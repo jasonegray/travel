@@ -106,6 +106,29 @@ final class ChecklistEngineTests: XCTestCase {
         XCTAssertTrue(active.contains(.family), ".family companion must activate the .family tag")
     }
 
+    func testTagMatch_conferenceActivity_activatesConferenceAndBusinessTags() {
+        let session = makeSession(activities: [.conference])
+        let active  = engine.activeTags(for: session)
+        XCTAssertTrue(active.contains(.conference), ".conference activity must activate .conference tag")
+        XCTAssertTrue(active.contains(.business),   ".conference activity must also activate .business tag")
+    }
+
+    func testTagMatch_conferenceItem_includedForConferenceTrip() {
+        let session       = makeSession(activities: [.conference])
+        let badgeHolder   = makeItem(name: "Name badge holder", tags: [.conference])
+        let unrelatedItem = makeItem(name: "Snorkel",            tags: [.beach])
+        let result        = engine.generateItems(for: session, from: [badgeHolder, unrelatedItem])
+        XCTAssertEqual(result.count, 1)
+        XCTAssertEqual(result[0].name, "Name badge holder")
+    }
+
+    func testTagMatch_businessItem_includedForConferenceTrip() {
+        let session      = makeSession(activities: [.conference])
+        let dressShirt   = makeItem(name: "Dress shirt", tags: [.business])
+        let result       = engine.generateItems(for: session, from: [dressShirt])
+        XCTAssertEqual(result.count, 1, "Business-tagged items must be included when conference is selected")
+    }
+
     func testTagMatch_japanRegion_activatesJapanAsiaInternational() {
         let session = makeSession(region: .japan)
         let active  = engine.activeTags(for: session)

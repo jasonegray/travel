@@ -5809,5 +5809,44 @@
     "notes": null,
     "quantityRules": [],
     "replaceabilityRules": []
+  },
+  {
+    "id": "A5B31637-133E-40D3-AF5E-C178003C5DE4",
+    "name": "Name badge holder",
+    "category": "misc",
+    "itemType": "physical",
+    "tags": [
+      "conference"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "backpack",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
+  },
+  {
+    "id": "EBA1A8DF-39BC-4028-B723-40354B29D3AC",
+    "name": "Power bar / travel extension cable",
+    "category": "tech",
+    "itemType": "physical",
+    "tags": [
+      "conference",
+      "business"
+    ],
+    "flightAccessible": false,
+    "isAlwaysInclude": false,
+    "defaultQuantity": 1,
+    "packingLocation": "backpack",
+    "recommendedTiming": null,
+    "isActive": true,
+    "source": "imported",
+    "notes": null,
+    "quantityRules": [],
+    "replaceabilityRules": []
   }
 ]

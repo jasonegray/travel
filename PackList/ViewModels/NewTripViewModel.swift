@@ -115,6 +115,7 @@ final class NewTripViewModel {
         if activities.contains(.formalDinner) { return "Dinner" }
         if activities.contains(.workout)      { return "Workout" }
         if activities.contains(.sightseeing)  { return "Sightseeing" }
+        if activities.contains(.conference)   { return "Conference" }
         return ""
     }
 

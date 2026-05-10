@@ -399,6 +399,7 @@ private struct NameDestinationStep: View {
         if a.contains(.formalDinner) { labels.append("restaurants") }
         if a.contains(.workout)      { labels.append("gyms") }
         if a.contains(.sightseeing)  { labels.append("attractions") }
+        if a.contains(.conference)   { labels.append("convention centres") }
         return "Showing \(labels.joined(separator: ", ")) nearby."
     }
 }
@@ -811,6 +812,7 @@ extension ActivityType {
         case .formalDinner: return "Formal dinner"
         case .workout:      return "Workout"
         case .sightseeing:  return "Sightseeing"
+        case .conference:   return "Conference"
         }
     }
 
@@ -823,6 +825,7 @@ extension ActivityType {
         case .formalDinner: return "fork.knife"
         case .workout:      return "figure.run"
         case .sightseeing:  return "camera"
+        case .conference:   return "building.2.fill"
         }
     }
 }
