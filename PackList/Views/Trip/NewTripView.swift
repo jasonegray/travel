@@ -356,7 +356,7 @@ private struct NameDestinationStep: View {
 
     @MainActor
     private func pick(_ suggestion: MKLocalSearchCompletion) async {
-        await completer.select(suggestion)
+        _ = await completer.select(suggestion)
         destinationText          = completer.query
         vm.destination           = completer.query
         vm.destinationCoordinate = completer.selectedCoordinate
@@ -414,7 +414,7 @@ private struct NameDestinationStep: View {
         if a.contains(.formalDinner) { labels.append("restaurants") }
         if a.contains(.workout)      { labels.append("gyms") }
         if a.contains(.sightseeing)  { labels.append("attractions") }
-        if a.contains(.conference)   { labels.append("convention centres") }
+        if a.contains(.conference), #available(iOS 18.0, *) { labels.append("convention centres") }
         return "Showing \(labels.joined(separator: ", ")) nearby."
     }
 }
@@ -764,7 +764,7 @@ private func poiCategories(for activities: Set<ActivityType>) -> [MKPointOfInter
     if activities.contains(.formalDinner) { add(.restaurant) }
     if activities.contains(.workout)      { add(.fitnessCenter) }
     if activities.contains(.sightseeing)  { add(.museum); add(.theater) }
-    if activities.contains(.conference)   { add(.conventionCenter) }
+    if activities.contains(.conference), #available(iOS 18.0, *) { add(.conventionCenter) }
     return cats
 }
 
