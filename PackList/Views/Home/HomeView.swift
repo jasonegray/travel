@@ -50,7 +50,7 @@ struct HomeView: View {
                 }
                 .padding(.top, 8)
             }
-            .navigationTitle("PackList")
+            .navigationTitle("Trips")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: { showNewTrip = true }) {
