@@ -1,4 +1,7 @@
 import Foundation
+import os.log
+
+private let logger = Logger(subsystem: "com.packlist", category: "TripDetailViewModel")
 
 @Observable
 final class TripDetailViewModel {
@@ -21,7 +24,7 @@ final class TripDetailViewModel {
         do {
             items = try await repository.fetchAll(for: trip.id)
         } catch {
-            print("[TripDetailViewModel] Load failed: \(error)")
+            logger.error("Load failed: \(error)")
         }
     }
 
@@ -35,7 +38,7 @@ final class TripDetailViewModel {
         do {
             try await repo?.update(item)
         } catch {
-            print("[TripDetailViewModel] Save failed: \(error)")
+            logger.error("Save failed: \(error)")
             item.completedAt = item.completedAt == nil ? Date() : nil
         }
     }
@@ -46,9 +49,27 @@ final class TripDetailViewModel {
         let physical = items.filter { $0.itemType == .physical }
         return Dictionary(grouping: physical, by: \.packingLocation)
             .map { location, rows in
-                (location: location, items: rows.sorted { $0.name < $1.name })
+                let incomplete = rows.filter { $0.completedAt == nil }.sorted { $0.name < $1.name }
+                let complete   = rows.filter { $0.completedAt != nil }.sorted { $0.name < $1.name }
+                return (location: location, items: incomplete + complete)
             }
             .sorted { $0.location.sortOrder < $1.location.sortOrder }
+    }
+
+    var categoryGroups: [(category: ItemCategory, items: [TripItem])] {
+        let physical = items.filter { $0.itemType == .physical }
+        return Dictionary(grouping: physical, by: \.category)
+            .map { category, rows in
+                let incomplete = rows.filter { $0.completedAt == nil }.sorted { $0.name < $1.name }
+                let complete   = rows.filter { $0.completedAt != nil }.sorted { $0.name < $1.name }
+                return (category: category, items: incomplete + complete)
+            }
+            .sorted { $0.category.sortOrder < $1.category.sortOrder }
+    }
+
+    var flightAccessibleItems: [TripItem] {
+        items.filter { $0.itemType == .physical && $0.flightAccessible }
+            .sorted { $0.name < $1.name }
     }
 
     var completedPacking: Int { items.filter { $0.itemType == .physical && $0.completedAt != nil }.count }

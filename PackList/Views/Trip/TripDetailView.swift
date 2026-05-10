@@ -41,50 +41,300 @@ struct TripDetailView: View {
 
 // MARK: - Packing tab
 
+private enum PackingMode { case category, bags }
+
 private struct PackingTab: View {
     let vm: TripDetailViewModel
+    @State private var mode: PackingMode = .category
+    @State private var flightPouchExpanded = false
+    @State private var expandedSections: Set<String> = []
 
     var body: some View {
         VStack(spacing: 0) {
-            ProgressRow(
-                label: "Packed",
+            PackingHeaderStrip(
                 completed: vm.completedPacking,
                 total: vm.totalPacking,
-                unit: "items"
+                mode: $mode
             )
-            .padding(.horizontal)
-            .padding(.vertical, 10)
-            .background(Color(.systemBackground))
 
             Divider()
 
-            List {
-                ForEach(vm.packingGroups, id: \.location) { group in
-                    let packedCount = group.items.filter { $0.completedAt != nil }.count
-                    Section {
-                        ForEach(group.items) { item in
-                            PackingRow(item: item) {
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    if !vm.flightAccessibleItems.isEmpty {
+                        FlightPouchCard(
+                            items: vm.flightAccessibleItems,
+                            isExpanded: $flightPouchExpanded,
+                            onToggle: { item in
                                 withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
                                 Task { await vm.save(item: item) }
                             }
-                        }
-                    } header: {
-                        HStack {
-                            Text(group.location.displayName)
-                                .fontWeight(.semibold)
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Text("\(packedCount)/\(group.items.count)")
-                                .foregroundStyle(.secondary)
-                        }
-                        .font(.subheadline)
-                        .textCase(nil)
-                        .padding(.vertical, 4)
+                        )
+                        .padding(.horizontal)
+                        .padding(.top, 12)
+                        .padding(.bottom, 8)
                     }
+
+                    switch mode {
+                    case .category:
+                        ForEach(vm.categoryGroups, id: \.category) { group in
+                            CollapsiblePackingSection(
+                                id: group.category.rawValue,
+                                title: group.category.displayName,
+                                items: group.items,
+                                expandedSections: $expandedSections,
+                                onToggle: { item in
+                                    withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
+                                    Task { await vm.save(item: item) }
+                                }
+                            )
+                        }
+
+                    case .bags:
+                        ForEach(vm.packingGroups, id: \.location) { group in
+                            CollapsiblePackingSection(
+                                id: group.location.rawValue,
+                                title: group.location.displayName,
+                                items: group.items,
+                                expandedSections: $expandedSections,
+                                onToggle: { item in
+                                    withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
+                                    Task { await vm.save(item: item) }
+                                }
+                            )
+                        }
+                    }
+
+                    Spacer(minLength: 32)
                 }
             }
-            .listStyle(.plain)
-            .animation(.default, value: vm.completedPacking)
+            .animation(.easeInOut(duration: 0.2), value: vm.completedPacking)
+        }
+        .onChange(of: mode) { _, _ in expandedSections = [] }
+    }
+}
+
+// MARK: - Header strip
+
+private struct PackingHeaderStrip: View {
+    let completed: Int
+    let total: Int
+    @Binding var mode: PackingMode
+
+    var body: some View {
+        VStack(spacing: 8) {
+            HStack(alignment: .center, spacing: 12) {
+                ThinProgressBar(fraction: total > 0 ? Double(completed) / Double(total) : 0)
+                    .frame(maxWidth: .infinity)
+
+                Text("\(completed)/\(total)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize()
+            }
+
+            Picker("", selection: $mode) {
+                Text("Category").tag(PackingMode.category)
+                Text("Bags").tag(PackingMode.bags)
+            }
+            .pickerStyle(.segmented)
+        }
+        .padding(.horizontal)
+        .padding(.vertical, 10)
+        .background(Color(.systemBackground))
+    }
+}
+
+// MARK: - Flight Pouch card
+
+private struct FlightPouchCard: View {
+    let items: [TripItem]
+    @Binding var isExpanded: Bool
+    let onToggle: (TripItem) -> Void
+
+    private let chipLimit = 4
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Button {
+                withAnimation(.easeInOut(duration: 0.2)) { isExpanded.toggle() }
+            } label: {
+                HStack(spacing: 10) {
+                    Image(systemName: "airplane")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.blue)
+
+                    Text("Flight pouch")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(Color.blue)
+
+                    Spacer()
+
+                    if !isExpanded {
+                        ChipRow(items: items, limit: chipLimit)
+                    }
+
+                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                        .font(.caption)
+                        .foregroundStyle(Color.blue.opacity(0.7))
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 12)
+            }
+            .buttonStyle(.plain)
+
+            if isExpanded {
+                Divider()
+                    .padding(.horizontal, 14)
+
+                VStack(spacing: 0) {
+                    ForEach(items) { item in
+                        FlightPouchRow(item: item, onToggle: { onToggle(item) })
+                        if item.id != items.last?.id {
+                            Divider().padding(.leading, 44)
+                        }
+                    }
+                }
+                .padding(.bottom, 4)
+            }
+        }
+        .background(Color.blue.opacity(0.08))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .strokeBorder(Color.blue.opacity(0.2), lineWidth: 1)
+        )
+    }
+}
+
+private struct ChipRow: View {
+    let items: [TripItem]
+    let limit: Int
+
+    private var visible: [TripItem] { Array(items.prefix(limit)) }
+    private var overflow: Int { max(0, items.count - limit) }
+
+    var body: some View {
+        HStack(spacing: 4) {
+            ForEach(visible) { item in
+                Text(item.name)
+                    .font(.caption2)
+                    .lineLimit(1)
+                    .padding(.horizontal, 7)
+                    .padding(.vertical, 3)
+                    .background(Color.blue.opacity(0.15))
+                    .clipShape(Capsule())
+                    .foregroundStyle(Color.blue)
+            }
+            if overflow > 0 {
+                Text("+\(overflow) more")
+                    .font(.caption2)
+                    .padding(.horizontal, 7)
+                    .padding(.vertical, 3)
+                    .background(Color.blue.opacity(0.1))
+                    .clipShape(Capsule())
+                    .foregroundStyle(Color.blue.opacity(0.7))
+            }
+        }
+    }
+}
+
+private struct FlightPouchRow: View {
+    let item: TripItem
+    let onToggle: () -> Void
+
+    var body: some View {
+        Button(action: onToggle) {
+            HStack(spacing: 14) {
+                Image(systemName: item.completedAt != nil ? "checkmark.circle.fill" : "circle")
+                    .font(.system(size: 20))
+                    .foregroundStyle(item.completedAt != nil ? Color.blue : Color.blue.opacity(0.4))
+
+                Text(item.name)
+                    .font(.subheadline)
+                    .strikethrough(item.completedAt != nil, color: .secondary)
+                    .foregroundStyle(item.completedAt != nil ? Color.secondary : Color.primary)
+
+                Spacer()
+            }
+            .contentShape(Rectangle())
+            .padding(.horizontal, 14)
+            .padding(.vertical, 10)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+// MARK: - Collapsible section
+
+private struct CollapsiblePackingSection: View {
+    let id: String
+    let title: String
+    let items: [TripItem]
+    @Binding var expandedSections: Set<String>
+    let onToggle: (TripItem) -> Void
+
+    private var isExpanded: Bool { expandedSections.contains(id) }
+    private var remaining: Int { items.filter { $0.completedAt == nil }.count }
+    private var allPacked: Bool { remaining == 0 }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Button {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    if isExpanded { expandedSections.remove(id) }
+                    else { expandedSections.insert(id) }
+                }
+            } label: {
+                HStack {
+                    Text(title)
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.primary)
+
+                    Spacer()
+
+                    if allPacked {
+                        Text("All packed ✓")
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundStyle(Color.green)
+                    } else {
+                        Text("\(remaining) remaining")
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundStyle(Color.red)
+                    }
+
+                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                        .font(.caption2)
+                        .foregroundStyle(Color.secondary)
+                        .padding(.leading, 4)
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 12)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+
+            if isExpanded {
+                Divider().padding(.horizontal)
+
+                VStack(spacing: 0) {
+                    ForEach(items) { item in
+                        PackingRow(item: item) { onToggle(item) }
+                            .padding(.horizontal)
+                            .padding(.vertical, 2)
+                        if item.id != items.last?.id {
+                            Divider().padding(.leading, 52)
+                        }
+                    }
+                }
+                .padding(.bottom, 4)
+            }
+
+            Divider()
         }
     }
 }
@@ -218,6 +468,38 @@ extension TaskTiming {
         case .atAirport:       return "At the airport"
         case .onPlane:         return "On the plane"
         case .uponArrival:     return "Upon arrival"
+        }
+    }
+}
+
+// MARK: - ItemCategory display
+
+extension ItemCategory {
+    var displayName: String {
+        switch self {
+        case .clothing:        return "Clothing"
+        case .golf:            return "Golf"
+        case .tech:            return "Tech"
+        case .health:          return "Health"
+        case .meds:            return "Medications"
+        case .hygiene:         return "Hygiene"
+        case .documents:       return "Documents"
+        case .misc:            return "Miscellaneous"
+        case .workoutClothing: return "Workout"
+        }
+    }
+
+    var sortOrder: Int {
+        switch self {
+        case .documents:       return 0
+        case .clothing:        return 1
+        case .workoutClothing: return 2
+        case .golf:            return 3
+        case .tech:            return 4
+        case .hygiene:         return 5
+        case .health:          return 6
+        case .meds:            return 7
+        case .misc:            return 8
         }
     }
 }
