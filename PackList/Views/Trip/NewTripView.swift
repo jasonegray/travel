@@ -414,7 +414,7 @@ private struct NameDestinationStep: View {
         if a.contains(.formalDinner) { labels.append("restaurants") }
         if a.contains(.workout)      { labels.append("gyms") }
         if a.contains(.sightseeing)  { labels.append("attractions") }
-        if a.contains(.conference)   { labels.append("convention centres") }
+        if a.contains(.conference), #available(iOS 18.0, *) { labels.append("convention centres") }
         return "Showing \(labels.joined(separator: ", ")) nearby."
     }
 }
