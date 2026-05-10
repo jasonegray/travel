@@ -749,6 +749,7 @@ private func poiCategories(for activities: Set<ActivityType>) -> [MKPointOfInter
     if activities.contains(.formalDinner) { add(.restaurant) }
     if activities.contains(.workout)      { add(.fitnessCenter) }
     if activities.contains(.sightseeing)  { add(.museum); add(.theater) }
+    if activities.contains(.conference)   { add(.conventionCenter) }
     return cats
 }
 
