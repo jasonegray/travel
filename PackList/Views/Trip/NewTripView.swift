@@ -295,6 +295,21 @@ private struct NameDestinationStep: View {
                           : .standard(pointsOfInterest: .including(categories)))
                 .frame(maxHeight: .infinity)
                 .task(id: poiSearchKey) { await searchPOIs() }
+                .overlay(alignment: .topLeading) {
+                    Button {
+                        completer.selectedCoordinate = nil
+                        vm.destinationCoordinate = nil
+                        poiAnnotations = []
+                    } label: {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundStyle(.black)
+                            .frame(width: 44, height: 44)
+                            .background(Circle().fill(.white))
+                            .shadow(color: .black.opacity(0.15), radius: 4, x: 0, y: 2)
+                    }
+                    .padding(8)
+                }
             } else {
                 Spacer()
             }
@@ -399,6 +414,7 @@ private struct NameDestinationStep: View {
         if a.contains(.formalDinner) { labels.append("restaurants") }
         if a.contains(.workout)      { labels.append("gyms") }
         if a.contains(.sightseeing)  { labels.append("attractions") }
+        if a.contains(.conference)   { labels.append("convention centres") }
         return "Showing \(labels.joined(separator: ", ")) nearby."
     }
 }
@@ -811,6 +827,7 @@ extension ActivityType {
         case .formalDinner: return "Formal dinner"
         case .workout:      return "Workout"
         case .sightseeing:  return "Sightseeing"
+        case .conference:   return "Conference"
         }
     }
 
@@ -823,6 +840,7 @@ extension ActivityType {
         case .formalDinner: return "fork.knife"
         case .workout:      return "figure.run"
         case .sightseeing:  return "camera"
+        case .conference:   return "building.2.fill"
         }
     }
 }

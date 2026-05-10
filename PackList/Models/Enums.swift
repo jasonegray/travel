@@ -17,7 +17,7 @@ enum TravelCompanion: String, Codable, CaseIterable {
 }
 
 enum ActivityType: String, Codable, CaseIterable {
-    case golf, beach, pool, hiking, formalDinner, workout, sightseeing
+    case golf, beach, pool, hiking, formalDinner, workout, sightseeing, conference
 }
 
 enum TripStatus: String, Codable, CaseIterable {
