@@ -9,8 +9,9 @@ struct TripDetailView: View {
 
     enum Tab { case packing, prepTasks }
 
-    init(trip: TripSession) {
+    init(trip: TripSession, initialTab: Tab = .packing) {
         _vm = State(wrappedValue: TripDetailViewModel(trip: trip))
+        _selectedTab = State(wrappedValue: initialTab)
     }
 
     var body: some View {

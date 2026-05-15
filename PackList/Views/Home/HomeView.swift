@@ -15,16 +15,11 @@ struct HomeView: View {
                         .padding(.horizontal)
 
                     if let trip = vm.activeTrip {
-                        NavigationLink {
-                            TripDetailView(trip: trip)
-                        } label: {
-                            ActiveTripCard(
-                                trip: trip,
-                                packingProgress: vm.packingProgress,
-                                prepProgress: vm.prepProgress
-                            )
-                        }
-                        .buttonStyle(.plain)
+                        ActiveTripCard(
+                            trip: trip,
+                            packingProgress: vm.packingProgress,
+                            prepProgress: vm.prepProgress
+                        )
                         .padding(.horizontal)
 
                         if !vm.bagsSummary.isEmpty {
@@ -101,44 +96,66 @@ struct ActiveTripCard: View {
     let prepProgress: (completed: Int, total: Int)
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(trip.name)
-                        .font(.headline)
-                    Text(trip.destination)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+        VStack(alignment: .leading, spacing: 0) {
+            NavigationLink {
+                TripDetailView(trip: trip, initialTab: .packing)
+            } label: {
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(trip.name)
+                            .font(.headline)
+                        Text(trip.destination)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    VStack(alignment: .trailing, spacing: 3) {
+                        Text(trip.departureDate, format: .dateTime.month(.abbreviated).day().year())
+                            .font(.subheadline)
+                        Text(daysAwayLabel)
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
                 }
-                Spacer()
-                VStack(alignment: .trailing, spacing: 3) {
-                    Text(trip.departureDate, format: .dateTime.month(.abbreviated).day().year())
-                        .font(.subheadline)
-                    Text(daysAwayLabel)
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
-                }
+                .padding()
             }
+            .buttonStyle(.plain)
 
             Divider()
+                .padding(.horizontal)
 
-            ProgressRow(
-                label: "Packing",
-                completed: packingProgress.completed,
-                total: packingProgress.total,
-                unit: "items",
-                color: .accentColor
-            )
+            NavigationLink {
+                TripDetailView(trip: trip, initialTab: .packing)
+            } label: {
+                ProgressRow(
+                    label: "Packing",
+                    completed: packingProgress.completed,
+                    total: packingProgress.total,
+                    unit: "items",
+                    color: .accentColor
+                )
+                .padding(.horizontal)
+                .padding(.top, 12)
+                .padding(.bottom, 8)
+            }
+            .buttonStyle(.plain)
 
-            ProgressRow(
-                label: "Prep tasks",
-                completed: prepProgress.completed,
-                total: prepProgress.total,
-                unit: "tasks",
-                color: .orange
-            )
+            NavigationLink {
+                TripDetailView(trip: trip, initialTab: .prepTasks)
+            } label: {
+                ProgressRow(
+                    label: "Prep tasks",
+                    completed: prepProgress.completed,
+                    total: prepProgress.total,
+                    unit: "tasks",
+                    color: .orange
+                )
+                .padding(.horizontal)
+                .padding(.top, 8)
+                .padding(.bottom, 12)
+            }
+            .buttonStyle(.plain)
         }
-        .padding()
         .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
