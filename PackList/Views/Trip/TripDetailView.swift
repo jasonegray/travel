@@ -5,12 +5,15 @@ import SwiftUI
 struct TripDetailView: View {
     @State private var vm: TripDetailViewModel
     @State private var selectedTab: Tab = .packing
+    let initialPackingLocation: PackingLocation?
     @Environment(\.repositories) private var repositories
 
     enum Tab { case packing, prepTasks }
 
-    init(trip: TripSession) {
+    init(trip: TripSession, initialTab: Tab = .packing, initialPackingLocation: PackingLocation? = nil) {
         _vm = State(wrappedValue: TripDetailViewModel(trip: trip))
+        _selectedTab = State(wrappedValue: initialTab)
+        self.initialPackingLocation = initialPackingLocation
     }
 
     var body: some View {
@@ -26,7 +29,7 @@ struct TripDetailView: View {
             Divider()
 
             switch selectedTab {
-            case .packing:   PackingTab(vm: vm)
+            case .packing:   PackingTab(vm: vm, initialLocation: initialPackingLocation)
             case .prepTasks: PrepTab(vm: vm)
             }
         }
@@ -45,9 +48,23 @@ private enum PackingMode { case category, bags }
 
 private struct PackingTab: View {
     let vm: TripDetailViewModel
-    @State private var mode: PackingMode = .category
-    @State private var flightPouchExpanded = false
-    @State private var expandedSections: Set<String> = []
+    let initialLocation: PackingLocation?
+    @State private var mode: PackingMode
+    @State private var flightPouchExpanded: Bool
+    @State private var expandedSections: Set<String>
+
+    init(vm: TripDetailViewModel, initialLocation: PackingLocation? = nil) {
+        self.vm = vm
+        self.initialLocation = initialLocation
+        _flightPouchExpanded = State(wrappedValue: false)
+        if let location = initialLocation {
+            _mode = State(wrappedValue: .bags)
+            _expandedSections = State(wrappedValue: [location.rawValue])
+        } else {
+            _mode = State(wrappedValue: .category)
+            _expandedSections = State(wrappedValue: [])
+        }
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -60,56 +77,66 @@ private struct PackingTab: View {
 
             Divider()
 
-            ScrollView {
-                LazyVStack(spacing: 0) {
-                    if !vm.flightAccessibleItems.isEmpty {
-                        FlightPouchCard(
-                            items: vm.flightAccessibleItems,
-                            isExpanded: $flightPouchExpanded,
-                            onToggle: { item in
-                                withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
-                                Task { await vm.save(item: item) }
+            ScrollViewReader { proxy in
+                ScrollView {
+                    LazyVStack(spacing: 0) {
+                        if !vm.flightAccessibleItems.isEmpty {
+                            FlightPouchCard(
+                                items: vm.flightAccessibleItems,
+                                isExpanded: $flightPouchExpanded,
+                                onToggle: { item in
+                                    withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
+                                    Task { await vm.save(item: item) }
+                                }
+                            )
+                            .padding(.horizontal)
+                            .padding(.top, 12)
+                            .padding(.bottom, 8)
+                        }
+
+                        switch mode {
+                        case .category:
+                            ForEach(vm.categoryGroups, id: \.category) { group in
+                                CollapsiblePackingSection(
+                                    id: group.category.rawValue,
+                                    title: group.category.displayName,
+                                    items: group.items,
+                                    expandedSections: $expandedSections,
+                                    onToggle: { item in
+                                        withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
+                                        Task { await vm.save(item: item) }
+                                    }
+                                )
                             }
-                        )
-                        .padding(.horizontal)
-                        .padding(.top, 12)
-                        .padding(.bottom, 8)
-                    }
 
-                    switch mode {
-                    case .category:
-                        ForEach(vm.categoryGroups, id: \.category) { group in
-                            CollapsiblePackingSection(
-                                id: group.category.rawValue,
-                                title: group.category.displayName,
-                                items: group.items,
-                                expandedSections: $expandedSections,
-                                onToggle: { item in
-                                    withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
-                                    Task { await vm.save(item: item) }
-                                }
-                            )
+                        case .bags:
+                            ForEach(vm.packingGroups, id: \.location) { group in
+                                CollapsiblePackingSection(
+                                    id: group.location.rawValue,
+                                    title: group.location.displayName,
+                                    items: group.items,
+                                    expandedSections: $expandedSections,
+                                    onToggle: { item in
+                                        withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
+                                        Task { await vm.save(item: item) }
+                                    }
+                                )
+                                .id(group.location.rawValue)
+                            }
                         }
 
-                    case .bags:
-                        ForEach(vm.packingGroups, id: \.location) { group in
-                            CollapsiblePackingSection(
-                                id: group.location.rawValue,
-                                title: group.location.displayName,
-                                items: group.items,
-                                expandedSections: $expandedSections,
-                                onToggle: { item in
-                                    withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
-                                    Task { await vm.save(item: item) }
-                                }
-                            )
-                        }
+                        Spacer(minLength: 32)
                     }
-
-                    Spacer(minLength: 32)
+                }
+                .animation(.easeInOut(duration: 0.2), value: vm.completedPacking)
+                .task {
+                    guard let location = initialLocation else { return }
+                    // Give ScrollViewReader one layout pass before scrolling; 50ms is the
+                    // minimum observed to be reliable — may silently no-op on a cold slow device.
+                    try? await Task.sleep(for: .milliseconds(50))
+                    proxy.scrollTo(location.rawValue, anchor: .top)
                 }
             }
-            .animation(.easeInOut(duration: 0.2), value: vm.completedPacking)
         }
         .onChange(of: mode) { _, _ in expandedSections = [] }
     }

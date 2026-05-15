@@ -1,4 +1,7 @@
 import Foundation
+import os.log
+
+private let logger = Logger(subsystem: "com.packlist", category: "HomeViewModel")
 
 @Observable
 final class HomeViewModel {
@@ -22,7 +25,22 @@ final class HomeViewModel {
                 items = []
             }
         } catch {
-            print("[HomeViewModel] Load failed: \(error)")
+            logger.error("Load failed: \(error)")
+        }
+    }
+
+    // MARK: - Task actions
+
+    func toggle(item: TripItem) {
+        item.completedAt = item.completedAt == nil ? Date() : nil
+    }
+
+    func save(item: TripItem, repository: any TripItemRepository) async {
+        do {
+            try await repository.update(item)
+        } catch {
+            logger.error("Save failed: \(error)")
+            toggle(item: item)
         }
     }
 
@@ -74,7 +92,7 @@ final class HomeViewModel {
             activeTrip = nil
             items = []
         } catch {
-            print("[HomeViewModel] deleteAllTrips failed: \(error)")
+            logger.error("deleteAllTrips failed: \(error)")
         }
     }
     #endif
