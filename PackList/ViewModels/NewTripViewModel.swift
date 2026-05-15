@@ -44,7 +44,7 @@ final class NewTripViewModel {
     var companions: Set<TravelCompanion> = [.solo]
     var activities: Set<ActivityType> = []
     var carryOnOnly = true
-    var laundryAvailable = false
+    var laundryAvailable = true
     var interacChoice: InteracChoice = .none
     var hasMedicalAppointment = false
 
