@@ -43,7 +43,7 @@ final class NewTripViewModel {
     var weather: WeatherProfile = .mild
     var companions: Set<TravelCompanion> = [.solo]
     var activities: Set<ActivityType> = []
-    var carryOnOnly = false
+    var carryOnOnly = true
     var laundryAvailable = false
     var interacChoice: InteracChoice = .none
     var hasMedicalAppointment = false
