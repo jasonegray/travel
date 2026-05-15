@@ -3,6 +3,7 @@ import SwiftUI
 struct HomeView: View {
     @State private var vm = HomeViewModel()
     @State private var showNewTrip = false
+    @State private var bagNavDest: PackingLocation?
     @Environment(\.repositories) private var repositories
 
     var body: some View {
@@ -28,15 +29,23 @@ struct HomeView: View {
                         .padding(.horizontal)
 
                         if !vm.bagsSummary.isEmpty {
-                            BagsProgressView(summary: vm.bagsSummary)
-                                .padding(.horizontal)
+                            BagsProgressView(
+                                summary: vm.bagsSummary,
+                                onBagTap: { location in bagNavDest = location }
+                            )
+                            .padding(.horizontal)
                         }
 
                         if !vm.upNextTasks.isEmpty {
                             UpNextView(
                                 tasks: vm.upNextTasks,
                                 departure: trip.departureDate,
-                                deadlineFor: vm.recommendedByDate
+                                deadlineFor: vm.recommendedByDate,
+                                onComplete: { item in
+                                    withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
+                                    guard let repos = repositories else { return }
+                                    Task { await vm.save(item: item, repository: repos.tripItems) }
+                                }
                             )
                             .padding(.horizontal)
                         }
@@ -78,6 +87,11 @@ struct HomeView: View {
             .task(id: repositories != nil) {
                 guard let repos = repositories else { return }
                 await vm.load(sessions: repos.tripSessions, tripItems: repos.tripItems)
+            }
+            .navigationDestination(item: $bagNavDest) { location in
+                if let trip = vm.activeTrip {
+                    TripDetailView(trip: trip, initialTab: .packing, initialPackingLocation: location)
+                }
             }
         }
     }
@@ -166,6 +180,7 @@ struct ActiveTripCard: View {
 
 struct BagsProgressView: View {
     let summary: [(location: PackingLocation, packed: Int, total: Int)]
+    var onBagTap: ((PackingLocation) -> Void)? = nil
 
     private let columns = [
         GridItem(.flexible(), spacing: 12),
@@ -179,11 +194,16 @@ struct BagsProgressView: View {
 
             LazyVGrid(columns: columns, spacing: 12) {
                 ForEach(summary, id: \.location) { entry in
-                    BagCard(
-                        location: entry.location,
-                        packed: entry.packed,
-                        total: entry.total
-                    )
+                    Button {
+                        onBagTap?(entry.location)
+                    } label: {
+                        BagCard(
+                            location: entry.location,
+                            packed: entry.packed,
+                            total: entry.total
+                        )
+                    }
+                    .buttonStyle(.plain)
                 }
             }
         }
@@ -227,6 +247,9 @@ struct UpNextView: View {
     let tasks: [TripItem]
     let departure: Date
     let deadlineFor: (TaskTiming?, Date) -> Date
+    let onComplete: (TripItem) -> Void
+
+    @State private var completingIDs: Set<UUID> = []
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -237,7 +260,18 @@ struct UpNextView: View {
                 ForEach(Array(tasks.enumerated()), id: \.element.id) { index, task in
                     UpNextRow(
                         task: task,
-                        deadline: deadlineFor(task.recommendedTiming, departure)
+                        deadline: deadlineFor(task.recommendedTiming, departure),
+                        isCompleting: completingIDs.contains(task.id),
+                        onTap: {
+                            guard !completingIDs.contains(task.id) else { return }
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                completingIDs.insert(task.id)
+                            }
+                            Task {
+                                try? await Task.sleep(for: .milliseconds(400))
+                                onComplete(task)
+                            }
+                        }
                     )
                     if index < tasks.count - 1 {
                         Divider()
@@ -254,22 +288,31 @@ struct UpNextView: View {
 private struct UpNextRow: View {
     let task: TripItem
     let deadline: Date
+    let isCompleting: Bool
+    let onTap: () -> Void
 
     var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 3) {
-                Text(task.name)
-                    .font(.subheadline)
-                Text("by \(deadline.formatted(.dateTime.month(.abbreviated).day()))")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+        Button(action: onTap) {
+            HStack {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(task.name)
+                        .font(.subheadline)
+                        .strikethrough(isCompleting, color: .secondary)
+                        .foregroundStyle(isCompleting ? .secondary : .primary)
+                    Text("by \(deadline.formatted(.dateTime.month(.abbreviated).day()))")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Image(systemName: isCompleting ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(isCompleting ? Color.accentColor : Color.secondary)
+                    .animation(.easeInOut(duration: 0.2), value: isCompleting)
             }
-            Spacer()
-            Image(systemName: "circle")
-                .foregroundStyle(.secondary)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .contentShape(Rectangle())
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
+        .buttonStyle(.plain)
     }
 }
 
