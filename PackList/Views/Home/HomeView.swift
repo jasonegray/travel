@@ -270,6 +270,9 @@ struct UpNextView: View {
                             Task {
                                 try? await Task.sleep(for: .milliseconds(400))
                                 onComplete(task)
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    completingIDs.remove(task.id)
+                                }
                             }
                         }
                     )

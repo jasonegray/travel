@@ -40,7 +40,7 @@ final class HomeViewModel {
             try await repository.update(item)
         } catch {
             logger.error("Save failed: \(error)")
-            item.completedAt = item.completedAt == nil ? Date() : nil
+            toggle(item: item)
         }
     }
 

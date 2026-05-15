@@ -131,6 +131,8 @@ private struct PackingTab: View {
                 .animation(.easeInOut(duration: 0.2), value: vm.completedPacking)
                 .task {
                     guard let location = initialLocation else { return }
+                    // Give ScrollViewReader one layout pass before scrolling; 50ms is the
+                    // minimum observed to be reliable — may silently no-op on a cold slow device.
                     try? await Task.sleep(for: .milliseconds(50))
                     proxy.scrollTo(location.rawValue, anchor: .top)
                 }
