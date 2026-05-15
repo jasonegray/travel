@@ -5,9 +5,11 @@ struct ContentView: View {
         TabView {
             HomeView()
                 .tabItem { Label("Trips", systemImage: "suitcase.fill") }
-            Text("Master List")
-                .tabItem { Label("Master List", systemImage: "list.bullet") }
-            Text("Profile")
+            PackingTabView()
+                .tabItem { Label("Packing", systemImage: "checklist") }
+            TasksTabView()
+                .tabItem { Label("Tasks", systemImage: "calendar.badge.clock") }
+            ProfileView()
                 .tabItem { Label("Profile", systemImage: "person.fill") }
         }
     }
