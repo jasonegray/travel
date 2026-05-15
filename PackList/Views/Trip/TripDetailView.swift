@@ -385,13 +385,15 @@ private struct PrepTab: View {
     let vm: TripDetailViewModel
 
     var body: some View {
+        let daysAway = daysUntilDeparture(from: vm.trip.departureDate)
+        let prepFraction = vm.totalTasks > 0 ? Double(vm.completedTasks) / Double(vm.totalTasks) : 1.0
         VStack(spacing: 0) {
             ProgressRow(
                 label: "Completed",
                 completed: vm.completedTasks,
                 total: vm.totalTasks,
                 unit: "tasks",
-                color: .orange
+                color: urgencyColor(daysUntilDeparture: daysAway, packingFraction: prepFraction)
             )
             .padding(.horizontal)
             .padding(.vertical, 10)
