@@ -4,6 +4,8 @@ struct HomeView: View {
     @State private var vm = HomeViewModel()
     @State private var showNewTrip = false
     @State private var bagNavDest: PackingLocation?
+    @State private var tripNavTab: TripDetailView.Tab = .packing
+    @State private var navigatingToTrip = false
     @Environment(\.repositories) private var repositories
 
     var body: some View {
@@ -16,16 +18,19 @@ struct HomeView: View {
                         .padding(.horizontal)
 
                     if let trip = vm.activeTrip {
-                        NavigationLink {
-                            TripDetailView(trip: trip)
-                        } label: {
-                            ActiveTripCard(
-                                trip: trip,
-                                packingProgress: vm.packingProgress,
-                                prepProgress: vm.prepProgress
-                            )
-                        }
-                        .buttonStyle(.plain)
+                        ActiveTripCard(
+                            trip: trip,
+                            packingProgress: vm.packingProgress,
+                            prepProgress: vm.prepProgress,
+                            onPackingTap: {
+                                tripNavTab = .packing
+                                navigatingToTrip = true
+                            },
+                            onPrepTasksTap: {
+                                tripNavTab = .prepTasks
+                                navigatingToTrip = true
+                            }
+                        )
                         .padding(.horizontal)
 
                         if !vm.bagsSummary.isEmpty {
@@ -88,6 +93,11 @@ struct HomeView: View {
                 guard let repos = repositories else { return }
                 await vm.load(sessions: repos.tripSessions, tripItems: repos.tripItems)
             }
+            .navigationDestination(isPresented: $navigatingToTrip) {
+                if let trip = vm.activeTrip {
+                    TripDetailView(trip: trip, initialTab: tripNavTab)
+                }
+            }
             .navigationDestination(item: $bagNavDest) { location in
                 if let trip = vm.activeTrip {
                     TripDetailView(trip: trip, initialTab: .packing, initialPackingLocation: location)
@@ -113,47 +123,71 @@ struct ActiveTripCard: View {
     let trip: TripSession
     let packingProgress: (completed: Int, total: Int)
     let prepProgress: (completed: Int, total: Int)
+    var onPackingTap: (() -> Void)? = nil
+    var onPrepTasksTap: (() -> Void)? = nil
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(trip.name)
-                        .font(.headline)
-                    Text(trip.destination)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+        VStack(alignment: .leading, spacing: 0) {
+            Button { onPackingTap?() } label: {
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(trip.name)
+                            .font(.headline)
+                        Text(trip.destination)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    VStack(alignment: .trailing, spacing: 3) {
+                        Text(trip.departureDate, format: .dateTime.month(.abbreviated).day().year())
+                            .font(.subheadline)
+                        Text(daysAwayLabel)
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
                 }
-                Spacer()
-                VStack(alignment: .trailing, spacing: 3) {
-                    Text(trip.departureDate, format: .dateTime.month(.abbreviated).day().year())
-                        .font(.subheadline)
-                    Text(daysAwayLabel)
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
-                }
+                .padding([.top, .horizontal], 16)
+                .padding(.bottom, 16)
+                .frame(maxWidth: .infinity)
+                .contentShape(Rectangle())
             }
+            .buttonStyle(.plain)
 
             Divider()
+                .padding(.horizontal)
 
-            ProgressRow(
-                label: "Packing",
-                completed: packingProgress.completed,
-                total: packingProgress.total,
-                unit: "items",
-                color: urgencyColor(daysUntilDeparture: daysAway, packingFraction: packingFraction),
-                shouldPulse: daysAway == 0 && packingFraction < 1.0
-            )
+            Button { onPackingTap?() } label: {
+                ProgressRow(
+                    label: "Packing",
+                    completed: packingProgress.completed,
+                    total: packingProgress.total,
+                    unit: "items",
+                    color: urgencyColor(daysUntilDeparture: daysAway, packingFraction: packingFraction),
+                    shouldPulse: daysAway == 0 && packingFraction < 1.0
+                )
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
+                .frame(maxWidth: .infinity)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
 
-            ProgressRow(
-                label: "Prep tasks",
-                completed: prepProgress.completed,
-                total: prepProgress.total,
-                unit: "tasks",
-                color: .orange
-            )
+            Button { onPrepTasksTap?() } label: {
+                ProgressRow(
+                    label: "Prep tasks",
+                    completed: prepProgress.completed,
+                    total: prepProgress.total,
+                    unit: "tasks",
+                    color: .orange
+                )
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
+                .padding(.bottom, 16)
+                .frame(maxWidth: .infinity)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
         }
-        .padding()
         .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
