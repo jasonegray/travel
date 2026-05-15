@@ -178,7 +178,7 @@ struct ActiveTripCard: View {
                     completed: prepProgress.completed,
                     total: prepProgress.total,
                     unit: "tasks",
-                    color: .orange
+                    color: urgencyColor(daysUntilDeparture: daysAway, packingFraction: prepFraction)
                 )
                 .padding(.horizontal, 16)
                 .padding(.top, 16)
@@ -206,6 +206,12 @@ struct ActiveTripCard: View {
     private var packingFraction: Double {
         packingProgress.total > 0
             ? Double(packingProgress.completed) / Double(packingProgress.total)
+            : 1.0
+    }
+
+    private var prepFraction: Double {
+        prepProgress.total > 0
+            ? Double(prepProgress.completed) / Double(prepProgress.total)
             : 1.0
     }
 }
