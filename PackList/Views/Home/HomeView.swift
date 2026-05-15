@@ -117,12 +117,11 @@ struct ActiveTripCard: View {
                             .foregroundStyle(.tertiary)
                     }
                 }
-                .padding()
+                .padding(16)
             }
-            .buttonStyle(.plain)
 
             Divider()
-                .padding(.horizontal)
+                .padding(.horizontal, 16)
 
             NavigationLink {
                 TripDetailView(trip: trip, initialTab: .packing)
@@ -134,11 +133,10 @@ struct ActiveTripCard: View {
                     unit: "items",
                     color: .accentColor
                 )
-                .padding(.horizontal)
-                .padding(.top, 12)
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
                 .padding(.bottom, 8)
             }
-            .buttonStyle(.plain)
 
             NavigationLink {
                 TripDetailView(trip: trip, initialTab: .prepTasks)
@@ -150,12 +148,12 @@ struct ActiveTripCard: View {
                     unit: "tasks",
                     color: .orange
                 )
-                .padding(.horizontal)
+                .padding(.horizontal, 16)
                 .padding(.top, 8)
-                .padding(.bottom, 12)
+                .padding(.bottom, 16)
             }
-            .buttonStyle(.plain)
         }
+        .buttonStyle(.plain)
         .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
