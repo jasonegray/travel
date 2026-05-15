@@ -9,9 +9,8 @@ struct TripDetailView: View {
 
     enum Tab { case packing, prepTasks }
 
-    init(trip: TripSession, initialTab: Tab = .packing) {
+    init(trip: TripSession) {
         _vm = State(wrappedValue: TripDetailViewModel(trip: trip))
-        _selectedTab = State(wrappedValue: initialTab)
     }
 
     var body: some View {
@@ -55,6 +54,7 @@ private struct PackingTab: View {
             PackingHeaderStrip(
                 completed: vm.completedPacking,
                 total: vm.totalPacking,
+                departureDate: vm.trip.departureDate,
                 mode: $mode
             )
 
@@ -120,13 +120,21 @@ private struct PackingTab: View {
 private struct PackingHeaderStrip: View {
     let completed: Int
     let total: Int
+    let departureDate: Date
     @Binding var mode: PackingMode
+
+    private var fraction: Double { total > 0 ? Double(completed) / Double(total) : 1.0 }
+    private var daysAway: Int { daysUntilDeparture(from: departureDate) }
 
     var body: some View {
         VStack(spacing: 8) {
             HStack(alignment: .center, spacing: 12) {
-                ThinProgressBar(fraction: total > 0 ? Double(completed) / Double(total) : 0)
-                    .frame(maxWidth: .infinity)
+                ThinProgressBar(
+                    fraction: fraction,
+                    color: urgencyColor(daysUntilDeparture: daysAway, packingFraction: fraction),
+                    shouldPulse: daysAway == 0 && fraction < 1.0
+                )
+                .frame(maxWidth: .infinity)
 
                 Text("\(completed)/\(total)")
                     .font(.caption)
