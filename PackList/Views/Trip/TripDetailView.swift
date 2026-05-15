@@ -6,27 +6,31 @@ struct TripDetailView: View {
     @State private var vm: TripDetailViewModel
     @State private var selectedTab: Tab = .packing
     let initialPackingLocation: PackingLocation?
+    let showTabPicker: Bool
     @Environment(\.repositories) private var repositories
 
     enum Tab { case packing, prepTasks }
 
-    init(trip: TripSession, initialTab: Tab = .packing, initialPackingLocation: PackingLocation? = nil) {
+    init(trip: TripSession, initialTab: Tab = .packing, initialPackingLocation: PackingLocation? = nil, showTabPicker: Bool = true) {
         _vm = State(wrappedValue: TripDetailViewModel(trip: trip))
         _selectedTab = State(wrappedValue: initialTab)
         self.initialPackingLocation = initialPackingLocation
+        self.showTabPicker = showTabPicker
     }
 
     var body: some View {
         VStack(spacing: 0) {
-            Picker("", selection: $selectedTab) {
-                Text("Packing").tag(Tab.packing)
-                Text("Prep tasks").tag(Tab.prepTasks)
-            }
-            .pickerStyle(.segmented)
-            .padding(.horizontal)
-            .padding(.vertical, 10)
+            if showTabPicker {
+                Picker("", selection: $selectedTab) {
+                    Text("Packing").tag(Tab.packing)
+                    Text("Prep tasks").tag(Tab.prepTasks)
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal)
+                .padding(.vertical, 10)
 
-            Divider()
+                Divider()
+            }
 
             switch selectedTab {
             case .packing:   PackingTab(vm: vm, initialLocation: initialPackingLocation)
