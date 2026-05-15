@@ -478,25 +478,60 @@ private struct DatesStep: View {
 
 // MARK: - Step 1: Activities
 
+private let tripTypeActivities: [ActivityType] = [.conference, .golf]
+private let addOnActivities: [ActivityType]    = [.beach, .pool, .hiking, .formalDinner, .workout, .sightseeing]
+
 private struct ActivitiesStep: View {
     @Bindable var vm: NewTripViewModel
 
-    private let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
+    private let typeColumns   = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
+    private let addOnColumns  = [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)]
 
     var body: some View {
-        StepShell(title: "What will you be doing?", subtitle: "Select all that apply.") {
-            LazyVGrid(columns: columns, spacing: 12) {
-                ForEach(ActivityType.allCases, id: \.self) { activity in
-                    let selected = vm.activities.contains(activity)
-                    ActivityChip(
-                        title: activity.displayName,
-                        icon: activity.icon,
-                        isSelected: selected,
-                        action: {
-                            if selected { vm.activities.remove(activity) }
-                            else         { vm.activities.insert(activity) }
+        StepShell(title: "What will you be doing?") {
+            VStack(alignment: .leading, spacing: 24) {
+                // Trip Types
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("What type of trip?")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.secondary)
+                    LazyVGrid(columns: typeColumns, spacing: 12) {
+                        ForEach(tripTypeActivities, id: \.self) { activity in
+                            let selected = vm.activities.contains(activity)
+                            ActivityChip(
+                                title: activity.displayName,
+                                icon: activity.icon,
+                                isSelected: selected,
+                                action: {
+                                    if selected { vm.activities.remove(activity) }
+                                    else        { vm.activities.insert(activity) }
+                                }
+                            )
                         }
-                    )
+                    }
+                }
+
+                // Add-ons
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Any extras?")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.secondary)
+                    LazyVGrid(columns: addOnColumns, spacing: 10) {
+                        ForEach(addOnActivities, id: \.self) { activity in
+                            let selected = vm.activities.contains(activity)
+                            AddOnChip(
+                                title: activity.displayName,
+                                icon: activity.icon,
+                                isSelected: selected,
+                                action: {
+                                    if selected { vm.activities.remove(activity) }
+                                    else        { vm.activities.insert(activity) }
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -522,6 +557,37 @@ private struct ActivityChip: View {
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 16)
+            .background(isSelected ? Color.accentColor.opacity(0.1) : Color(.secondarySystemBackground))
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .strokeBorder(isSelected ? Color.accentColor : Color.clear, lineWidth: 1.5)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+private struct AddOnChip: View {
+    let title: String
+    let icon: String
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 5) {
+                Image(systemName: icon)
+                    .font(.title3)
+                    .foregroundStyle(isSelected ? Color.accentColor : Color.secondary)
+                Text(title)
+                    .font(.caption2)
+                    .fontWeight(.medium)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 12)
             .background(isSelected ? Color.accentColor.opacity(0.1) : Color(.secondarySystemBackground))
             .overlay(
                 RoundedRectangle(cornerRadius: 10)

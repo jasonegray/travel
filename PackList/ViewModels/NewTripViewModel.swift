@@ -42,7 +42,7 @@ final class NewTripViewModel {
     var purposes: Set<TripPurpose> = []
     var weather: WeatherProfile = .mild
     var companions: Set<TravelCompanion> = [.solo]
-    var activities: Set<ActivityType> = []
+    var activities: Set<ActivityType> = [.conference]
     var carryOnOnly = true
     var laundryAvailable = true
     var interacChoice: InteracChoice = .none
@@ -108,6 +108,7 @@ final class NewTripViewModel {
     }
 
     private var primaryActivityLabel: String {
+        if activities.contains(.conference)   { return "Conference" }
         if activities.contains(.golf)         { return "Golf" }
         if activities.contains(.beach)        { return "Beach" }
         if activities.contains(.pool)         { return "Pool" }
@@ -115,7 +116,6 @@ final class NewTripViewModel {
         if activities.contains(.formalDinner) { return "Dinner" }
         if activities.contains(.workout)      { return "Workout" }
         if activities.contains(.sightseeing)  { return "Sightseeing" }
-        if activities.contains(.conference)   { return "Conference" }
         return ""
     }
 
