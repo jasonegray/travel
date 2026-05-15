@@ -15,11 +15,16 @@ struct HomeView: View {
                         .padding(.horizontal)
 
                     if let trip = vm.activeTrip {
-                        ActiveTripCard(
-                            trip: trip,
-                            packingProgress: vm.packingProgress,
-                            prepProgress: vm.prepProgress
-                        )
+                        NavigationLink {
+                            TripDetailView(trip: trip)
+                        } label: {
+                            ActiveTripCard(
+                                trip: trip,
+                                packingProgress: vm.packingProgress,
+                                prepProgress: vm.prepProgress
+                            )
+                        }
+                        .buttonStyle(.plain)
                         .padding(.horizontal)
 
                         if !vm.bagsSummary.isEmpty {
@@ -96,86 +101,64 @@ struct ActiveTripCard: View {
     let prepProgress: (completed: Int, total: Int)
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            NavigationLink {
-                TripDetailView(trip: trip, initialTab: .packing)
-            } label: {
-                HStack(alignment: .top) {
-                    VStack(alignment: .leading, spacing: 3) {
-                        Text(trip.name)
-                            .font(.headline)
-                        Text(trip.destination)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                    Spacer()
-                    VStack(alignment: .trailing, spacing: 3) {
-                        HStack(alignment: .firstTextBaseline, spacing: 5) {
-                            Image(systemName: trip.weather.sfSymbol)
-                                .font(.caption)
-                                .foregroundStyle(trip.weather.iconColor)
-                            Text(trip.departureDate, format: .dateTime.month(.abbreviated).day().year())
-                                .font(.subheadline)
-                        }
-                        Text(daysAwayLabel)
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
-                    }
+        VStack(alignment: .leading, spacing: 16) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(trip.name)
+                        .font(.headline)
+                    Text(trip.destination)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                 }
-                .padding(16)
+                Spacer()
+                VStack(alignment: .trailing, spacing: 3) {
+                    Text(trip.departureDate, format: .dateTime.month(.abbreviated).day().year())
+                        .font(.subheadline)
+                    Text(daysAwayLabel)
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
             }
 
             Divider()
-                .padding(.horizontal, 16)
 
-            NavigationLink {
-                TripDetailView(trip: trip, initialTab: .packing)
-            } label: {
-                ProgressRow(
-                    label: "Packing",
-                    completed: packingProgress.completed,
-                    total: packingProgress.total,
-                    unit: "items",
-                    color: .accentColor
-                )
-                .padding(.horizontal, 16)
-                .padding(.top, 16)
-                .padding(.bottom, 8)
-            }
+            ProgressRow(
+                label: "Packing",
+                completed: packingProgress.completed,
+                total: packingProgress.total,
+                unit: "items",
+                color: urgencyColor(daysUntilDeparture: daysAway, packingFraction: packingFraction),
+                shouldPulse: daysAway == 0 && packingFraction < 1.0
+            )
 
-            NavigationLink {
-                TripDetailView(trip: trip, initialTab: .prepTasks)
-            } label: {
-                ProgressRow(
-                    label: "Prep tasks",
-                    completed: prepProgress.completed,
-                    total: prepProgress.total,
-                    unit: "tasks",
-                    color: .orange
-                )
-                .padding(.horizontal, 16)
-                .padding(.top, 8)
-                .padding(.bottom, 16)
-            }
+            ProgressRow(
+                label: "Prep tasks",
+                completed: prepProgress.completed,
+                total: prepProgress.total,
+                unit: "tasks",
+                color: .orange
+            )
         }
-        .buttonStyle(.plain)
+        .padding()
         .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
+    private var daysAway: Int { daysUntilDeparture(from: trip.departureDate) }
+
     private var daysAwayLabel: String {
-        let cal = Calendar.current
-        let days = cal.dateComponents(
-            [.day],
-            from: cal.startOfDay(for: .now),
-            to: cal.startOfDay(for: trip.departureDate)
-        ).day ?? 0
-        switch days {
+        switch daysAway {
         case ..<0: return "In progress"
         case 0:    return "Today"
         case 1:    return "Tomorrow"
-        default:   return "\(days) days away"
+        default:   return "\(daysAway) days away"
         }
+    }
+
+    private var packingFraction: Double {
+        packingProgress.total > 0
+            ? Double(packingProgress.completed) / Double(packingProgress.total)
+            : 1.0
     }
 }
 
@@ -330,6 +313,7 @@ struct ProgressRow: View {
     let total: Int
     let unit: String
     var color: Color = .accentColor
+    var shouldPulse: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
@@ -344,7 +328,8 @@ struct ProgressRow: View {
             }
             ThinProgressBar(
                 fraction: total > 0 ? Double(completed) / Double(total) : 0,
-                color: color
+                color: color,
+                shouldPulse: shouldPulse
             )
         }
     }
@@ -353,6 +338,9 @@ struct ProgressRow: View {
 struct ThinProgressBar: View {
     let fraction: Double
     var color: Color = .accentColor
+    var shouldPulse: Bool = false
+
+    @State private var pulsing = false
 
     var body: some View {
         GeometryReader { geo in
@@ -363,10 +351,45 @@ struct ThinProgressBar: View {
                     Capsule()
                         .fill(color)
                         .frame(width: geo.size.width * min(fraction, 1.0))
+                        .opacity(pulsing ? 0.45 : 1.0)
                 }
             }
         }
         .frame(height: 6)
+        .onAppear {
+            guard shouldPulse else { return }
+            withAnimation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) {
+                pulsing = true
+            }
+        }
+        .onChange(of: shouldPulse) { _, newValue in
+            if newValue {
+                withAnimation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) {
+                    pulsing = true
+                }
+            } else {
+                withAnimation(.default) { pulsing = false }
+            }
+        }
+    }
+}
+
+func daysUntilDeparture(from departureDate: Date) -> Int {
+    let cal = Calendar.current
+    return cal.dateComponents(
+        [.day],
+        from: cal.startOfDay(for: .now),
+        to: cal.startOfDay(for: departureDate)
+    ).day ?? 0
+}
+
+func urgencyColor(daysUntilDeparture: Int, packingFraction: Double) -> Color {
+    switch daysUntilDeparture {
+    case ..<0:   return .blue
+    case 0:      return packingFraction < 1.0 ? .red : .blue
+    case 1...2:  return packingFraction < 0.80 ? .red : .blue
+    case 3...6:  return packingFraction < 0.50 ? .orange : .blue
+    default:     return .blue
     }
 }
 
@@ -416,30 +439,6 @@ extension TaskTiming {
         case .atAirport:        return 4
         case .onPlane:          return 5
         case .uponArrival:      return 6
-        }
-    }
-}
-
-// MARK: - WeatherProfile display
-
-extension WeatherProfile {
-    var sfSymbol: String {
-        switch self {
-        case .hot:   return "sun.max.fill"
-        case .warm:  return "cloud.sun.fill"
-        case .mild:  return "cloud.fill"
-        case .cold:  return "snowflake"
-        case .rainy: return "cloud.rain.fill"
-        }
-    }
-
-    var iconColor: Color {
-        switch self {
-        case .hot:   return .orange
-        case .warm:  return .orange
-        case .mild:  return .secondary
-        case .cold:  return .blue
-        case .rainy: return .blue
         }
     }
 }
