@@ -110,8 +110,13 @@ struct ActiveTripCard: View {
                     }
                     Spacer()
                     VStack(alignment: .trailing, spacing: 3) {
-                        Text(trip.departureDate, format: .dateTime.month(.abbreviated).day().year())
-                            .font(.subheadline)
+                        HStack(alignment: .firstTextBaseline, spacing: 5) {
+                            Image(systemName: trip.weather.sfSymbol)
+                                .font(.caption)
+                                .foregroundStyle(trip.weather.iconColor)
+                            Text(trip.departureDate, format: .dateTime.month(.abbreviated).day().year())
+                                .font(.subheadline)
+                        }
                         Text(daysAwayLabel)
                             .font(.caption)
                             .foregroundStyle(.tertiary)
@@ -411,6 +416,30 @@ extension TaskTiming {
         case .atAirport:        return 4
         case .onPlane:          return 5
         case .uponArrival:      return 6
+        }
+    }
+}
+
+// MARK: - WeatherProfile display
+
+extension WeatherProfile {
+    var sfSymbol: String {
+        switch self {
+        case .hot:   return "sun.max.fill"
+        case .warm:  return "cloud.sun.fill"
+        case .mild:  return "cloud.fill"
+        case .cold:  return "snowflake"
+        case .rainy: return "cloud.rain.fill"
+        }
+    }
+
+    var iconColor: Color {
+        switch self {
+        case .hot:   return .orange
+        case .warm:  return .orange
+        case .mild:  return .secondary
+        case .cold:  return .blue
+        case .rainy: return .blue
         }
     }
 }
