@@ -110,7 +110,7 @@ struct ActiveTripCard: View {
                     }
                     Spacer()
                     VStack(alignment: .trailing, spacing: 3) {
-                        HStack(spacing: 5) {
+                        HStack(alignment: .firstTextBaseline, spacing: 5) {
                             Image(systemName: trip.weather.sfSymbol)
                                 .font(.caption)
                                 .foregroundStyle(trip.weather.iconColor)
@@ -436,9 +436,9 @@ extension WeatherProfile {
     var iconColor: Color {
         switch self {
         case .hot:   return .orange
-        case .warm:  return .yellow
-        case .mild:  return Color(.systemGray2)
-        case .cold:  return .cyan
+        case .warm:  return .orange
+        case .mild:  return .secondary
+        case .cold:  return .blue
         case .rainy: return .blue
         }
     }
