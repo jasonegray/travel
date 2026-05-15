@@ -65,7 +65,12 @@ final class HomeViewModel {
                  packed: locationItems.filter { $0.completedAt != nil }.count,
                  total: locationItems.count)
             }
-            .sorted { $0.location.sortOrder < $1.location.sortOrder }
+            .sorted {
+                let lhsDone = $0.packed == $0.total
+                let rhsDone = $1.packed == $1.total
+                if lhsDone != rhsDone { return !lhsDone }
+                return $0.location.sortOrder < $1.location.sortOrder
+            }
     }
 
     var upNextTasks: [TripItem] {
