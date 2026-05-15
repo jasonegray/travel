@@ -156,40 +156,63 @@ struct ActiveTripCard: View {
             Divider()
                 .padding(.horizontal)
 
-            Button { onPackingTap?() } label: {
-                ProgressRow(
-                    label: "Packing",
-                    completed: packingProgress.completed,
-                    total: packingProgress.total,
-                    unit: "items",
-                    color: urgencyColor(daysUntilDeparture: daysAway, packingFraction: packingFraction),
-                    shouldPulse: daysAway == 0 && packingFraction < 1.0
-                )
+            if isReadyToGo {
+                HStack(spacing: 12) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.title2)
+                        .foregroundStyle(.green)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Good to go")
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.green)
+                        Text("All packed · All tasks done")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                }
                 .padding(.horizontal, 16)
-                .padding(.top, 16)
+                .padding(.vertical, 14)
                 .frame(maxWidth: .infinity)
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
+                .transition(.opacity)
+            } else {
+                Button { onPackingTap?() } label: {
+                    ProgressRow(
+                        label: "Packing",
+                        completed: packingProgress.completed,
+                        total: packingProgress.total,
+                        unit: "items",
+                        color: urgencyColor(daysUntilDeparture: daysAway, packingFraction: packingFraction),
+                        shouldPulse: daysAway == 0 && packingFraction < 1.0
+                    )
+                    .padding(.horizontal, 16)
+                    .padding(.top, 16)
+                    .frame(maxWidth: .infinity)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
 
-            Button { onPrepTasksTap?() } label: {
-                ProgressRow(
-                    label: "Prep tasks",
-                    completed: prepProgress.completed,
-                    total: prepProgress.total,
-                    unit: "tasks",
-                    color: urgencyColor(daysUntilDeparture: daysAway, packingFraction: prepFraction)
-                )
-                .padding(.horizontal, 16)
-                .padding(.top, 16)
-                .padding(.bottom, 16)
-                .frame(maxWidth: .infinity)
-                .contentShape(Rectangle())
+                Button { onPrepTasksTap?() } label: {
+                    ProgressRow(
+                        label: "Prep tasks",
+                        completed: prepProgress.completed,
+                        total: prepProgress.total,
+                        unit: "tasks",
+                        color: urgencyColor(daysUntilDeparture: daysAway, packingFraction: prepFraction)
+                    )
+                    .padding(.horizontal, 16)
+                    .padding(.top, 16)
+                    .padding(.bottom, 16)
+                    .frame(maxWidth: .infinity)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
         }
         .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
+        .animation(.easeInOut(duration: 0.2), value: isReadyToGo)
     }
 
     private var daysAway: Int { daysUntilDeparture(from: trip.departureDate) }
@@ -213,6 +236,12 @@ struct ActiveTripCard: View {
         prepProgress.total > 0
             ? Double(prepProgress.completed) / Double(prepProgress.total)
             : 1.0
+    }
+
+    private var isReadyToGo: Bool {
+        packingProgress.total > 0 && prepProgress.total > 0 &&
+        packingProgress.completed == packingProgress.total &&
+        prepProgress.completed == prepProgress.total
     }
 }
 
@@ -255,23 +284,32 @@ private struct BagCard: View {
     let packed: Int
     let total: Int
 
+    private var isDone: Bool { total > 0 && packed == total }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(location.displayName)
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
-            HStack(alignment: .firstTextBaseline, spacing: 2) {
-                Text("\(packed)")
+            if isDone {
+                Image(systemName: "checkmark.circle.fill")
                     .font(.title2)
-                    .fontWeight(.semibold)
-                Text("/\(total)")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.green)
+            } else {
+                HStack(alignment: .firstTextBaseline, spacing: 2) {
+                    Text("\(packed)")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                    Text("/\(total)")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
             }
 
             ThinProgressBar(
-                fraction: total > 0 ? Double(packed) / Double(total) : 0
+                fraction: total > 0 ? Double(packed) / Double(total) : 0,
+                color: isDone ? .green : .accentColor
             )
         }
         .padding(12)
@@ -401,22 +439,40 @@ struct ProgressRow: View {
     var color: Color = .accentColor
     var shouldPulse: Bool = false
 
+    private var isDone: Bool { total > 0 && completed == total }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        if isDone {
             HStack {
                 Text(label)
                     .font(.caption)
                     .fontWeight(.medium)
                 Spacer()
-                Text("\(completed)/\(total) \(unit)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                HStack(spacing: 4) {
+                    Image(systemName: "checkmark.circle.fill")
+                    Text(unit == "items" ? "All packed" : "All done")
+                }
+                .font(.caption)
+                .fontWeight(.medium)
+                .foregroundStyle(.green)
             }
-            ThinProgressBar(
-                fraction: total > 0 ? Double(completed) / Double(total) : 0,
-                color: color,
-                shouldPulse: shouldPulse
-            )
+        } else {
+            VStack(alignment: .leading, spacing: 5) {
+                HStack {
+                    Text(label)
+                        .font(.caption)
+                        .fontWeight(.medium)
+                    Spacer()
+                    Text("\(completed)/\(total) \(unit)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                ThinProgressBar(
+                    fraction: total > 0 ? Double(completed) / Double(total) : 0,
+                    color: color,
+                    shouldPulse: shouldPulse
+                )
+            }
         }
     }
 }
