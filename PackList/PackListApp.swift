@@ -20,18 +20,15 @@ struct PackListApp: App {
         .modelContainer(container)
     }
 
-    // If the schema has changed since last launch (e.g. a stored attribute was
-    // removed or renamed), SwiftData will fail to open the existing store.
-    // For v0.1 alpha, wiping and recreating is acceptable — data loss is noted
-    // in the console. A versioned migration will be added before public release.
+    // Schema versioning is managed via PackListMigrationPlan + PackListSchemaV1.
+    // Future schema changes must add a new VersionedSchema and MigrationStage — never wipe.
+    // The store-wipe fallback below handles only the one-time transition from the legacy
+    // unversioned store to v1; it should never fire again after that initial upgrade.
     private static func makeContainer() -> ModelContainer {
-        let schema = Schema([
-            TripSession.self, TripInfo.self, MasterItem.self, TripItem.self,
-            ItemInsight.self, PendingSuggestion.self
-        ])
-        let config = ModelConfiguration("PackList", schema: schema)
+        let config = ModelConfiguration("PackList")
         do {
-            return try ModelContainer(for: schema, configurations: config)
+            return try ModelContainer(migrationPlan: PackListMigrationPlan.self,
+                                      configurations: config)
         } catch {
             logger.warning("ModelContainer open failed (\(error)) — wiping PackList store and starting fresh")
             let storeURL = config.url
@@ -41,7 +38,8 @@ struct PackListApp: App {
                 )
             }
             // swiftlint:disable:next force_try
-            return try! ModelContainer(for: schema, configurations: config)
+            return try! ModelContainer(migrationPlan: PackListMigrationPlan.self,
+                                       configurations: config)
         }
     }
 }
