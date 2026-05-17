@@ -210,8 +210,8 @@ final class TripInfoViewModel {
 
         if let n = accommodationName.nilIfEmpty    { fields.append(n) }
         if let a = accommodationAddress.nilIfEmpty { fields.append(a) }
-        if let d = checkIn  { fields.append("Check-in: \(formatDateTime(d))") }
-        if let d = checkOut { fields.append("Check-out: \(formatDateTime(d))") }
+        if let d = checkIn  { fields.append("Check-in: \(formatDate(d))") }
+        if let d = checkOut { fields.append("Check-out: \(formatDate(d))") }
         if let c = accommodationConfirmation.nilIfEmpty { fields.append("Confirmation: \(c)") }
         if let p = accommodationPhone.nilIfEmpty        { fields.append("Phone: \(p)") }
 
@@ -221,6 +221,10 @@ final class TripInfoViewModel {
 
     private func formatDateTime(_ date: Date) -> String {
         date.formatted(.dateTime.month(.abbreviated).day().year().hour().minute())
+    }
+
+    private func formatDate(_ date: Date) -> String {
+        date.formatted(.dateTime.month(.abbreviated).day().year())
     }
 }
 
