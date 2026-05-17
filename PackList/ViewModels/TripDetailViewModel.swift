@@ -53,6 +53,14 @@ final class TripDetailViewModel {
         }
     }
 
+    func deleteTrip(sessions: any TripSessionRepository) async {
+        do {
+            try await sessions.delete(trip)
+        } catch {
+            logger.error("deleteTrip failed: \(error)")
+        }
+    }
+
     // MARK: - Packing
 
     var packingGroups: [(location: PackingLocation, items: [TripItem])] {

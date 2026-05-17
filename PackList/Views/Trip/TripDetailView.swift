@@ -6,18 +6,21 @@ struct TripDetailView: View {
     @State private var vm: TripDetailViewModel
     @State private var infoVM: TripInfoViewModel
     @State private var selectedTab: Tab = .packing
+    @State private var showDeleteConfirmation = false
     let initialPackingLocation: PackingLocation?
     let showTabPicker: Bool
+    let onDeleted: (() -> Void)?
     @Environment(\.repositories) private var repositories
 
     enum Tab { case packing, prepTasks, info }
 
-    init(trip: TripSession, initialTab: Tab = .packing, initialPackingLocation: PackingLocation? = nil, showTabPicker: Bool = true) {
+    init(trip: TripSession, initialTab: Tab = .packing, initialPackingLocation: PackingLocation? = nil, showTabPicker: Bool = true, onDeleted: (() -> Void)? = nil) {
         _vm = State(wrappedValue: TripDetailViewModel(trip: trip))
         _infoVM = State(wrappedValue: TripInfoViewModel(trip: trip))
         _selectedTab = State(wrappedValue: initialTab)
         self.initialPackingLocation = initialPackingLocation
         self.showTabPicker = showTabPicker
+        self.onDeleted = onDeleted
     }
 
     var body: some View {
@@ -49,9 +52,9 @@ struct TripDetailView: View {
         .navigationTitle(vm.trip.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            if vm.trip.status != .completed {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Menu {
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    if vm.trip.status != .completed {
                         Button {
                             Task {
                                 guard let repos = repositories else { return }
@@ -60,11 +63,28 @@ struct TripDetailView: View {
                         } label: {
                             Label("Mark as Completed", systemImage: "checkmark.circle")
                         }
-                    } label: {
-                        Image(systemName: "ellipsis.circle")
                     }
+                    Button(role: .destructive) {
+                        showDeleteConfirmation = true
+                    } label: {
+                        Label("Delete Trip", systemImage: "trash")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle")
                 }
             }
+        }
+        .alert("Delete \"\(vm.trip.name)\"?", isPresented: $showDeleteConfirmation) {
+            Button("Delete", role: .destructive) {
+                Task {
+                    guard let repos = repositories else { return }
+                    await vm.deleteTrip(sessions: repos.tripSessions)
+                    onDeleted?()
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This cannot be undone.")
         }
         .task(id: repositories != nil) {
             guard let repos = repositories else { return }
