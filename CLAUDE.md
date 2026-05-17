@@ -154,6 +154,20 @@ Every PR must include confirmation that all of the following pass before opening
 
 ## Project board workflow — mandatory for every issue
 
+### Adding issues to the board (mandatory)
+Every issue created — whether via capture-issue skill, manual `gh issue create`, or any other method — must be immediately added to the project board and placed in the Backlog column. This is mandatory, not optional.
+
+After every `gh issue create` command, always run:
+```
+gh project item-add 1 --owner jasonegray --url https://github.com/jasonegray/travel/issues/[N]
+```
+Then move to Backlog via GraphQL:
+```
+gh api graphql -f query='mutation { updateProjectV2ItemFieldValue(input: { projectId: "PVT_kwHOEMO09M4BWtlG" itemId: "[ITEM_ID]" fieldId: "PVTSSF_lAHOEMO09M4BWtlGzhR_g7M" value: { singleSelectOptionId: "ca2d7b25" } }) { projectV2Item { id } } }'
+```
+
+Never report an issue as created without confirming it is on the board in Backlog.
+
 **When starting work on an issue:**
 - Move the issue to In Progress on the project board
 - Apply the correct terminal label (T1, T2, T3, T4)
