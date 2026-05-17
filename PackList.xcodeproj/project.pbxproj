@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		029CDAAADF9AE9B75CD99D3E /* TripDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64A12C6D76A50997C8CA0800 /* TripDetailViewModel.swift */; };
+		29D3494D521F4C16BC58B557 /* SwiftDataTripInfoRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C6421A77A64F5F80685CCF /* SwiftDataTripInfoRepository.swift */; };
+		32DAD796FAB34DAEA4F5967C /* TripInfoRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC8548F710E447397C72613 /* TripInfoRepository.swift */; };
+		5D501BCB2E8748B3B8AA7A56 /* TripInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D446F9B50A4338800DE83A /* TripInfo.swift */; };
+		A63BD6908E1F49388B028BBF /* TripInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C4B276FE8F444A0929F2812 /* TripInfoViewModel.swift */; };
+		F4C06C96E78F411CA3FBC387 /* TripInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F0FC88950C4E1D8BBA6C6B /* TripInfoView.swift */; };
 		0C60AAD2AF89792CCCA7F97C /* TripSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18C8E3DF2BAC53703E2E96B /* TripSession.swift */; };
 		0DB060D4C6B1488D7C1D5B1C /* TripItemRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A02A7347CFB68D84511C78D3 /* TripItemRepository.swift */; };
 		0F6D19B39FDEDE13574FCA9E /* PackListApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95D6D8FFFD3B47DCCE24824 /* PackListApp.swift */; };
@@ -59,6 +64,11 @@
 
 /* Begin PBXFileReference section */
 		0A9DD7B960ABB165BAD88227 /* ChecklistEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistEngineTests.swift; sourceTree = "<group>"; };
+		8C4B276FE8F444A0929F2812 /* TripInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripInfoViewModel.swift; sourceTree = "<group>"; };
+		A3F0FC88950C4E1D8BBA6C6B /* TripInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripInfoView.swift; sourceTree = "<group>"; };
+		BAC8548F710E447397C72613 /* TripInfoRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripInfoRepository.swift; sourceTree = "<group>"; };
+		D1D446F9B50A4338800DE83A /* TripInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripInfo.swift; sourceTree = "<group>"; };
+		E9C6421A77A64F5F80685CCF /* SwiftDataTripInfoRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataTripInfoRepository.swift; sourceTree = "<group>"; };
 		11D2DC008310A0B5751D2B6D /* TripSessionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSessionRepository.swift; sourceTree = "<group>"; };
 		220BA469B114F4CA9F76D5B9 /* ChecklistEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistEngine.swift; sourceTree = "<group>"; };
 		238B969C326344064ADA73EB /* master_items.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = master_items.json; sourceTree = "<group>"; };
@@ -111,6 +121,7 @@
 				C4635534DA022F06CB2DC68E /* ItemInsight.swift */,
 				4E173319E9FA785CD701E449 /* MasterItem.swift */,
 				63B42C07F95BAEB97E313D96 /* PendingSuggestion.swift */,
+				D1D446F9B50A4338800DE83A /* TripInfo.swift */,
 				4B392AB686CF4CA4FC72F3E6 /* TripItem.swift */,
 				F18C8E3DF2BAC53703E2E96B /* TripSession.swift */,
 				EF21D0E1047653A5A77695FA /* Supporting */,
@@ -216,6 +227,7 @@
 				B194C4473A49789ECED2D9EF /* ItemInsightRepository.swift */,
 				4F742F88F875248408C54E06 /* MasterItemRepository.swift */,
 				3D5D1649BA80085AB9AE5112 /* PendingSuggestionRepository.swift */,
+				BAC8548F710E447397C72613 /* TripInfoRepository.swift */,
 				A02A7347CFB68D84511C78D3 /* TripItemRepository.swift */,
 				11D2DC008310A0B5751D2B6D /* TripSessionRepository.swift */,
 			);
@@ -237,6 +249,7 @@
 				D1207BA2945A0FAFFDEDA826 /* HomeViewModel.swift */,
 				5ECB5F8B386514C654BBE1E9 /* NewTripViewModel.swift */,
 				64A12C6D76A50997C8CA0800 /* TripDetailViewModel.swift */,
+				8C4B276FE8F444A0929F2812 /* TripInfoViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -255,6 +268,7 @@
 			children = (
 				A782456B8A965F7C840C4C20 /* NewTripView.swift */,
 				41ECDB90C4FDC693C96EC06B /* TripDetailView.swift */,
+				A3F0FC88950C4E1D8BBA6C6B /* TripInfoView.swift */,
 			);
 			path = Trip;
 			sourceTree = "<group>";
@@ -293,6 +307,7 @@
 				E578BE0C4491E2CE40D78899 /* SwiftDataItemInsightRepository.swift */,
 				2B0049C3396D34C32E9C1B5A /* SwiftDataMasterItemRepository.swift */,
 				7EA7237A1890C8990BA9C852 /* SwiftDataPendingSuggestionRepository.swift */,
+				E9C6421A77A64F5F80685CCF /* SwiftDataTripInfoRepository.swift */,
 				8B0A40905C8329393E1D3AA5 /* SwiftDataTripItemRepository.swift */,
 				4C981BFB10A6C71F74907257 /* SwiftDataTripSessionRepository.swift */,
 				8B546F4B226FA5984EB33E62 /* Protocols */,
@@ -421,8 +436,13 @@
 				51FE4F758881ACDC8BC76CC0 /* SwiftDataPendingSuggestionRepository.swift in Sources */,
 				563A3D38A4411B2251956D40 /* SwiftDataTripItemRepository.swift in Sources */,
 				F17B532DFDBBD86410B81069 /* SwiftDataTripSessionRepository.swift in Sources */,
+				29D3494D521F4C16BC58B557 /* SwiftDataTripInfoRepository.swift in Sources */,
+				32DAD796FAB34DAEA4F5967C /* TripInfoRepository.swift in Sources */,
+				5D501BCB2E8748B3B8AA7A56 /* TripInfo.swift in Sources */,
 				62BA8F8AD0522C440082E430 /* TripDetailView.swift in Sources */,
 				029CDAAADF9AE9B75CD99D3E /* TripDetailViewModel.swift in Sources */,
+				A63BD6908E1F49388B028BBF /* TripInfoViewModel.swift in Sources */,
+				F4C06C96E78F411CA3FBC387 /* TripInfoView.swift in Sources */,
 				4F1772C17B7DDF1963DD5D12 /* TripItem.swift in Sources */,
 				0DB060D4C6B1488D7C1D5B1C /* TripItemRepository.swift in Sources */,
 				0C60AAD2AF89792CCCA7F97C /* TripSession.swift in Sources */,

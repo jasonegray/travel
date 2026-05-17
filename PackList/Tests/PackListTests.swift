@@ -5,6 +5,76 @@ import SwiftData
 final class PackListTests: XCTestCase {
 }
 
+// MARK: - TripInfo repository integration tests
+
+@MainActor
+final class TripInfoRepositoryTests: XCTestCase {
+
+    var container: ModelContainer!
+    var context: ModelContext!
+    var repo: SwiftDataTripInfoRepository!
+
+    override func setUpWithError() throws {
+        let schema = Schema([TripSession.self, TripInfo.self, MasterItem.self, TripItem.self,
+                             ItemInsight.self, PendingSuggestion.self])
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        container = try ModelContainer(for: schema, configurations: config)
+        context = ModelContext(container)
+        repo = SwiftDataTripInfoRepository(context: context)
+    }
+
+    override func tearDown() {
+        repo = nil
+        context = nil
+        container = nil
+    }
+
+    func testInsert_persistsInfoAndLinksToTrip() async throws {
+        let trip = TripSession(name: "Test", destination: "London",
+                               departureDate: Date(), returnDate: Date())
+        context.insert(trip)
+
+        let info = TripInfo(tripId: trip.id, outboundAirline: "Air Canada",
+                            outboundFlightNumber: "AC 123")
+        trip.tripInfo = info
+        try await repo.insert(info)
+
+        let fetched = try context.fetch(FetchDescriptor<TripInfo>())
+        XCTAssertEqual(fetched.count, 1)
+        XCTAssertEqual(fetched.first?.outboundAirline, "Air Canada")
+        XCTAssertEqual(fetched.first?.outboundFlightNumber, "AC 123")
+    }
+
+    func testUpdate_persistsChanges() async throws {
+        let trip = TripSession(name: "Test", destination: "Paris",
+                               departureDate: Date(), returnDate: Date())
+        context.insert(trip)
+        let info = TripInfo(tripId: trip.id, bookingReference: "XYZ123")
+        trip.tripInfo = info
+        try await repo.insert(info)
+
+        info.bookingReference = "ABC456"
+        try await repo.update(info)
+
+        let fetched = try context.fetch(FetchDescriptor<TripInfo>())
+        XCTAssertEqual(fetched.first?.bookingReference, "ABC456")
+    }
+
+    func testDelete_removesInfo() async throws {
+        let trip = TripSession(name: "Test", destination: "Tokyo",
+                               departureDate: Date(), returnDate: Date())
+        context.insert(trip)
+        let info = TripInfo(tripId: trip.id)
+        trip.tripInfo = info
+        try await repo.insert(info)
+
+        try await repo.delete(info)
+
+        let fetched = try context.fetch(FetchDescriptor<TripInfo>())
+        XCTAssertEqual(fetched.count, 0)
+    }
+}
+
 // MARK: - Seed data validation
 
 final class SeedDataTests: XCTestCase {

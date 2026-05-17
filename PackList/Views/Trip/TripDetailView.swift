@@ -4,15 +4,17 @@ import SwiftUI
 
 struct TripDetailView: View {
     @State private var vm: TripDetailViewModel
+    @State private var infoVM: TripInfoViewModel
     @State private var selectedTab: Tab = .packing
     let initialPackingLocation: PackingLocation?
     let showTabPicker: Bool
     @Environment(\.repositories) private var repositories
 
-    enum Tab { case packing, prepTasks }
+    enum Tab { case packing, prepTasks, info }
 
     init(trip: TripSession, initialTab: Tab = .packing, initialPackingLocation: PackingLocation? = nil, showTabPicker: Bool = true) {
         _vm = State(wrappedValue: TripDetailViewModel(trip: trip))
+        _infoVM = State(wrappedValue: TripInfoViewModel(trip: trip))
         _selectedTab = State(wrappedValue: initialTab)
         self.initialPackingLocation = initialPackingLocation
         self.showTabPicker = showTabPicker
@@ -24,6 +26,7 @@ struct TripDetailView: View {
                 Picker("", selection: $selectedTab) {
                     Text("Packing").tag(Tab.packing)
                     Text("Prep tasks").tag(Tab.prepTasks)
+                    Text("Info").tag(Tab.info)
                 }
                 .pickerStyle(.segmented)
                 .padding(.horizontal)
@@ -35,6 +38,7 @@ struct TripDetailView: View {
             switch selectedTab {
             case .packing:   PackingTab(vm: vm, initialLocation: initialPackingLocation)
             case .prepTasks: PrepTab(vm: vm)
+            case .info:      TripInfoView(vm: infoVM)
             }
         }
         .navigationTitle(vm.trip.name)
@@ -42,6 +46,7 @@ struct TripDetailView: View {
         .task(id: repositories != nil) {
             guard let repos = repositories else { return }
             await vm.load(repository: repos.tripItems)
+            infoVM.loadRepository(repos.tripInfo)
         }
     }
 }
