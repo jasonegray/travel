@@ -56,18 +56,14 @@ private struct PackingTab: View {
     @State private var mode: PackingMode
     @State private var flightPouchExpanded: Bool
     @State private var expandedSections: Set<String>
+    @State private var selectedBagIndex: Int = 0
 
     init(vm: TripDetailViewModel, initialLocation: PackingLocation? = nil) {
         self.vm = vm
         self.initialLocation = initialLocation
         _flightPouchExpanded = State(wrappedValue: false)
-        if let location = initialLocation {
-            _mode = State(wrappedValue: .bags)
-            _expandedSections = State(wrappedValue: [location.rawValue])
-        } else {
-            _mode = State(wrappedValue: .category)
-            _expandedSections = State(wrappedValue: [])
-        }
+        _mode = State(wrappedValue: initialLocation != nil ? .bags : .category)
+        _expandedSections = State(wrappedValue: [])
     }
 
     var body: some View {
@@ -81,68 +77,73 @@ private struct PackingTab: View {
 
             Divider()
 
-            ScrollViewReader { proxy in
+            switch mode {
+            case .category:
                 ScrollView {
                     LazyVStack(spacing: 0) {
-                        if !vm.flightAccessibleItems.isEmpty {
-                            FlightPouchCard(
-                                items: vm.flightAccessibleItems,
-                                isExpanded: $flightPouchExpanded,
+                        flightPouchCardView
+                        ForEach(vm.categoryGroups, id: \.category) { group in
+                            CollapsiblePackingSection(
+                                id: group.category.rawValue,
+                                title: group.category.displayName,
+                                items: group.items,
+                                expandedSections: $expandedSections,
                                 onToggle: { item in
                                     withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
                                     Task { await vm.save(item: item) }
                                 }
                             )
-                            .padding(.horizontal)
-                            .padding(.top, 12)
-                            .padding(.bottom, 8)
                         }
-
-                        switch mode {
-                        case .category:
-                            ForEach(vm.categoryGroups, id: \.category) { group in
-                                CollapsiblePackingSection(
-                                    id: group.category.rawValue,
-                                    title: group.category.displayName,
-                                    items: group.items,
-                                    expandedSections: $expandedSections,
-                                    onToggle: { item in
-                                        withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
-                                        Task { await vm.save(item: item) }
-                                    }
-                                )
-                            }
-
-                        case .bags:
-                            ForEach(vm.packingGroups, id: \.location) { group in
-                                CollapsiblePackingSection(
-                                    id: group.location.rawValue,
-                                    title: group.location.displayName,
-                                    items: group.items,
-                                    expandedSections: $expandedSections,
-                                    onToggle: { item in
-                                        withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
-                                        Task { await vm.save(item: item) }
-                                    }
-                                )
-                                .id(group.location.rawValue)
-                            }
-                        }
-
                         Spacer(minLength: 32)
                     }
                 }
                 .animation(.easeInOut(duration: 0.2), value: vm.completedPacking)
-                .task {
-                    guard let location = initialLocation else { return }
-                    // Give ScrollViewReader one layout pass before scrolling; 50ms is the
-                    // minimum observed to be reliable — may silently no-op on a cold slow device.
-                    try? await Task.sleep(for: .milliseconds(50))
-                    proxy.scrollTo(location.rawValue, anchor: .top)
+
+            case .bags:
+                VStack(spacing: 0) {
+                    flightPouchCardView
+                    TabView(selection: $selectedBagIndex) {
+                        ForEach(Array(vm.packingGroups.enumerated()), id: \.offset) { index, group in
+                            BagPageView(
+                                group: group,
+                                onToggle: { item in
+                                    withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
+                                    Task { await vm.save(item: item) }
+                                }
+                            )
+                            .tag(index)
+                        }
+                    }
+                    .tabViewStyle(.page(indexDisplayMode: .always))
+                    .indexViewStyle(.page(backgroundDisplayMode: .always))
+                    .animation(.easeInOut(duration: 0.2), value: vm.completedPacking)
+                    .task(id: vm.packingGroups.count) {
+                        guard let location = initialLocation, !vm.packingGroups.isEmpty else { return }
+                        if let index = vm.packingGroups.firstIndex(where: { $0.location == location }) {
+                            selectedBagIndex = index
+                        }
+                    }
                 }
             }
         }
         .onChange(of: mode) { _, _ in expandedSections = [] }
+    }
+
+    @ViewBuilder
+    private var flightPouchCardView: some View {
+        if !vm.flightAccessibleItems.isEmpty {
+            FlightPouchCard(
+                items: vm.flightAccessibleItems,
+                isExpanded: $flightPouchExpanded,
+                onToggle: { item in
+                    withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
+                    Task { await vm.save(item: item) }
+                }
+            )
+            .padding(.horizontal)
+            .padding(.top, 12)
+            .padding(.bottom, 8)
+        }
     }
 }
 
@@ -375,6 +376,55 @@ private struct CollapsiblePackingSection: View {
             }
 
             Divider()
+        }
+    }
+}
+
+// MARK: - Bag page
+
+private struct BagPageView: View {
+    let group: (location: PackingLocation, items: [TripItem])
+    let onToggle: (TripItem) -> Void
+
+    private var remaining: Int { group.items.filter { $0.completedAt == nil }.count }
+    private var allPacked: Bool { remaining == 0 }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Text(group.location.displayName)
+                    .font(.headline)
+                Spacer()
+                if allPacked {
+                    Text("All packed ✓")
+                        .font(.caption)
+                        .fontWeight(.medium)
+                        .foregroundStyle(Color.green)
+                } else {
+                    Text("\(remaining) remaining")
+                        .font(.caption)
+                        .fontWeight(.medium)
+                        .foregroundStyle(Color.red)
+                }
+            }
+            .padding(.horizontal)
+            .padding(.vertical, 12)
+
+            Divider()
+
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    ForEach(group.items) { item in
+                        PackingRow(item: item) { onToggle(item) }
+                            .padding(.horizontal)
+                            .padding(.vertical, 2)
+                        if item.id != group.items.last?.id {
+                            Divider().padding(.leading, 52)
+                        }
+                    }
+                    Spacer(minLength: 60)
+                }
+            }
         }
     }
 }
