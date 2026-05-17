@@ -22,6 +22,11 @@ struct TripDetailView: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            if vm.trip.status == .completed {
+                TripCompletedBanner(manuallyCompletedAt: vm.trip.manuallyCompletedAt)
+                Divider()
+            }
+
             if showTabPicker {
                 Picker("", selection: $selectedTab) {
                     Text("Packing").tag(Tab.packing)
@@ -43,6 +48,24 @@ struct TripDetailView: View {
         }
         .navigationTitle(vm.trip.name)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            if vm.trip.status != .completed {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Button {
+                            Task {
+                                guard let repos = repositories else { return }
+                                await vm.markCompleted(sessions: repos.tripSessions)
+                            }
+                        } label: {
+                            Label("Mark as Completed", systemImage: "checkmark.circle")
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                    }
+                }
+            }
+        }
         .task(id: repositories != nil) {
             guard let repos = repositories else { return }
             await vm.load(repository: repos.tripItems)
@@ -550,6 +573,32 @@ private struct TaskRow: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+    }
+}
+
+// MARK: - Completed banner
+
+private struct TripCompletedBanner: View {
+    let manuallyCompletedAt: Date?
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundStyle(.green)
+            Text(manuallyCompletedAt != nil ? "Completed early" : "Completed")
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .foregroundStyle(.green)
+            if let date = manuallyCompletedAt {
+                Text("· \(date, format: .dateTime.month(.abbreviated).day().year())")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+        }
+        .padding(.horizontal)
+        .padding(.vertical, 10)
+        .background(Color.green.opacity(0.08))
     }
 }
 

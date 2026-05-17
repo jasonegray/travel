@@ -21,12 +21,24 @@ final class TripSession {
     var interacPhone: Bool
     var interacLaptop: Bool
     var hasMedicalAppointment: Bool
-    var status: TripStatus
+    var manuallyCompletedAt: Date?
     var notes: String?
     var createdAt: Date
     var updatedAt: Date
     @Relationship(deleteRule: .cascade) var items: [TripItem]
     @Relationship(deleteRule: .cascade) var tripInfo: TripInfo?
+
+    // Computed — never stored, always derived from dates + manual override.
+    // manuallyCompletedAt is the only field that "remembers" user intent.
+    var status: TripStatus {
+        if manuallyCompletedAt != nil { return .completed }
+        let today = Calendar.current.startOfDay(for: .now)
+        let retDay = Calendar.current.startOfDay(for: returnDate)
+        if retDay < today { return .completed }
+        let depDay = Calendar.current.startOfDay(for: departureDate)
+        let daysUntilDep = Calendar.current.dateComponents([.day], from: today, to: depDay).day ?? 0
+        return daysUntilDep <= 7 ? .active : .planning
+    }
 
     init(
         id: UUID = UUID(),
@@ -47,7 +59,7 @@ final class TripSession {
         interacPhone: Bool = false,
         interacLaptop: Bool = false,
         hasMedicalAppointment: Bool = false,
-        status: TripStatus = .planning,
+        manuallyCompletedAt: Date? = nil,
         notes: String? = nil,
         createdAt: Date = Date(),
         updatedAt: Date = Date(),
@@ -72,7 +84,7 @@ final class TripSession {
         self.interacPhone = interacPhone
         self.interacLaptop = interacLaptop
         self.hasMedicalAppointment = hasMedicalAppointment
-        self.status = status
+        self.manuallyCompletedAt = manuallyCompletedAt
         self.notes = notes
         self.createdAt = createdAt
         self.updatedAt = updatedAt

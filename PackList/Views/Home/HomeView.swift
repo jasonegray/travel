@@ -3,9 +3,7 @@ import SwiftUI
 struct HomeView: View {
     @State private var vm = HomeViewModel()
     @State private var showNewTrip = false
-    @State private var bagNavDest: PackingLocation?
-    @State private var tripNavTab: TripDetailView.Tab = .packing
-    @State private var navigatingToTrip = false
+    @State private var navTarget: TripNavTarget?
     @Environment(\.repositories) private var repositories
 
     var body: some View {
@@ -17,30 +15,33 @@ struct HomeView: View {
                         .foregroundStyle(.secondary)
                         .padding(.horizontal)
 
-                    if let trip = vm.activeTrip {
+                    if let trip = vm.heroTrip {
+                        // MARK: Hero card
                         ActiveTripCard(
                             trip: trip,
                             packingProgress: vm.packingProgress,
                             prepProgress: vm.prepProgress,
                             onPackingTap: {
-                                tripNavTab = .packing
-                                navigatingToTrip = true
+                                navTarget = TripNavTarget(tripId: trip.id, tab: .packing)
                             },
                             onPrepTasksTap: {
-                                tripNavTab = .prepTasks
-                                navigatingToTrip = true
+                                navTarget = TripNavTarget(tripId: trip.id, tab: .prepTasks)
                             }
                         )
                         .padding(.horizontal)
 
+                        // MARK: Bags
                         if !vm.bagsSummary.isEmpty {
                             BagsProgressView(
                                 summary: vm.bagsSummary,
-                                onBagTap: { location in bagNavDest = location }
+                                onBagTap: { location in
+                                    navTarget = TripNavTarget(tripId: trip.id, tab: .packing, location: location)
+                                }
                             )
                             .padding(.horizontal)
                         }
 
+                        // MARK: Up next
                         if !vm.upNextTasks.isEmpty {
                             UpNextView(
                                 tasks: vm.upNextTasks,
@@ -54,6 +55,30 @@ struct HomeView: View {
                             )
                             .padding(.horizontal)
                         }
+
+                        // MARK: Other upcoming trips strip
+                        if !vm.otherUpcomingTrips.isEmpty {
+                            OtherTripsStrip(
+                                trips: vm.otherUpcomingTrips,
+                                progressMap: vm.tripProgressMap,
+                                onTap: { other in
+                                    navTarget = TripNavTarget(tripId: other.id)
+                                }
+                            )
+                        }
+
+                        // MARK: Completed trips
+                        if !vm.completedTrips.isEmpty {
+                            CompletedTripsSection(
+                                trips: vm.completedTrips,
+                                progressMap: vm.tripProgressMap,
+                                onTap: { completed in
+                                    navTarget = TripNavTarget(tripId: completed.id)
+                                }
+                            )
+                            .padding(.horizontal)
+                        }
+
                     } else if !vm.isLoading {
                         EmptyHomeState(onNewTrip: { showNewTrip = true })
                             .frame(maxWidth: .infinity)
@@ -87,20 +112,24 @@ struct HomeView: View {
             }
             .onChange(of: showNewTrip) { _, isShowing in
                 guard !isShowing, let repos = repositories else { return }
-                Task { await vm.load(sessions: repos.tripSessions, tripItems: repos.tripItems) }
+                Task { await vm.load(sessions: repos.tripSessions) }
+            }
+            .onChange(of: navTarget) { old, new in
+                // Reload when navigating back from a trip detail screen
+                guard old != nil, new == nil, let repos = repositories else { return }
+                Task { await vm.load(sessions: repos.tripSessions) }
             }
             .task(id: repositories != nil) {
                 guard let repos = repositories else { return }
-                await vm.load(sessions: repos.tripSessions, tripItems: repos.tripItems)
+                await vm.load(sessions: repos.tripSessions)
             }
-            .navigationDestination(isPresented: $navigatingToTrip) {
-                if let trip = vm.activeTrip {
-                    TripDetailView(trip: trip, initialTab: tripNavTab)
-                }
-            }
-            .navigationDestination(item: $bagNavDest) { location in
-                if let trip = vm.activeTrip {
-                    TripDetailView(trip: trip, initialTab: .packing, initialPackingLocation: location)
+            .navigationDestination(item: $navTarget) { target in
+                if let trip = findTrip(id: target.tripId) {
+                    TripDetailView(
+                        trip: trip,
+                        initialTab: target.tab,
+                        initialPackingLocation: target.location
+                    )
                 }
             }
         }
@@ -113,6 +142,179 @@ struct HomeView: View {
         case 12..<17: return "Good afternoon"
         case 17..<21: return "Good evening"
         default:     return "Good night"
+        }
+    }
+
+    private func findTrip(id: UUID) -> TripSession? {
+        if vm.heroTrip?.id == id { return vm.heroTrip }
+        return (vm.otherUpcomingTrips + vm.completedTrips).first { $0.id == id }
+    }
+}
+
+// MARK: - Navigation target
+
+private struct TripNavTarget: Hashable {
+    let tripId: UUID
+    var tab: TripDetailView.Tab = .packing
+    var location: PackingLocation? = nil
+}
+
+// MARK: - Other trips strip
+
+private struct OtherTripsStrip: View {
+    let trips: [TripSession]
+    let progressMap: [UUID: (packed: Int, total: Int)]
+    let onTap: (TripSession) -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Other trips")
+                .font(.headline)
+                .padding(.horizontal)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(trips) { trip in
+                        Button { onTap(trip) } label: {
+                            TripStripCard(
+                                trip: trip,
+                                progress: progressMap[trip.id]
+                            )
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.horizontal)
+            }
+        }
+    }
+}
+
+private struct TripStripCard: View {
+    let trip: TripSession
+    let progress: (packed: Int, total: Int)?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            TripStatusBadge(status: trip.status)
+
+            Text(trip.name)
+                .font(.subheadline)
+                .fontWeight(.semibold)
+                .lineLimit(1)
+
+            Text(trip.destination)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+
+            Text(trip.departureDate, format: .dateTime.month(.abbreviated).day().year())
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            if let p = progress, p.total > 0 {
+                VStack(alignment: .leading, spacing: 3) {
+                    ThinProgressBar(
+                        fraction: Double(p.packed) / Double(p.total),
+                        color: p.packed == p.total ? .green : .accentColor
+                    )
+                    Text("\(p.packed)/\(p.total) packed")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .frame(width: 160)
+        .padding(14)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+}
+
+// MARK: - Completed trips section
+
+private struct CompletedTripsSection: View {
+    let trips: [TripSession]
+    let progressMap: [UUID: (packed: Int, total: Int)]
+    let onTap: (TripSession) -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Completed")
+                .font(.headline)
+
+            VStack(spacing: 8) {
+                ForEach(trips) { trip in
+                    Button { onTap(trip) } label: {
+                        CompletedTripCard(trip: trip, progress: progressMap[trip.id])
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+    }
+}
+
+private struct CompletedTripCard: View {
+    let trip: TripSession
+    let progress: (packed: Int, total: Int)?
+
+    private var dateRange: String {
+        "\(trip.departureDate.formatted(.dateTime.month(.abbreviated).day())) – \(trip.returnDate.formatted(.dateTime.month(.abbreviated).day().year()))"
+    }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 3) {
+                Text(trip.name)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .lineLimit(1)
+                Text(trip.destination)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                Text(dateRange)
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
+
+            Spacer()
+
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundStyle(.green)
+                .font(.title3)
+        }
+        .padding(14)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+}
+
+// MARK: - Status badge
+
+struct TripStatusBadge: View {
+    let status: TripStatus
+
+    var body: some View {
+        Text(status.displayName)
+            .font(.caption2)
+            .fontWeight(.semibold)
+            .padding(.horizontal, 7)
+            .padding(.vertical, 3)
+            .background(status.badgeColor.opacity(0.15))
+            .foregroundStyle(status.badgeColor)
+            .clipShape(Capsule())
+    }
+}
+
+private extension TripStatus {
+    var badgeColor: Color {
+        switch self {
+        case .planning:  return .blue
+        case .active:    return .green
+        case .completed: return .secondary
+        case .archived:  return .secondary
         }
     }
 }

@@ -215,22 +215,21 @@ final class NewTripViewModel {
         masterItems: any MasterItemRepository
     ) async {
         let session = TripSession(
-            name:                 finalTripName,
-            destination:          destination.trimmingCharacters(in: .whitespaces),
-            region:               region,
-            departureDate:        departureDate,
-            returnDate:           returnDate,
-            purposes:             Array(purposes),
-            weather:              weather,
-            companions:           Array(companions),
-            activities:           Array(activities),
-            laundryAvailable:     laundryAvailable,
-            carryOnOnly:          carryOnOnly,
-            business:             purposes.contains(.business),
-            interacPhone:         interacChoice.interacPhone,
-            interacLaptop:        interacChoice.interacLaptop,
-            hasMedicalAppointment: hasMedicalAppointment,
-            status:               .planning
+            name:                  finalTripName,
+            destination:           destination.trimmingCharacters(in: .whitespaces),
+            region:                region,
+            departureDate:         departureDate,
+            returnDate:            returnDate,
+            purposes:              Array(purposes),
+            weather:               weather,
+            companions:            Array(companions),
+            activities:            Array(activities),
+            laundryAvailable:      laundryAvailable,
+            carryOnOnly:           carryOnOnly,
+            business:              purposes.contains(.business),
+            interacPhone:          interacChoice.interacPhone,
+            interacLaptop:         interacChoice.interacLaptop,
+            hasMedicalAppointment: hasMedicalAppointment
         )
 
         do {

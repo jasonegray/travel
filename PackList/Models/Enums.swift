@@ -22,6 +22,15 @@ enum ActivityType: String, Codable, CaseIterable {
 
 enum TripStatus: String, Codable, CaseIterable {
     case planning, active, completed, archived
+
+    var displayName: String {
+        switch self {
+        case .planning:  return "Planning"
+        case .active:    return "Active"
+        case .completed: return "Completed"
+        case .archived:  return "Archived"
+        }
+    }
 }
 
 enum ItemCategory: String, Codable, CaseIterable {

@@ -22,12 +22,17 @@ final class SwiftDataTripSessionRepository: TripSessionRepository {
     }
 
     func fetch(status: TripStatus) async throws -> [TripSession] {
+        // status is computed — fetch all and filter in memory
         try context.fetch(FetchDescriptor<TripSession>())
             .filter { $0.status == status }
     }
 
     func insert(_ session: TripSession) async throws {
         context.insert(session)
+        try context.save()
+    }
+
+    func update(_ session: TripSession) async throws {
         try context.save()
     }
 
