@@ -12,7 +12,7 @@ final class ChecklistEngineTests: XCTestCase {
 
     override func setUpWithError() throws {
         engine = ChecklistEngine()
-        let schema = Schema([TripSession.self, MasterItem.self, TripItem.self,
+        let schema = Schema([TripSession.self, TripInfo.self, MasterItem.self, TripItem.self,
                              ItemInsight.self, PendingSuggestion.self])
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         container = try ModelContainer(for: schema, configurations: config)

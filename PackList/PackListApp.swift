@@ -10,6 +10,7 @@ struct PackListApp: App {
         }
         .modelContainer(for: [
             TripSession.self,
+            TripInfo.self,
             MasterItem.self,
             TripItem.self,
             ItemInsight.self,

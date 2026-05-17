@@ -6,6 +6,7 @@ final class RepositoryContainer {
     let masterItems: any MasterItemRepository
     let tripSessions: any TripSessionRepository
     let tripItems: any TripItemRepository
+    let tripInfo: any TripInfoRepository
     let itemInsights: any ItemInsightRepository
     let pendingSuggestions: any PendingSuggestionRepository
 
@@ -13,6 +14,7 @@ final class RepositoryContainer {
         masterItems = SwiftDataMasterItemRepository(context: modelContext)
         tripSessions = SwiftDataTripSessionRepository(context: modelContext)
         tripItems = SwiftDataTripItemRepository(context: modelContext)
+        tripInfo = SwiftDataTripInfoRepository(context: modelContext)
         itemInsights = SwiftDataItemInsightRepository(context: modelContext)
         pendingSuggestions = SwiftDataPendingSuggestionRepository(context: modelContext)
     }

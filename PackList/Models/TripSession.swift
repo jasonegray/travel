@@ -26,6 +26,7 @@ final class TripSession {
     var createdAt: Date
     var updatedAt: Date
     @Relationship(deleteRule: .cascade) var items: [TripItem]
+    @Relationship(deleteRule: .cascade) var tripInfo: TripInfo?
 
     init(
         id: UUID = UUID(),
@@ -50,7 +51,8 @@ final class TripSession {
         notes: String? = nil,
         createdAt: Date = Date(),
         updatedAt: Date = Date(),
-        items: [TripItem] = []
+        items: [TripItem] = [],
+        tripInfo: TripInfo? = nil
     ) {
         self.id = id
         self.ownerId = ownerId
@@ -75,5 +77,6 @@ final class TripSession {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.items = items
+        self.tripInfo = tripInfo
     }
 }
