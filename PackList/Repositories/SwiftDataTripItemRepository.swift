@@ -10,8 +10,10 @@ final class SwiftDataTripItemRepository: TripItemRepository {
     }
 
     func fetchAll(for tripId: UUID) async throws -> [TripItem] {
-        try context.fetch(FetchDescriptor<TripItem>())
-            .filter { $0.tripId == tripId }
+        let descriptor = FetchDescriptor<TripItem>(
+            predicate: #Predicate { $0.tripId == tripId }
+        )
+        return try context.fetch(descriptor)
     }
 
     func fetch(id: UUID) async throws -> TripItem? {
