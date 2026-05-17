@@ -58,18 +58,12 @@ final class NewTripViewModel {
     // MARK: - Derived
 
     var wizardTitle: String {
-        let label    = primaryActivityLabel
         let shortDest = destination
             .components(separatedBy: ",").first?
             .trimmingCharacters(in: .whitespaces) ?? ""
 
-        if currentStep == .activities { return "New trip" }
-
-        // Step 2+ with no destination typed yet
-        if shortDest.isEmpty { return label.isEmpty ? "New trip" : label }
-
-        // Destination available
-        return label.isEmpty ? shortDest : "\(shortDest) · \(label)"
+        if currentStep == .activities || shortDest.isEmpty { return "New trip" }
+        return shortDest
     }
 
     var skipsMedicalStep: Bool { region == .canada || region == .us }
@@ -99,24 +93,11 @@ final class NewTripViewModel {
         let dest = destination
             .components(separatedBy: ",").first?
             .trimmingCharacters(in: .whitespaces) ?? destination
-        let label = primaryActivityLabel.isEmpty ? "Trip" : primaryActivityLabel
-        return "\(dest) · \(label) · \(formattedDateRange)"
+        return "\(dest) · \(formattedDateRange)"
     }
 
     var finalTripName: String {
         tripName.trimmingCharacters(in: .whitespaces).isEmpty ? generatedTripName : tripName
-    }
-
-    private var primaryActivityLabel: String {
-        if activities.contains(.conference)   { return "Conference" }
-        if activities.contains(.golf)         { return "Golf" }
-        if activities.contains(.beach)        { return "Beach" }
-        if activities.contains(.pool)         { return "Pool" }
-        if activities.contains(.hiking)       { return "Hiking" }
-        if activities.contains(.formalDinner) { return "Dinner" }
-        if activities.contains(.workout)      { return "Workout" }
-        if activities.contains(.sightseeing)  { return "Sightseeing" }
-        return ""
     }
 
     private var formattedDateRange: String {
