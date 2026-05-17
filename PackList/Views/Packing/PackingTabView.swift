@@ -16,6 +16,7 @@ struct PackingTabView: View {
                     ProgressView()
                 } else if let trip = activeTrip {
                     TripDetailView(trip: trip, initialTab: .packing, showTabPicker: false)
+                        .id(trip.id)
                 } else {
                     NoActiveTripState(
                         systemImage: "checklist",

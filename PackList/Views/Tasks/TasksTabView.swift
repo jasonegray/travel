@@ -16,6 +16,7 @@ struct TasksTabView: View {
                     ProgressView()
                 } else if let trip = activeTrip {
                     TripDetailView(trip: trip, initialTab: .prepTasks, showTabPicker: false)
+                        .id(trip.id)
                 } else {
                     NoActiveTripState(
                         systemImage: "calendar.badge.clock",
