@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 struct HomeView: View {
     @State private var vm = HomeViewModel()
@@ -16,45 +17,8 @@ struct HomeView: View {
                         .padding(.horizontal)
 
                     if let trip = vm.heroTrip {
-                        // MARK: Hero card
-                        ActiveTripCard(
-                            trip: trip,
-                            packingProgress: vm.packingProgress,
-                            prepProgress: vm.prepProgress,
-                            onPackingTap: {
-                                navTarget = TripNavTarget(tripId: trip.id, tab: .packing)
-                            },
-                            onPrepTasksTap: {
-                                navTarget = TripNavTarget(tripId: trip.id, tab: .prepTasks)
-                            }
-                        )
-                        .padding(.horizontal)
-
-                        // MARK: Bags
-                        if !vm.bagsSummary.isEmpty {
-                            BagsProgressView(
-                                summary: vm.bagsSummary,
-                                onBagTap: { location in
-                                    navTarget = TripNavTarget(tripId: trip.id, tab: .packing, location: location)
-                                }
-                            )
-                            .padding(.horizontal)
-                        }
-
-                        // MARK: Up next
-                        if !vm.upNextTasks.isEmpty {
-                            UpNextView(
-                                tasks: vm.upNextTasks,
-                                departure: trip.departureDate,
-                                deadlineFor: vm.recommendedByDate,
-                                onComplete: { item in
-                                    withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
-                                    guard let repos = repositories else { return }
-                                    Task { await vm.save(item: item, repository: repos.tripItems) }
-                                }
-                            )
-                            .padding(.horizontal)
-                        }
+                        // MARK: Hero section (card + bags + up next) — @Query inside for reactivity
+                        HeroSection(trip: trip, vm: vm, navTarget: $navTarget)
 
                         // MARK: Other upcoming trips strip
                         if !vm.otherUpcomingTrips.isEmpty {
@@ -115,7 +79,6 @@ struct HomeView: View {
                 Task { await vm.load(sessions: repos.tripSessions) }
             }
             .onChange(of: navTarget) { old, new in
-                // Reload when navigating back from a trip detail screen
                 guard old != nil, new == nil, let repos = repositories else { return }
                 Task { await vm.load(sessions: repos.tripSessions) }
             }
@@ -148,6 +111,66 @@ struct HomeView: View {
     private func findTrip(id: UUID) -> TripSession? {
         if vm.heroTrip?.id == id { return vm.heroTrip }
         return (vm.otherUpcomingTrips + vm.completedTrips).first { $0.id == id }
+    }
+}
+
+// MARK: - Hero section container
+
+// Wraps the hero card, bags, and up-next in a single @Query scope so any change
+// to TripItem.completedAt (in this trip) immediately re-renders all three sections.
+private struct HeroSection: View {
+    let trip: TripSession
+    let vm: HomeViewModel
+    @Binding var navTarget: TripNavTarget?
+    @Environment(\.repositories) private var repositories
+
+    @Query private var items: [TripItem]
+
+    init(trip: TripSession, vm: HomeViewModel, navTarget: Binding<TripNavTarget?>) {
+        self.trip = trip
+        self.vm = vm
+        self._navTarget = navTarget
+        let tripId = trip.id
+        _items = Query(filter: #Predicate { $0.tripId == tripId })
+    }
+
+    var body: some View {
+        let tripId = trip.id
+
+        ActiveTripCard(
+            trip: trip,
+            packingProgress: vm.packingProgress(from: items),
+            prepProgress: vm.prepProgress(from: items),
+            onPackingTap: { navTarget = TripNavTarget(tripId: tripId, tab: .packing) },
+            onPrepTasksTap: { navTarget = TripNavTarget(tripId: tripId, tab: .prepTasks) }
+        )
+        .padding(.horizontal)
+
+        let bags = vm.bagsSummary(from: items)
+        if !bags.isEmpty {
+            BagsProgressView(
+                summary: bags,
+                onBagTap: { location in
+                    navTarget = TripNavTarget(tripId: tripId, tab: .packing, location: location)
+                }
+            )
+            .padding(.horizontal)
+        }
+
+        let upNext = vm.upNextTasks(from: items, departure: trip.departureDate)
+        if !upNext.isEmpty {
+            UpNextView(
+                tasks: upNext,
+                departure: trip.departureDate,
+                deadlineFor: vm.recommendedByDate,
+                onComplete: { item in
+                    withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
+                    guard let repos = repositories else { return }
+                    Task { await vm.save(item: item, repository: repos.tripItems) }
+                }
+            )
+            .padding(.horizontal)
+        }
     }
 }
 
@@ -341,8 +364,12 @@ struct ActiveTripCard: View {
                     }
                     Spacer()
                     VStack(alignment: .trailing, spacing: 3) {
-                        Text(trip.departureDate, format: .dateTime.month(.abbreviated).day().year())
-                            .font(.subheadline)
+                        HStack(spacing: 4) {
+                            Image(systemName: trip.weather.sfSymbol)
+                                .foregroundStyle(trip.weather.iconColor)
+                            Text(trip.departureDate, format: .dateTime.month(.abbreviated).day().year())
+                        }
+                        .font(.subheadline)
                         Text(daysAwayLabel)
                             .font(.caption)
                             .foregroundStyle(.tertiary)
@@ -734,6 +761,30 @@ func urgencyColor(daysUntilDeparture: Int, packingFraction: Double) -> Color {
     case 1...2:  return packingFraction < 0.80 ? .red : .blue
     case 3...6:  return packingFraction < 0.50 ? .orange : .blue
     default:     return .blue
+    }
+}
+
+// MARK: - WeatherProfile display
+
+extension WeatherProfile {
+    var sfSymbol: String {
+        switch self {
+        case .hot:   return "sun.max.fill"
+        case .warm:  return "cloud.sun.fill"
+        case .mild:  return "cloud.fill"
+        case .cold:  return "snowflake"
+        case .rainy: return "cloud.rain.fill"
+        }
+    }
+
+    var iconColor: Color {
+        switch self {
+        case .hot:   return .orange
+        case .warm:  return .yellow
+        case .mild:  return Color(.systemGray3)
+        case .cold:  return .cyan
+        case .rainy: return .blue
+        }
     }
 }
 

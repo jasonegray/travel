@@ -12,9 +12,6 @@ final class HomeViewModel {
     private(set) var tripProgressMap: [UUID: (packed: Int, total: Int)] = [:]
     private(set) var isLoading = false
 
-    // Items for the hero trip — derived from the SwiftData relationship, not a separate fetch.
-    var heroItems: [TripItem] { heroTrip?.items ?? [] }
-
     // MARK: - Load
 
     func load(sessions: any TripSessionRepository) async {
@@ -41,7 +38,7 @@ final class HomeViewModel {
             } ?? []
             completedTrips = completed
 
-            // Progress for every trip via SwiftData relationship — no N+1 async queries
+            // Progress for every trip via SwiftData relationship — used by strip/completed cards
             var map: [UUID: (packed: Int, total: Int)] = [:]
             for trip in nonArchived {
                 let physical = trip.items.filter { $0.itemType == .physical }
@@ -71,20 +68,20 @@ final class HomeViewModel {
         }
     }
 
-    // MARK: - Computed (derived from heroTrip?.items via heroItems)
+    // MARK: - Per-trip computations (accept @Query items so the caller drives reactivity)
 
-    var packingProgress: (completed: Int, total: Int) {
-        let physical = heroItems.filter { $0.itemType == .physical }
+    func packingProgress(from items: [TripItem]) -> (completed: Int, total: Int) {
+        let physical = items.filter { $0.itemType == .physical }
         return (physical.filter { $0.completedAt != nil }.count, physical.count)
     }
 
-    var prepProgress: (completed: Int, total: Int) {
-        let tasks = heroItems.filter { $0.itemType == .task }
+    func prepProgress(from items: [TripItem]) -> (completed: Int, total: Int) {
+        let tasks = items.filter { $0.itemType == .task }
         return (tasks.filter { $0.completedAt != nil }.count, tasks.count)
     }
 
-    var bagsSummary: [(location: PackingLocation, packed: Int, total: Int)] {
-        let physical = heroItems.filter { $0.itemType == .physical }
+    func bagsSummary(from items: [TripItem]) -> [(location: PackingLocation, packed: Int, total: Int)] {
+        let physical = items.filter { $0.itemType == .physical }
         let grouped = Dictionary(grouping: physical, by: \.packingLocation)
         return grouped
             .map { location, locationItems in
@@ -100,17 +97,16 @@ final class HomeViewModel {
             }
     }
 
-    var upNextTasks: [TripItem] {
-        guard let trip = heroTrip else { return [] }
-        return Array(
-            heroItems
+    func upNextTasks(from items: [TripItem], departure: Date) -> [TripItem] {
+        Array(
+            items
                 .filter { $0.itemType == .task && $0.completedAt == nil }
                 .sorted {
                     let aOrd = $0.recommendedTiming?.sortOrdinal ?? 99
                     let bOrd = $1.recommendedTiming?.sortOrdinal ?? 99
                     if aOrd != bOrd { return aOrd < bOrd }
-                    return recommendedByDate($0.recommendedTiming, departure: trip.departureDate)
-                        < recommendedByDate($1.recommendedTiming, departure: trip.departureDate)
+                    return recommendedByDate($0.recommendedTiming, departure: departure)
+                        < recommendedByDate($1.recommendedTiming, departure: departure)
                 }
                 .prefix(3)
         )
