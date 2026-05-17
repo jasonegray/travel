@@ -30,7 +30,7 @@ struct PackListApp: App {
             return try ModelContainer(migrationPlan: PackListMigrationPlan.self,
                                       configurations: config)
         } catch {
-            logger.warning("ModelContainer open failed (\(error)) — wiping PackList store and starting fresh")
+            logger.error("ModelContainer open failed (\(error)) — wiping PackList store and starting fresh")
             let storeURL = config.url
             for suffix in ["", "-shm", "-wal"] {
                 try? FileManager.default.removeItem(
