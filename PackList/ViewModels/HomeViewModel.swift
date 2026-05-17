@@ -6,9 +6,14 @@ private let logger = Logger(subsystem: "com.packlist", category: "HomeViewModel"
 @Observable
 final class HomeViewModel {
 
-    private(set) var activeTrip: TripSession?
-    private(set) var items: [TripItem] = []
+    private(set) var heroTrip: TripSession?
+    private(set) var otherUpcomingTrips: [TripSession] = []
+    private(set) var completedTrips: [TripSession] = []
+    private(set) var heroItems: [TripItem] = []
+    private(set) var tripProgressMap: [UUID: (packed: Int, total: Int)] = [:]
     private(set) var isLoading = false
+
+    // MARK: - Load
 
     func load(sessions: any TripSessionRepository,
               tripItems: any TripItemRepository) async {
@@ -16,20 +21,51 @@ final class HomeViewModel {
         isLoading = true
         defer { isLoading = false }
         do {
-            let active = try await sessions.fetch(status: .active)
-            let planning = try await sessions.fetch(status: .planning)
-            activeTrip = active.first ?? planning.first
-            if let trip = activeTrip {
-                items = try await tripItems.fetchAll(for: trip.id)
+            let all = try await sessions.fetchAll()
+            let nonArchived = all.filter { $0.status != .archived }
+
+            let nonCompleted = nonArchived
+                .filter { $0.status != .completed }
+                .sorted { $0.departureDate < $1.departureDate }
+            let completed = nonArchived
+                .filter { $0.status == .completed }
+                .sorted { $0.departureDate > $1.departureDate }
+
+            // Hero: soonest active trip; fall back to soonest planning trip
+            let active = nonCompleted.filter { $0.status == .active }
+            heroTrip = active.first ?? nonCompleted.first
+
+            if let hero = heroTrip {
+                otherUpcomingTrips = nonCompleted.filter { $0.id != hero.id }
+                heroItems = try await tripItems.fetchAll(for: hero.id)
             } else {
-                items = []
+                otherUpcomingTrips = []
+                heroItems = []
             }
+            completedTrips = completed
+
+            // Packing progress for every trip (hero items already loaded)
+            var map: [UUID: (packed: Int, total: Int)] = [:]
+            for trip in nonArchived {
+                let items: [TripItem]
+                if trip.id == heroTrip?.id {
+                    items = heroItems
+                } else {
+                    items = (try? await tripItems.fetchAll(for: trip.id)) ?? []
+                }
+                let physical = items.filter { $0.itemType == .physical }
+                map[trip.id] = (
+                    packed: physical.filter { $0.completedAt != nil }.count,
+                    total: physical.count
+                )
+            }
+            tripProgressMap = map
         } catch {
             logger.error("Load failed: \(error)")
         }
     }
 
-    // MARK: - Task actions
+    // MARK: - Hero trip task actions
 
     func toggle(item: TripItem) {
         item.completedAt = item.completedAt == nil ? Date() : nil
@@ -44,20 +80,20 @@ final class HomeViewModel {
         }
     }
 
-    // MARK: - Computed
+    // MARK: - Computed (based on heroItems)
 
     var packingProgress: (completed: Int, total: Int) {
-        let physical = items.filter { $0.itemType == .physical }
+        let physical = heroItems.filter { $0.itemType == .physical }
         return (physical.filter { $0.completedAt != nil }.count, physical.count)
     }
 
     var prepProgress: (completed: Int, total: Int) {
-        let tasks = items.filter { $0.itemType == .task }
+        let tasks = heroItems.filter { $0.itemType == .task }
         return (tasks.filter { $0.completedAt != nil }.count, tasks.count)
     }
 
     var bagsSummary: [(location: PackingLocation, packed: Int, total: Int)] {
-        let physical = items.filter { $0.itemType == .physical }
+        let physical = heroItems.filter { $0.itemType == .physical }
         let grouped = Dictionary(grouping: physical, by: \.packingLocation)
         return grouped
             .map { location, locationItems in
@@ -74,9 +110,9 @@ final class HomeViewModel {
     }
 
     var upNextTasks: [TripItem] {
-        guard let trip = activeTrip else { return [] }
+        guard let trip = heroTrip else { return [] }
         return Array(
-            items
+            heroItems
                 .filter { $0.itemType == .task && $0.completedAt == nil }
                 .sorted {
                     let aOrd = $0.recommendedTiming?.sortOrdinal ?? 99
@@ -89,26 +125,33 @@ final class HomeViewModel {
         )
     }
 
+    // MARK: - Debug
+
     #if DEBUG
     func deleteAllTrips(sessions: any TripSessionRepository) async {
         do {
             let all = try await sessions.fetchAll()
             for trip in all { try await sessions.delete(trip) }
-            activeTrip = nil
-            items = []
+            heroTrip = nil
+            otherUpcomingTrips = []
+            completedTrips = []
+            heroItems = []
+            tripProgressMap = [:]
         } catch {
             logger.error("deleteAllTrips failed: \(error)")
         }
     }
     #endif
 
+    // MARK: - Helpers
+
     func recommendedByDate(_ timing: TaskTiming?, departure: Date) -> Date {
         let cal = Calendar.current
         switch timing {
-        case .weekBefore:       return cal.date(byAdding: .day, value: -7, to: departure) ?? departure
-        case .threeDaysBefore:  return cal.date(byAdding: .day, value: -3, to: departure) ?? departure
-        case .dayBefore:        return cal.date(byAdding: .day, value: -1, to: departure) ?? departure
-        default:                return departure
+        case .weekBefore:      return cal.date(byAdding: .day, value: -7, to: departure) ?? departure
+        case .threeDaysBefore: return cal.date(byAdding: .day, value: -3, to: departure) ?? departure
+        case .dayBefore:       return cal.date(byAdding: .day, value: -1, to: departure) ?? departure
+        default:               return departure
         }
     }
 }

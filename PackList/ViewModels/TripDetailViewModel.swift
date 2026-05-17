@@ -43,6 +43,16 @@ final class TripDetailViewModel {
         }
     }
 
+    func markCompleted(sessions: any TripSessionRepository) async {
+        trip.manuallyCompletedAt = Date()
+        do {
+            try await sessions.update(trip)
+        } catch {
+            logger.error("markCompleted failed: \(error)")
+            trip.manuallyCompletedAt = nil
+        }
+    }
+
     // MARK: - Packing
 
     var packingGroups: [(location: PackingLocation, items: [TripItem])] {
