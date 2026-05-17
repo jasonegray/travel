@@ -9,14 +9,15 @@ final class HomeViewModel {
     private(set) var heroTrip: TripSession?
     private(set) var otherUpcomingTrips: [TripSession] = []
     private(set) var completedTrips: [TripSession] = []
-    private(set) var heroItems: [TripItem] = []
     private(set) var tripProgressMap: [UUID: (packed: Int, total: Int)] = [:]
     private(set) var isLoading = false
 
+    // Items for the hero trip — derived from the SwiftData relationship, not a separate fetch.
+    var heroItems: [TripItem] { heroTrip?.items ?? [] }
+
     // MARK: - Load
 
-    func load(sessions: any TripSessionRepository,
-              tripItems: any TripItemRepository) async {
+    func load(sessions: any TripSessionRepository) async {
         guard !isLoading else { return }
         isLoading = true
         defer { isLoading = false }
@@ -35,25 +36,15 @@ final class HomeViewModel {
             let active = nonCompleted.filter { $0.status == .active }
             heroTrip = active.first ?? nonCompleted.first
 
-            if let hero = heroTrip {
-                otherUpcomingTrips = nonCompleted.filter { $0.id != hero.id }
-                heroItems = try await tripItems.fetchAll(for: hero.id)
-            } else {
-                otherUpcomingTrips = []
-                heroItems = []
-            }
+            otherUpcomingTrips = heroTrip.map { hero in
+                nonCompleted.filter { $0.id != hero.id }
+            } ?? []
             completedTrips = completed
 
-            // Packing progress for every trip (hero items already loaded)
+            // Progress for every trip via SwiftData relationship — no N+1 async queries
             var map: [UUID: (packed: Int, total: Int)] = [:]
             for trip in nonArchived {
-                let items: [TripItem]
-                if trip.id == heroTrip?.id {
-                    items = heroItems
-                } else {
-                    items = (try? await tripItems.fetchAll(for: trip.id)) ?? []
-                }
-                let physical = items.filter { $0.itemType == .physical }
+                let physical = trip.items.filter { $0.itemType == .physical }
                 map[trip.id] = (
                     packed: physical.filter { $0.completedAt != nil }.count,
                     total: physical.count
@@ -80,7 +71,7 @@ final class HomeViewModel {
         }
     }
 
-    // MARK: - Computed (based on heroItems)
+    // MARK: - Computed (derived from heroTrip?.items via heroItems)
 
     var packingProgress: (completed: Int, total: Int) {
         let physical = heroItems.filter { $0.itemType == .physical }
@@ -135,7 +126,6 @@ final class HomeViewModel {
             heroTrip = nil
             otherUpcomingTrips = []
             completedTrips = []
-            heroItems = []
             tripProgressMap = [:]
         } catch {
             logger.error("deleteAllTrips failed: \(error)")

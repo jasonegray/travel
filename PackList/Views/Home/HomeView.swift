@@ -112,15 +112,16 @@ struct HomeView: View {
             }
             .onChange(of: showNewTrip) { _, isShowing in
                 guard !isShowing, let repos = repositories else { return }
-                Task { await vm.load(sessions: repos.tripSessions, tripItems: repos.tripItems) }
+                Task { await vm.load(sessions: repos.tripSessions) }
             }
-            .onAppear {
-                guard let repos = repositories else { return }
-                Task { await vm.load(sessions: repos.tripSessions, tripItems: repos.tripItems) }
+            .onChange(of: navTarget) { old, new in
+                // Reload when navigating back from a trip detail screen
+                guard old != nil, new == nil, let repos = repositories else { return }
+                Task { await vm.load(sessions: repos.tripSessions) }
             }
             .task(id: repositories != nil) {
                 guard let repos = repositories else { return }
-                await vm.load(sessions: repos.tripSessions, tripItems: repos.tripItems)
+                await vm.load(sessions: repos.tripSessions)
             }
             .navigationDestination(item: $navTarget) { target in
                 if let trip = findTrip(id: target.tripId) {
