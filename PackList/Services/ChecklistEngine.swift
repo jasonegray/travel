@@ -141,7 +141,9 @@ struct ChecklistEngine {
         nights: Int,
         activeTags: Set<ItemTag>
     ) -> TripItem {
-        TripItem(
+        let loc = item.packingLocation ?? .carryOn
+        let resolvedLocation = (session.carryOnOnly && loc == .checkedBag) ? .carryOn : loc
+        return TripItem(
             tripId: session.id,
             masterItemId: item.id,
             name: item.name,
@@ -153,7 +155,7 @@ struct ChecklistEngine {
                 activeTags: activeTags,
                 laundryAvailable: session.laundryAvailable
             ),
-            packingLocation: item.packingLocation ?? .carryOn,
+            packingLocation: resolvedLocation,
             flightAccessible: item.flightAccessible,
             recommendedTiming: item.recommendedTiming,
             source: .generated
