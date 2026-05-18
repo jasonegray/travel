@@ -108,6 +108,73 @@ final class TripInfoRepositoryTests: XCTestCase {
     }
 }
 
+// MARK: - Seed + trip-creation integration tests
+
+@MainActor
+final class SeedAndGenerationTests: XCTestCase {
+
+    var container: ModelContainer!
+    var context: ModelContext!
+    var repos: RepositoryContainer!
+
+    override func setUpWithError() throws {
+        let schema = Schema([TripSession.self, TripInfo.self, MasterItem.self,
+                             TripItem.self, ItemInsight.self, PendingSuggestion.self])
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        container = try ModelContainer(for: schema, configurations: config)
+        context = ModelContext(container)
+        repos = RepositoryContainer(modelContext: context)
+    }
+
+    override func tearDown() {
+        repos = nil
+        context = nil
+        container = nil
+    }
+
+    func testSeedPopulatesMasterList() async throws {
+        let isolated = UserDefaults(suiteName: UUID().uuidString)!
+        await ImportService(repository: repos.masterItems, defaults: isolated).seedIfNeeded()
+
+        let items = try context.fetch(FetchDescriptor<MasterItem>())
+        XCTAssertGreaterThan(items.count, 200, "Expected >200 seed items, got \(items.count)")
+        XCTAssertTrue(items.contains { $0.itemType == .physical }, "No .physical item found in seed data")
+        XCTAssertTrue(items.contains { $0.itemType == .task },    "No .task item found in seed data")
+    }
+
+    func testTripCreationGeneratesItems() async throws {
+        let isolated = UserDefaults(suiteName: UUID().uuidString)!
+        await ImportService(repository: repos.masterItems, defaults: isolated).seedIfNeeded()
+
+        let dep = Calendar.current.date(byAdding: .day, value: 14, to: .now) ?? .now
+        let ret = Calendar.current.date(byAdding: .day, value: 17, to: .now) ?? .now
+        let session = TripSession(
+            name: "Test Conference",
+            destination: "Vancouver",
+            departureDate: dep,
+            returnDate: ret,
+            weather: .mild,
+            activities: [.conference],
+            carryOnOnly: true
+        )
+
+        let activeItems = try await repos.masterItems.fetchActive()
+        let generated = ChecklistEngine().generateItems(for: session, from: activeItems)
+
+        try await repos.tripSessions.insert(session)
+        for item in generated {
+            try await repos.tripItems.insert(item)
+        }
+
+        let tripId = session.id
+        let fetched = try context.fetch(
+            FetchDescriptor<TripItem>(predicate: #Predicate { $0.tripId == tripId })
+        )
+        XCTAssertGreaterThan(fetched.count, 0, "ChecklistEngine generated 0 items for a conference trip")
+        XCTAssertTrue(fetched.allSatisfy { $0.tripId == session.id }, "Fetched TripItem has wrong tripId")
+    }
+}
+
 // MARK: - Seed data validation
 
 final class SeedDataTests: XCTestCase {
