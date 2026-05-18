@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(\.repositories) private var repositories
+
     var body: some View {
         TabView {
             HomeView()
@@ -11,6 +13,10 @@ struct ContentView: View {
                 .tabItem { Label("Tasks", systemImage: "calendar.badge.clock") }
             ProfileView()
                 .tabItem { Label("Profile", systemImage: "person.fill") }
+        }
+        .task {
+            guard let repos = repositories else { return }
+            await ImportService(repository: repos.masterItems).seedIfNeeded()
         }
     }
 }
