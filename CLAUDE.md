@@ -33,10 +33,52 @@ Native iOS app (Swift, SwiftUI, SwiftData, iOS 17+) for intelligent travel packi
 - Open a PR for every feature or fix — never commit directly to main
 - PR titles must match the issue title
 
-## Testing
-- ChecklistEngine must maintain 100% test coverage on core logic
-- New repository methods need at least one integration test
-- UI is not unit tested — manual testing on simulator is sufficient for v0.1
+## Testing standards per PR
+
+Every PR must:
+- Pass all existing tests
+- Add tests for any new repository methods
+- Add tests for any new ChecklistEngine logic  
+- Add tests for any new service methods
+- Add tests for any new @Model fields or relationships
+- Never reduce total test count
+- Never reduce code coverage percentage
+
+Coverage targets by layer:
+- Services (ChecklistEngine, ImportService): 90%+
+- Repositories: 80%+
+- ViewModels: 60%+
+- Models: 70%+
+- Views: exempt
+
+Before opening any PR, run the full test suite with coverage:
+```
+xcodebuild test -scheme PackList \
+  -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+  -enableCodeCoverage YES \
+  -resultBundlePath /tmp/PackListTestResults.xcresult
+```
+
+Then check coverage:
+```
+xcrun xccov view --report /tmp/PackListTestResults.xcresult | grep -E "(PackList/|TOTAL)"
+```
+
+If any tracked layer is below its target, or if coverage drops from the previous run, add tests before opening the PR. Never open a PR that reduces coverage.
+
+If you are unsure what tests to add, run:
+```
+xcrun xccov view --report /tmp/PackListTestResults.xcresult --json | python3 -c "
+import json,sys
+data=json.load(sys.stdin)
+for f in data.get('targets',[{}])[0].get('files',[]):
+    cov=f['lineCoverage']
+    if cov < 0.7:
+        print(f\"{cov:.0%} {f['name']}\")
+" 2>/dev/null || echo "Check coverage report manually"
+```
+
+Then write tests for any file below 70%.
 
 ## SwiftUI / HIG standards
 - Follow Apple Human Interface Guidelines strictly
@@ -86,6 +128,16 @@ v0.1 Alpha — Daily Driver. See GitHub Issues for backlog: https://github.com/j
 ---
 
 ## How Claude Code should behave
+
+### Session start template
+
+When Jason says "start a coding session", follow these steps:
+
+0. Run test-audit and include the report in the session plan:
+   Run: `test-audit`
+   Include the TESTFLIGHT READINESS, COVERAGE summary, and READY FOR NEXT SESSION sections in the session plan output. If any file is below its coverage target, flag it in the session plan so Jason can decide whether to address it before new features.
+
+1. Backlog analysis: review open GitHub issues and the project board, identify the highest-priority unblocked items, and propose a session plan.
 
 ### Before coding
 Before implementing any change:
