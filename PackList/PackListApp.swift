@@ -5,17 +5,22 @@ import os.log
 private let logger = Logger(subsystem: "com.packlist", category: "PackListApp")
 
 // PackList — travel packing list manager
+@MainActor
 @main
 struct PackListApp: App {
     private let container: ModelContainer
+    private let repositories: RepositoryContainer
 
     init() {
-        container = Self.makeContainer()
+        let c = Self.makeContainer()
+        container = c
+        repositories = RepositoryContainer(modelContext: c.mainContext)
     }
 
     var body: some Scene {
         WindowGroup {
-            AppRootView()
+            ContentView()
+                .environment(\.repositories, repositories)
         }
         .modelContainer(container)
     }
@@ -40,28 +45,6 @@ struct PackListApp: App {
             // swiftlint:disable:next force_try
             return try! ModelContainer(migrationPlan: PackListMigrationPlan.self,
                                        configurations: config)
-        }
-    }
-}
-
-private struct AppRootView: View {
-    @Environment(\.modelContext) private var modelContext
-    @State private var repositories: RepositoryContainer?
-
-    var body: some View {
-        Group {
-            if let repositories {
-                ContentView()
-                    .environment(\.repositories, repositories)
-            }
-        }
-        .onAppear {
-            guard repositories == nil else { return }
-            let repos = RepositoryContainer(modelContext: modelContext)
-            repositories = repos
-            Task {
-                await ImportService(repository: repos.masterItems).seedIfNeeded()
-            }
         }
     }
 }
