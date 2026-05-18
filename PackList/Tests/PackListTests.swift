@@ -5,6 +5,39 @@ import SwiftData
 final class PackListTests: XCTestCase {
 }
 
+// MARK: - SwiftData insert/fetch round-trip regression test
+//
+// This test catches the bug introduced by PR #119: wrapping @Model classes inside
+// a VersionedSchema enum changed their fully qualified type names, causing
+// context.fetch() to return 0 immediately after context.insert() + save().
+
+@MainActor
+final class TripSessionRoundTripTests: XCTestCase {
+
+    func testInsertAndFetchRoundTrip() throws {
+        let schema = Schema([TripSession.self, TripInfo.self, MasterItem.self,
+                             TripItem.self, ItemInsight.self, PendingSuggestion.self])
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let container = try ModelContainer(for: schema, configurations: config)
+        let context = ModelContext(container)
+
+        let session = TripSession(
+            name: "Round-trip test",
+            destination: "Tokyo",
+            departureDate: Date(),
+            returnDate: Date()
+        )
+        let insertedId = session.id
+
+        context.insert(session)
+        try context.save()
+
+        let fetched = try context.fetch(FetchDescriptor<TripSession>())
+        XCTAssertEqual(fetched.count, 1, "fetch() returned \(fetched.count) sessions immediately after insert+save on the same context")
+        XCTAssertEqual(fetched.first?.id, insertedId, "Fetched session id does not match inserted session id")
+    }
+}
+
 // MARK: - TripInfo repository integration tests
 
 @MainActor

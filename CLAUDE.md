@@ -105,6 +105,28 @@ Always ask before:
 
 State clearly: "This change is destructive — [what it affects]. Confirm before I proceed?"
 
+### SwiftData schema change protocol
+
+Any change to a `@Model` class is a DESTRUCTIVE CHANGE requiring explicit approval:
+- Adding a field to a `@Model` class
+- Removing a field from a `@Model` class
+- Renaming a field on a `@Model` class
+- Moving a `@Model` class into a namespace, enum, or nested type
+- Adding a new `@Model` class
+- Changing a `@Relationship` rule
+
+Before making any of the above changes, output:
+`NEEDS JASON: SwiftData schema change — [describe exactly what is changing and the migration risk]`
+Then stop and wait for explicit confirmation.
+
+Never wrap `@Model` classes inside enums, structs, or other types for any reason — this changes the fully qualified type name and breaks SwiftData's entity registry silently.
+
+Every PR that touches a `@Model` file must confirm:
+- [ ] Entity class names are unchanged (no nesting, no renaming)
+- [ ] New fields are `Optional` or have default values
+- [ ] `testInsertAndFetchRoundTrip()` passes
+- [ ] If migration is needed, a `VersionedSchema` + `MigrationStage` is in place AND tested
+
 ### PR checklist
 Every PR must include confirmation that all of the following pass before opening:
 
