@@ -179,6 +179,21 @@ Every PR that touches a `@Model` file must confirm:
 - [ ] `testInsertAndFetchRoundTrip()` passes
 - [ ] If migration is needed, a `VersionedSchema` + `MigrationStage` is in place AND tested
 
+### UI design requirement
+
+Any issue that creates a new screen or significantly modifies an existing screen must have a DESIGN section in the issue body before a terminal begins view code.
+
+If assigned a UI issue with no DESIGN section in the body, output:
+`NEEDS JASON: no UI design specified for this screen — add a DESIGN section to issue #[N] before proceeding`
+Then stop and wait.
+
+A DESIGN section must include at minimum:
+- Screen name and entry point
+- List of sections and fields in order
+- Any fields that are pre-filled from other data sources
+- What the primary action is
+- Any fields explicitly excluded
+
 ### PR checklist
 Every PR must include confirmation that all of the following pass before opening:
 
