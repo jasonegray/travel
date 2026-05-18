@@ -323,6 +323,72 @@ final class ChecklistEngineTests: XCTestCase {
         XCTAssertEqual(result[0].packingLocation, .carryOn)
     }
 
+    // MARK: - Edge cases
+
+    func testChecklistEngineOneDayTrip() {
+        let today = Calendar.current.startOfDay(for: Date())
+        let session = makeSession(departure: today, returnDate: today)
+        let alwaysItem = makeItem(name: "Passport", isAlwaysInclude: true, tags: [])
+        let taggedItem = makeItem(name: "Phone", tags: [.always])
+        let result = engine.generateItems(for: session, from: [alwaysItem, taggedItem])
+        XCTAssertGreaterThan(result.count, 0,
+                             "Single-day (0-night) trip must still generate always-include items")
+    }
+
+    func testChecklistEngineSameDayDeparture() {
+        let today = Calendar.current.startOfDay(for: Date())
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)!
+        let session = makeSession(departure: today, returnDate: tomorrow)
+        let alwaysItem = makeItem(name: "Wallet", isAlwaysInclude: true, tags: [])
+        let result = engine.generateItems(for: session, from: [alwaysItem])
+        XCTAssertGreaterThan(result.count, 0, "Trip departing today must still generate items")
+    }
+
+    func testChecklistEngineNoActivitiesSelected() {
+        let session = makeSession(weather: .mild, activities: [], region: .canada)
+        let alwaysItem  = makeItem(name: "Passport", isAlwaysInclude: true, tags: [])
+        let taggedItem  = makeItem(name: "Charger",  tags: [.always])
+        let golfItem    = makeItem(name: "Golf Bag", tags: [.golf])
+        let result = engine.generateItems(for: session, from: [alwaysItem, taggedItem, golfItem])
+        XCTAssertEqual(result.count, 2,
+                       "No activities: only always-include and always-tagged items must appear; activity items excluded")
+    }
+
+    func testChecklistEngineAllActivitiesSelected() {
+        let session = makeSession(activities: ActivityType.allCases)
+        let items: [MasterItem] = [
+            makeItem(name: "Golf Item",       tags: [.golf]),
+            makeItem(name: "Beach Item",      tags: [.beach]),
+            makeItem(name: "Pool Item",       tags: [.pool]),
+            makeItem(name: "Workout Item",    tags: [.workout]),
+            makeItem(name: "Conference Item", tags: [.conference]),
+            makeItem(name: "Always Item",     tags: [.always]),
+        ]
+        let result = engine.generateItems(for: session, from: items)
+        XCTAssertGreaterThan(result.count, 0,
+                             "Selecting all activities must generate items without crashing")
+    }
+
+    func testChecklistEngineAlwaysIncludeItemsAppearRegardless() {
+        let session = makeSession(weather: .mild, activities: [], region: .canada, companions: [.solo])
+        let alwaysItems = (0..<5).map { i in
+            makeItem(name: "Always-\(i)", isAlwaysInclude: true, tags: [])
+        }
+        let nonMatchItems: [MasterItem] = [
+            makeItem(name: "Golf Bag", tags: [.golf]),
+            makeItem(name: "Snorkel",  tags: [.beach]),
+            makeItem(name: "Parka",    tags: [.cold]),
+        ]
+        let result = engine.generateItems(for: session, from: alwaysItems + nonMatchItems)
+        let resultNames = Set(result.map(\.name))
+        for item in alwaysItems {
+            XCTAssertTrue(resultNames.contains(item.name),
+                          "Always-include item '\(item.name)' must appear regardless of trip profile")
+        }
+        XCTAssertEqual(result.count, alwaysItems.count,
+                       "Only the 5 always-include items must appear; non-matching tagged items excluded")
+    }
+
     // MARK: - Helpers
 
     private func makeSession(
