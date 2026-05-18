@@ -84,6 +84,7 @@ struct HomeView: View {
             }
             .task(id: repositories != nil) {
                 guard let repos = repositories else { return }
+                await ImportService(repository: repos.masterItems).seedIfNeeded()
                 await vm.load(sessions: repos.tripSessions)
             }
             .navigationDestination(item: $navTarget) { target in

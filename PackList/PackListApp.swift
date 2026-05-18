@@ -21,9 +21,6 @@ struct PackListApp: App {
         WindowGroup {
             ContentView()
                 .environment(\.repositories, repositories)
-                .task {
-                    await ImportService(repository: repositories.masterItems).seedIfNeeded()
-                }
         }
         .modelContainer(container)
     }
