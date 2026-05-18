@@ -15,7 +15,7 @@ struct PackingTabView: View {
                 if isLoading {
                     ProgressView()
                 } else if let trip = activeTrip {
-                    TripDetailView(trip: trip, initialTab: .packing, showTabPicker: false)
+                    TripDetailView(trip: trip, initialTab: .packing, showTabPicker: false, onDeleted: { Task { await loadTrip() } })
                         .id(trip.id)
                 } else {
                     NoActiveTripState(

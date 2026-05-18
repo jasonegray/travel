@@ -112,6 +112,17 @@ final class HomeViewModel {
         )
     }
 
+    // MARK: - Delete
+
+    func deleteTrip(_ trip: TripSession, sessions: any TripSessionRepository) async {
+        do {
+            try await sessions.delete(trip)
+            await load(sessions: sessions)
+        } catch {
+            logger.error("deleteTrip failed: \(error)")
+        }
+    }
+
     // MARK: - Debug
 
     #if DEBUG

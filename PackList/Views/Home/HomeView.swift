@@ -5,6 +5,7 @@ struct HomeView: View {
     @State private var vm = HomeViewModel()
     @State private var showNewTrip = false
     @State private var navTarget: TripNavTarget?
+    @State private var tripToDelete: TripSession?
     @Environment(\.repositories) private var repositories
 
     var body: some View {
@@ -19,6 +20,13 @@ struct HomeView: View {
                     if let trip = vm.heroTrip {
                         // MARK: Hero section (card + bags + up next) — @Query inside for reactivity
                         HeroSection(trip: trip, vm: vm, navTarget: $navTarget)
+                            .contextMenu {
+                                Button(role: .destructive) {
+                                    tripToDelete = trip
+                                } label: {
+                                    Label("Delete Trip", systemImage: "trash")
+                                }
+                            }
 
                         // MARK: Other upcoming trips strip
                         if !vm.otherUpcomingTrips.isEmpty {
@@ -27,7 +35,8 @@ struct HomeView: View {
                                 progressMap: vm.tripProgressMap,
                                 onTap: { other in
                                     navTarget = TripNavTarget(tripId: other.id)
-                                }
+                                },
+                                onDelete: { trip in tripToDelete = trip }
                             )
                         }
 
@@ -38,7 +47,8 @@ struct HomeView: View {
                                 progressMap: vm.tripProgressMap,
                                 onTap: { completed in
                                     navTarget = TripNavTarget(tripId: completed.id)
-                                }
+                                },
+                                onDelete: { trip in tripToDelete = trip }
                             )
                             .padding(.horizontal)
                         }
@@ -92,9 +102,24 @@ struct HomeView: View {
                     TripDetailView(
                         trip: trip,
                         initialTab: target.tab,
-                        initialPackingLocation: target.location
+                        initialPackingLocation: target.location,
+                        onDeleted: { navTarget = nil }
                     )
                 }
+            }
+            .confirmationDialog(
+                "Delete \"\(tripToDelete?.name ?? "")\"?",
+                isPresented: Binding(get: { tripToDelete != nil }, set: { if !$0 { tripToDelete = nil } }),
+                titleVisibility: .visible
+            ) {
+                Button("Delete", role: .destructive) {
+                    guard let trip = tripToDelete, let repos = repositories else { return }
+                    tripToDelete = nil
+                    Task { await vm.deleteTrip(trip, sessions: repos.tripSessions) }
+                }
+                Button("Cancel", role: .cancel) { tripToDelete = nil }
+            } message: {
+                Text("This cannot be undone.")
             }
         }
     }
@@ -189,6 +214,7 @@ private struct OtherTripsStrip: View {
     let trips: [TripSession]
     let progressMap: [UUID: (packed: Int, total: Int)]
     let onTap: (TripSession) -> Void
+    let onDelete: (TripSession) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -206,6 +232,11 @@ private struct OtherTripsStrip: View {
                             )
                         }
                         .buttonStyle(.plain)
+                        .contextMenu {
+                            Button(role: .destructive) { onDelete(trip) } label: {
+                                Label("Delete Trip", systemImage: "trash")
+                            }
+                        }
                     }
                 }
                 .padding(.horizontal)
@@ -261,6 +292,7 @@ private struct CompletedTripsSection: View {
     let trips: [TripSession]
     let progressMap: [UUID: (packed: Int, total: Int)]
     let onTap: (TripSession) -> Void
+    let onDelete: (TripSession) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -273,6 +305,11 @@ private struct CompletedTripsSection: View {
                         CompletedTripCard(trip: trip, progress: progressMap[trip.id])
                     }
                     .buttonStyle(.plain)
+                    .contextMenu {
+                        Button(role: .destructive) { onDelete(trip) } label: {
+                            Label("Delete Trip", systemImage: "trash")
+                        }
+                    }
                 }
             }
         }
