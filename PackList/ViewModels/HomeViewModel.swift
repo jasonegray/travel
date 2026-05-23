@@ -115,6 +115,13 @@ final class HomeViewModel {
     // MARK: - Delete
 
     func deleteTrip(_ trip: TripSession, sessions: any TripSessionRepository) async {
+        // Clear state before deletion so SwiftUI stops rendering the object.
+        // Accessing properties on a SwiftData object after context.delete() causes EXC_BAD_ACCESS.
+        if heroTrip?.id == trip.id { heroTrip = nil }
+        otherUpcomingTrips = otherUpcomingTrips.filter { $0.id != trip.id }
+        completedTrips = completedTrips.filter { $0.id != trip.id }
+        tripProgressMap[trip.id] = nil
+
         do {
             try await sessions.delete(trip)
             await load(sessions: sessions)
