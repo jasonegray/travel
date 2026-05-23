@@ -1,7 +1,4 @@
 import Foundation
-import os.log
-
-private let logger = Logger(subsystem: "com.packlist", category: "ProfileViewModel")
 
 enum AppearancePreference: String, CaseIterable {
     case system = "System"
