@@ -78,8 +78,11 @@ struct TripDetailView: View {
             Button("Delete", role: .destructive) {
                 Task {
                     guard let repos = repositories else { return }
-                    await vm.deleteTrip(sessions: repos.tripSessions)
+                    // Navigate away first so SwiftUI stops rendering this view before
+                    // the TripSession is tombstoned — otherwise the pop animation accesses
+                    // deleted object properties and causes EXC_BAD_ACCESS.
                     onDeleted?()
+                    await vm.deleteTrip(sessions: repos.tripSessions)
                 }
             }
             Button("Cancel", role: .cancel) {}
