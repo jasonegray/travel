@@ -301,6 +301,13 @@ final class TripInfoViewModelShareTests: XCTestCase {
                       "Apple Maps URL must be URL-encoded")
     }
 
+    func testShareSummary_hotelSection_encodesPlusSign() {
+        vm.accommodationName = "M+G London"
+        let summary = vm.shareSummary
+        XCTAssertTrue(summary.contains("%2B"), "Apple Maps URL must percent-encode + as %2B")
+        XCTAssertFalse(summary.contains("?q=M+G"), "Literal + in query value must not appear unencoded")
+    }
+
     func testShareSummary_omitsLoyaltyFooterWhenNoNumbers() {
         let summary = vm.shareSummary
         XCTAssertFalse(summary.contains("—"), "Loyalty footer must be absent when no numbers are set")

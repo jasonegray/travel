@@ -170,7 +170,9 @@ final class TripInfoViewModel {
 
     private func hotelSection() -> [String]? {
         guard let name = accommodationName.nilIfEmpty else { return nil }
-        let encoded = name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? name
+        var allowed = CharacterSet.urlQueryAllowed
+        allowed.remove(charactersIn: "+&=")
+        let encoded = name.addingPercentEncoding(withAllowedCharacters: allowed) ?? name
         return ["HOTEL", name, "https://maps.apple.com/?q=\(encoded)"]
     }
 
