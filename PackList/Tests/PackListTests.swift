@@ -82,15 +82,15 @@ final class TripInfoRepositoryTests: XCTestCase {
         let trip = TripSession(name: "Test", destination: "Paris",
                                departureDate: Date(), returnDate: Date())
         context.insert(trip)
-        let info = TripInfo(tripId: trip.id, bookingReference: "XYZ123")
+        let info = TripInfo(tripId: trip.id, accommodationName: "Hotel Alpha")
         trip.tripInfo = info
         try await repo.insert(info)
 
-        info.bookingReference = "ABC456"
+        info.accommodationName = "Hotel Beta"
         try await repo.update(info)
 
         let fetched = try context.fetch(FetchDescriptor<TripInfo>())
-        XCTAssertEqual(fetched.first?.bookingReference, "ABC456")
+        XCTAssertEqual(fetched.first?.accommodationName, "Hotel Beta")
     }
 
     func testDelete_removesInfo() async throws {
@@ -582,9 +582,6 @@ final class TripPersistenceTests: XCTestCase {
                                   departureDate: .now, returnDate: .now)
         context.insert(session)
         let dep = Date(timeIntervalSinceNow: 86_400)
-        let arr = Date(timeIntervalSinceNow: 90_000)
-        let checkIn = Date(timeIntervalSinceNow: 93_600)
-        let checkOut = Date(timeIntervalSinceNow: 180_000)
 
         let info = TripInfo(
             tripId: session.id,
@@ -593,15 +590,7 @@ final class TripPersistenceTests: XCTestCase {
             outboundDepartureAirport: "YYZ",
             outboundDepartureTime: dep,
             outboundArrivalAirport: "LHR",
-            outboundArrivalTime: arr,
-            bookingReference: "ABC123",
-            outboundSeatNumber: "12A",
-            accommodationName: "The Savoy",
-            accommodationAddress: "Strand, London",
-            checkIn: checkIn,
-            checkOut: checkOut,
-            accommodationConfirmation: "CONF456",
-            accommodationPhone: "+44-20-7836-4343"
+            accommodationName: "The Savoy"
         )
         session.tripInfo = info
         try await repos.tripInfo.insert(info)
@@ -613,12 +602,7 @@ final class TripPersistenceTests: XCTestCase {
         XCTAssertEqual(f.outboundFlightNumber, "BA 092", "outboundFlightNumber mismatch")
         XCTAssertEqual(f.outboundDepartureAirport, "YYZ", "outboundDepartureAirport mismatch")
         XCTAssertEqual(f.outboundArrivalAirport, "LHR", "outboundArrivalAirport mismatch")
-        XCTAssertEqual(f.bookingReference, "ABC123", "bookingReference mismatch")
-        XCTAssertEqual(f.outboundSeatNumber, "12A", "outboundSeatNumber mismatch")
         XCTAssertEqual(f.accommodationName, "The Savoy", "accommodationName mismatch")
-        XCTAssertEqual(f.accommodationAddress, "Strand, London", "accommodationAddress mismatch")
-        XCTAssertEqual(f.accommodationConfirmation, "CONF456", "accommodationConfirmation mismatch")
-        XCTAssertEqual(f.accommodationPhone, "+44-20-7836-4343", "accommodationPhone mismatch")
     }
 
     // Test 6

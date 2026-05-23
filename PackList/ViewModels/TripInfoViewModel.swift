@@ -14,7 +14,6 @@ final class TripInfoViewModel {
     var outboundDepartureAirport: String = ""
     var outboundDepartureTime: Date?
     var outboundArrivalAirport: String = ""
-    var outboundArrivalTime: Date?
 
     // Return flight
     var returnAirline: String = ""
@@ -22,20 +21,9 @@ final class TripInfoViewModel {
     var returnDepartureAirport: String = ""
     var returnDepartureTime: Date?
     var returnArrivalAirport: String = ""
-    var returnArrivalTime: Date?
-
-    // Booking
-    var bookingReference: String = ""
-    var outboundSeatNumber: String = ""
-    var returnSeatNumber: String = ""
 
     // Accommodation
     var accommodationName: String = ""
-    var accommodationAddress: String = ""
-    var checkIn: Date?
-    var checkOut: Date?
-    var accommodationConfirmation: String = ""
-    var accommodationPhone: String = ""
 
     private var isSaving = false
     private var saveTask: Task<Void, Never>?
@@ -51,27 +39,17 @@ final class TripInfoViewModel {
 
     private func loadFromModel() {
         guard let info = trip.tripInfo else { return }
-        outboundAirline           = info.outboundAirline ?? ""
-        outboundFlightNumber      = info.outboundFlightNumber ?? ""
-        outboundDepartureAirport  = info.outboundDepartureAirport ?? ""
-        outboundDepartureTime     = info.outboundDepartureTime
-        outboundArrivalAirport    = info.outboundArrivalAirport ?? ""
-        outboundArrivalTime       = info.outboundArrivalTime
-        returnAirline             = info.returnAirline ?? ""
-        returnFlightNumber        = info.returnFlightNumber ?? ""
-        returnDepartureAirport    = info.returnDepartureAirport ?? ""
-        returnDepartureTime       = info.returnDepartureTime
-        returnArrivalAirport      = info.returnArrivalAirport ?? ""
-        returnArrivalTime         = info.returnArrivalTime
-        bookingReference          = info.bookingReference ?? ""
-        outboundSeatNumber        = info.outboundSeatNumber ?? ""
-        returnSeatNumber          = info.returnSeatNumber ?? ""
-        accommodationName         = info.accommodationName ?? ""
-        accommodationAddress      = info.accommodationAddress ?? ""
-        checkIn                   = info.checkIn
-        checkOut                  = info.checkOut
-        accommodationConfirmation = info.accommodationConfirmation ?? ""
-        accommodationPhone        = info.accommodationPhone ?? ""
+        outboundAirline          = info.outboundAirline ?? ""
+        outboundFlightNumber     = info.outboundFlightNumber ?? ""
+        outboundDepartureAirport = info.outboundDepartureAirport ?? ""
+        outboundDepartureTime    = info.outboundDepartureTime
+        outboundArrivalAirport   = info.outboundArrivalAirport ?? ""
+        returnAirline            = info.returnAirline ?? ""
+        returnFlightNumber       = info.returnFlightNumber ?? ""
+        returnDepartureAirport   = info.returnDepartureAirport ?? ""
+        returnDepartureTime      = info.returnDepartureTime
+        returnArrivalAirport     = info.returnArrivalAirport ?? ""
+        accommodationName        = info.accommodationName ?? ""
     }
 
     // MARK: - Auto-save
@@ -117,22 +95,12 @@ final class TripInfoViewModel {
         info.outboundDepartureAirport = outboundDepartureAirport.nilIfEmpty
         info.outboundDepartureTime    = outboundDepartureTime
         info.outboundArrivalAirport   = outboundArrivalAirport.nilIfEmpty
-        info.outboundArrivalTime      = outboundArrivalTime
         info.returnAirline            = returnAirline.nilIfEmpty
         info.returnFlightNumber       = returnFlightNumber.nilIfEmpty
         info.returnDepartureAirport   = returnDepartureAirport.nilIfEmpty
         info.returnDepartureTime      = returnDepartureTime
         info.returnArrivalAirport     = returnArrivalAirport.nilIfEmpty
-        info.returnArrivalTime        = returnArrivalTime
-        info.bookingReference         = bookingReference.nilIfEmpty
-        info.outboundSeatNumber       = outboundSeatNumber.nilIfEmpty
-        info.returnSeatNumber         = returnSeatNumber.nilIfEmpty
         info.accommodationName        = accommodationName.nilIfEmpty
-        info.accommodationAddress     = accommodationAddress.nilIfEmpty
-        info.checkIn                  = checkIn
-        info.checkOut                 = checkOut
-        info.accommodationConfirmation = accommodationConfirmation.nilIfEmpty
-        info.accommodationPhone       = accommodationPhone.nilIfEmpty
         info.updatedAt                = Date()
     }
 
@@ -154,77 +122,78 @@ final class TripInfoViewModel {
             lines.append("")
             lines.append(contentsOf: section)
         }
-        if let section = accommodationSection() {
+        if let section = hotelSection() {
             lines.append("")
             lines.append(contentsOf: section)
+        }
+        if let footer = loyaltyFooter() {
+            lines.append("")
+            lines.append(contentsOf: footer)
         }
 
         return lines.joined(separator: "\n")
     }
 
     private func outboundFlightSection() -> [String]? {
-        var fields: [String] = []
+        guard let flightNumber = outboundFlightNumber.nilIfEmpty else { return nil }
 
-        let flightLabel = [outboundAirline.nilIfEmpty, outboundFlightNumber.nilIfEmpty].compactMap { $0 }.joined(separator: " ")
-        if !flightLabel.isEmpty { fields.append(flightLabel) }
+        var flightLine = outboundAirline.nilIfEmpty.map { "\($0) \(flightNumber)" } ?? flightNumber
 
-        switch (outboundDepartureAirport.nilIfEmpty, outboundArrivalAirport.nilIfEmpty) {
-        case let (dep?, arr?): fields.append("\(dep) → \(arr)")
-        case let (dep?, nil): fields.append("From: \(dep)")
-        case let (nil, arr?): fields.append("To: \(arr)")
-        default: break
-        }
+        let dep = outboundDepartureAirport.nilIfEmpty
+        let arr = outboundArrivalAirport.nilIfEmpty
+        if let dep, let arr      { flightLine += " · \(dep) → \(arr)" }
+        else if let dep          { flightLine += " · From: \(dep)" }
+        else if let arr          { flightLine += " · To: \(arr)" }
 
-        if let t = outboundDepartureTime { fields.append("Departs: \(formatDateTime(t))") }
-        if let t = outboundArrivalTime   { fields.append("Arrives: \(formatDateTime(t))") }
-        if let s = outboundSeatNumber.nilIfEmpty { fields.append("Seat: \(s)") }
-        if let r = bookingReference.nilIfEmpty   { fields.append("Booking: \(r)") }
+        if let t = outboundDepartureTime { flightLine += " · \(formatDateTime(t))" }
 
-        guard !fields.isEmpty else { return nil }
-        return ["OUTBOUND FLIGHT"] + fields
+        let flightAwareId = flightNumber.replacingOccurrences(of: " ", with: "")
+        return ["OUTBOUND", flightLine, "https://flightaware.com/live/flight/\(flightAwareId)"]
     }
 
     private func returnFlightSection() -> [String]? {
-        var fields: [String] = []
+        guard let flightNumber = returnFlightNumber.nilIfEmpty else { return nil }
 
-        let flightLabel = [returnAirline.nilIfEmpty, returnFlightNumber.nilIfEmpty].compactMap { $0 }.joined(separator: " ")
-        if !flightLabel.isEmpty { fields.append(flightLabel) }
+        var flightLine = returnAirline.nilIfEmpty.map { "\($0) \(flightNumber)" } ?? flightNumber
 
-        switch (returnDepartureAirport.nilIfEmpty, returnArrivalAirport.nilIfEmpty) {
-        case let (dep?, arr?): fields.append("\(dep) → \(arr)")
-        case let (dep?, nil): fields.append("From: \(dep)")
-        case let (nil, arr?): fields.append("To: \(arr)")
-        default: break
-        }
+        let dep = returnDepartureAirport.nilIfEmpty
+        let arr = returnArrivalAirport.nilIfEmpty
+        if let dep, let arr      { flightLine += " · \(dep) → \(arr)" }
+        else if let dep          { flightLine += " · From: \(dep)" }
+        else if let arr          { flightLine += " · To: \(arr)" }
 
-        if let t = returnDepartureTime { fields.append("Departs: \(formatDateTime(t))") }
-        if let t = returnArrivalTime   { fields.append("Arrives: \(formatDateTime(t))") }
-        if let s = returnSeatNumber.nilIfEmpty { fields.append("Seat: \(s)") }
+        if let t = returnDepartureTime { flightLine += " · \(formatDateTime(t))" }
 
-        guard !fields.isEmpty else { return nil }
-        return ["RETURN FLIGHT"] + fields
+        let flightAwareId = flightNumber.replacingOccurrences(of: " ", with: "")
+        return ["RETURN", flightLine, "https://flightaware.com/live/flight/\(flightAwareId)"]
     }
 
-    private func accommodationSection() -> [String]? {
-        var fields: [String] = []
+    private func hotelSection() -> [String]? {
+        guard let name = accommodationName.nilIfEmpty else { return nil }
+        var allowed = CharacterSet.urlQueryAllowed
+        allowed.remove(charactersIn: "+&=")
+        let encoded = name.addingPercentEncoding(withAllowedCharacters: allowed) ?? name
+        return ["HOTEL", name, "https://maps.apple.com/?q=\(encoded)"]
+    }
 
-        if let n = accommodationName.nilIfEmpty    { fields.append(n) }
-        if let a = accommodationAddress.nilIfEmpty { fields.append(a) }
-        if let d = checkIn  { fields.append("Check-in: \(formatDate(d))") }
-        if let d = checkOut { fields.append("Check-out: \(formatDate(d))") }
-        if let c = accommodationConfirmation.nilIfEmpty { fields.append("Confirmation: \(c)") }
-        if let p = accommodationPhone.nilIfEmpty        { fields.append("Phone: \(p)") }
+    private func loyaltyFooter() -> [String]? {
+        let defaults = UserDefaults.standard
+        let aeroplan = defaults.string(forKey: "profile_aeroplan_number")?.nilIfEmpty
+        let bonvoy   = defaults.string(forKey: "profile_bonvoy_number")?.nilIfEmpty
 
-        guard !fields.isEmpty else { return nil }
-        return ["ACCOMMODATION"] + fields
+        guard aeroplan != nil || bonvoy != nil else { return nil }
+
+        var lines: [String] = ["—"]
+        if let name = defaults.string(forKey: "profile_full_name")?.nilIfEmpty {
+            lines.append(name)
+        }
+        if let n = aeroplan { lines.append("Aeroplan Super Elite: \(n)") }
+        if let n = bonvoy   { lines.append("Marriott Titanium Elite: \(n)") }
+        return lines
     }
 
     private func formatDateTime(_ date: Date) -> String {
         date.formatted(.dateTime.month(.abbreviated).day().year().hour().minute())
-    }
-
-    private func formatDate(_ date: Date) -> String {
-        date.formatted(.dateTime.month(.abbreviated).day().year())
     }
 }
 

@@ -9,7 +9,6 @@ struct TripInfoView: View {
         Form {
             outboundSection
             returnSection
-            bookingSection
             accommodationSection
         }
         .toolbar {
@@ -31,20 +30,14 @@ struct TripInfoView: View {
                 .onChange(of: vm.outboundFlightNumber) { vm.scheduleAutoSave() }
             InfoRow("Departure airport", text: $vm.outboundDepartureAirport, placeholder: "e.g. YYZ")
                 .onChange(of: vm.outboundDepartureAirport) { vm.scheduleAutoSave() }
+            InfoRow("Arrival airport", text: $vm.outboundArrivalAirport, placeholder: "e.g. LHR")
+                .onChange(of: vm.outboundArrivalAirport) { vm.scheduleAutoSave() }
             OptionalDateRow(
                 label: "Departure time",
                 date: $vm.outboundDepartureTime,
                 defaultDate: vm.trip.departureDate
             )
             .onChange(of: vm.outboundDepartureTime) { vm.scheduleAutoSave() }
-            InfoRow("Arrival airport", text: $vm.outboundArrivalAirport, placeholder: "e.g. LHR")
-                .onChange(of: vm.outboundArrivalAirport) { vm.scheduleAutoSave() }
-            OptionalDateRow(
-                label: "Arrival time",
-                date: $vm.outboundArrivalTime,
-                defaultDate: vm.trip.departureDate
-            )
-            .onChange(of: vm.outboundArrivalTime) { vm.scheduleAutoSave() }
         }
     }
 
@@ -58,62 +51,23 @@ struct TripInfoView: View {
                 .onChange(of: vm.returnFlightNumber) { vm.scheduleAutoSave() }
             InfoRow("Departure airport", text: $vm.returnDepartureAirport, placeholder: "e.g. LHR")
                 .onChange(of: vm.returnDepartureAirport) { vm.scheduleAutoSave() }
+            InfoRow("Arrival airport", text: $vm.returnArrivalAirport, placeholder: "e.g. YYZ")
+                .onChange(of: vm.returnArrivalAirport) { vm.scheduleAutoSave() }
             OptionalDateRow(
                 label: "Departure time",
                 date: $vm.returnDepartureTime,
                 defaultDate: vm.trip.returnDate
             )
             .onChange(of: vm.returnDepartureTime) { vm.scheduleAutoSave() }
-            InfoRow("Arrival airport", text: $vm.returnArrivalAirport, placeholder: "e.g. YYZ")
-                .onChange(of: vm.returnArrivalAirport) { vm.scheduleAutoSave() }
-            OptionalDateRow(
-                label: "Arrival time",
-                date: $vm.returnArrivalTime,
-                defaultDate: vm.trip.returnDate
-            )
-            .onChange(of: vm.returnArrivalTime) { vm.scheduleAutoSave() }
-        }
-    }
-
-    // MARK: - Booking
-
-    private var bookingSection: some View {
-        Section("Booking") {
-            InfoRow("Booking ref / PNR", text: $vm.bookingReference, placeholder: "e.g. ABCD12")
-                .onChange(of: vm.bookingReference) { vm.scheduleAutoSave() }
-            InfoRow("Seat (outbound)", text: $vm.outboundSeatNumber, placeholder: "e.g. 23A")
-                .onChange(of: vm.outboundSeatNumber) { vm.scheduleAutoSave() }
-            InfoRow("Seat (return)", text: $vm.returnSeatNumber, placeholder: "e.g. 15C")
-                .onChange(of: vm.returnSeatNumber) { vm.scheduleAutoSave() }
         }
     }
 
     // MARK: - Accommodation
 
     private var accommodationSection: some View {
-        Section("Accommodation") {
-            InfoRow("Hotel / Airbnb", text: $vm.accommodationName, placeholder: "e.g. Marriott London", capitalization: .words)
+        Section("Hotel") {
+            InfoRow("Hotel name", text: $vm.accommodationName, placeholder: "e.g. Marriott London", capitalization: .words)
                 .onChange(of: vm.accommodationName) { vm.scheduleAutoSave() }
-            InfoRow("Address", text: $vm.accommodationAddress, placeholder: "Street address", capitalization: .words)
-                .onChange(of: vm.accommodationAddress) { vm.scheduleAutoSave() }
-            OptionalDateRow(
-                label: "Check-in",
-                date: $vm.checkIn,
-                defaultDate: vm.trip.departureDate,
-                dateOnly: true
-            )
-            .onChange(of: vm.checkIn) { vm.scheduleAutoSave() }
-            OptionalDateRow(
-                label: "Check-out",
-                date: $vm.checkOut,
-                defaultDate: vm.trip.returnDate,
-                dateOnly: true
-            )
-            .onChange(of: vm.checkOut) { vm.scheduleAutoSave() }
-            InfoRow("Confirmation", text: $vm.accommodationConfirmation, placeholder: "Booking confirmation number")
-                .onChange(of: vm.accommodationConfirmation) { vm.scheduleAutoSave() }
-            InfoRow("Property phone", text: $vm.accommodationPhone, placeholder: "e.g. +44 20 1234 5678", keyboardType: .phonePad)
-                .onChange(of: vm.accommodationPhone) { vm.scheduleAutoSave() }
         }
     }
 }
@@ -154,11 +108,8 @@ private struct OptionalDateRow: View {
     let label: String
     @Binding var date: Date?
     let defaultDate: Date
-    var dateOnly: Bool = false
 
     @State private var isExpanded = false
-
-    private var components: DatePickerComponents { dateOnly ? .date : [.date, .hourAndMinute] }
 
     var body: some View {
         Button {
@@ -172,7 +123,7 @@ private struct OptionalDateRow: View {
                     .foregroundStyle(.primary)
                 Spacer()
                 if let d = date {
-                    Text(formattedDate(d))
+                    Text(d.formatted(.dateTime.month(.abbreviated).day().year().hour().minute()))
                         .foregroundStyle(.secondary)
                         .font(.subheadline)
                 } else {
@@ -196,7 +147,7 @@ private struct OptionalDateRow: View {
                     get: { date ?? defaultDate },
                     set: { date = $0 }
                 ),
-                displayedComponents: components
+                displayedComponents: [.date, .hourAndMinute]
             )
             .labelsHidden()
 
@@ -210,14 +161,6 @@ private struct OptionalDateRow: View {
                 .font(.callout)
                 .frame(maxWidth: .infinity, alignment: .trailing)
             }
-        }
-    }
-
-    private func formattedDate(_ d: Date) -> String {
-        if dateOnly {
-            return d.formatted(.dateTime.month(.abbreviated).day().year())
-        } else {
-            return d.formatted(.dateTime.month(.abbreviated).day().year().hour().minute())
         }
     }
 }
