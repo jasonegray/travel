@@ -768,6 +768,86 @@ final class CoreUserFlowTests: XCTestCase {
     }
 }
 
+// MARK: - ProfileViewModel tests
+
+final class ProfileViewModelTests: XCTestCase {
+
+    // Test 22
+    func testInitWithEmptyDefaultsUsesExpectedDefaults() {
+        let isolated = UserDefaults(suiteName: UUID().uuidString)!
+        let vm = ProfileViewModel(defaults: isolated)
+        XCTAssertEqual(vm.fullName, "")
+        XCTAssertEqual(vm.homeAirport, "")
+        XCTAssertEqual(vm.aeroplanNumber, "")
+        XCTAssertEqual(vm.aeroplanTier, .none)
+        XCTAssertEqual(vm.bonvoyNumber, "")
+        XCTAssertEqual(vm.bonvoyTier, .member)
+        XCTAssertEqual(vm.appearance, .system)
+    }
+
+    // Test 23
+    func testSaveWritesAllFieldsToUserDefaults() {
+        let isolated = UserDefaults(suiteName: UUID().uuidString)!
+        let vm = ProfileViewModel(defaults: isolated)
+        vm.fullName = "Jason Gray"
+        vm.homeAirport = "YYZ"
+        vm.aeroplanNumber = "123456789"
+        vm.aeroplanTier = .superElite
+        vm.bonvoyNumber = "987654321"
+        vm.bonvoyTier = .titaniumElite
+        vm.appearance = .dark
+        vm.save()
+
+        XCTAssertEqual(isolated.string(forKey: "profile_full_name"), "Jason Gray")
+        XCTAssertEqual(isolated.string(forKey: "profile_home_airport"), "YYZ")
+        XCTAssertEqual(isolated.string(forKey: "profile_aeroplan_number"), "123456789")
+        XCTAssertEqual(isolated.string(forKey: "profile_aeroplan_tier"), "Super Elite")
+        XCTAssertEqual(isolated.string(forKey: "profile_bonvoy_number"), "987654321")
+        XCTAssertEqual(isolated.string(forKey: "profile_bonvoy_tier"), "Titanium Elite")
+        XCTAssertEqual(isolated.string(forKey: "profile_appearance"), "Dark")
+    }
+
+    // Test 24
+    func testInitReadsPersistedValuesFromUserDefaults() {
+        let isolated = UserDefaults(suiteName: UUID().uuidString)!
+        isolated.set("Jason Gray", forKey: "profile_full_name")
+        isolated.set("YYZ", forKey: "profile_home_airport")
+        isolated.set("123456789", forKey: "profile_aeroplan_number")
+        isolated.set("Super Elite", forKey: "profile_aeroplan_tier")
+        isolated.set("987654321", forKey: "profile_bonvoy_number")
+        isolated.set("Titanium Elite", forKey: "profile_bonvoy_tier")
+        isolated.set("Dark", forKey: "profile_appearance")
+
+        let vm = ProfileViewModel(defaults: isolated)
+        XCTAssertEqual(vm.fullName, "Jason Gray")
+        XCTAssertEqual(vm.homeAirport, "YYZ")
+        XCTAssertEqual(vm.aeroplanNumber, "123456789")
+        XCTAssertEqual(vm.aeroplanTier, .superElite)
+        XCTAssertEqual(vm.bonvoyNumber, "987654321")
+        XCTAssertEqual(vm.bonvoyTier, .titaniumElite)
+        XCTAssertEqual(vm.appearance, .dark)
+    }
+
+    // Test 25
+    func testSaveRoundTrip() {
+        let isolated = UserDefaults(suiteName: UUID().uuidString)!
+        let vm1 = ProfileViewModel(defaults: isolated)
+        vm1.fullName = "Test User"
+        vm1.homeAirport = "LHR"
+        vm1.aeroplanTier = .elite75k
+        vm1.bonvoyTier = .goldElite
+        vm1.appearance = .light
+        vm1.save()
+
+        let vm2 = ProfileViewModel(defaults: isolated)
+        XCTAssertEqual(vm2.fullName, "Test User")
+        XCTAssertEqual(vm2.homeAirport, "LHR")
+        XCTAssertEqual(vm2.aeroplanTier, .elite75k)
+        XCTAssertEqual(vm2.bonvoyTier, .goldElite)
+        XCTAssertEqual(vm2.appearance, .light)
+    }
+}
+
 // MARK: - Regression tests
 
 @MainActor
