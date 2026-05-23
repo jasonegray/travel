@@ -10,6 +10,7 @@ private let logger = Logger(subsystem: "com.packlist", category: "PackListApp")
 struct PackListApp: App {
     private let container: ModelContainer
     private let repositories: RepositoryContainer
+    private let profile = ProfileViewModel()
 
     init() {
         let c = Self.makeContainer()
@@ -21,6 +22,7 @@ struct PackListApp: App {
         WindowGroup {
             ContentView()
                 .environment(\.repositories, repositories)
+                .environment(profile)
         }
         .modelContainer(container)
     }
