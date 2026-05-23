@@ -194,6 +194,21 @@ A DESIGN section must include at minimum:
 - What the primary action is
 - Any fields explicitly excluded
 
+### XCUITest requirement
+
+Any PR that creates a new screen or significantly modifies an existing screen must include XCUITest coverage for that screen in the same PR.
+
+Minimum required for each new screen:
+- One test that navigates to the screen and asserts it loads without crash
+- One test that exercises the primary action on the screen
+
+If writing XCUITest for the screen is not possible (e.g. requires complex state setup), output:
+`NEEDS JASON: XCUITest not written for [screen name] — [reason]`
+Then proceed with the PR but flag it for follow-up.
+
+XCUITest file: PackList/UITests/PackListUITests.swift
+Use XCUIApplication() — never hardcode element strings, use accessibility identifiers where possible.
+
 ### PR checklist
 Every PR must include confirmation that all of the following pass before opening:
 
