@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(ProfileViewModel.self) private var profile
-    @State private var showOnboarding = !UserDefaults.standard.bool(forKey: "onboarding_completed")
+    @State private var showOnboarding = !UserDefaults.standard.bool(forKey: UserDefaults.onboardingCompletedKey)
     @State private var showNewTripAfterOnboarding = false
 
     var body: some View {

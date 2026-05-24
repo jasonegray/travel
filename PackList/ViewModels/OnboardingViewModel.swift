@@ -1,5 +1,9 @@
 import Foundation
 
+extension UserDefaults {
+    static let onboardingCompletedKey = "onboarding_completed"
+}
+
 @Observable
 final class OnboardingViewModel {
     var fullName = ""
@@ -23,6 +27,6 @@ final class OnboardingViewModel {
         profile.bonvoyNumber = bonvoyNumber
         profile.bonvoyTier = bonvoyTier
         profile.save()
-        defaults.set(true, forKey: "onboarding_completed")
+        defaults.set(true, forKey: UserDefaults.onboardingCompletedKey)
     }
 }

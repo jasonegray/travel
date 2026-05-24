@@ -55,14 +55,9 @@ struct OnboardingView: View {
 
             if currentStep > 0 {
                 OnboardingStepDots(total: stepCount, current: currentStep - 1)
-                    .padding(.top, safeAreaTop + 12)
+                    .padding(.top, 16)
             }
         }
-    }
-
-    private var safeAreaTop: CGFloat {
-        (UIApplication.shared.connectedScenes.first as? UIWindowScene)?
-            .windows.first?.safeAreaInsets.top ?? 0
     }
 
     private func advance() {
@@ -165,16 +160,14 @@ private struct WelcomeStep: View {
             Spacer()
 
             VStack(spacing: 20) {
-                if let icon = UIImage(named: "AppIcon") {
-                    Image(uiImage: icon)
-                        .resizable()
+                ZStack {
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(.blue.gradient)
                         .frame(width: 88, height: 88)
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
                         .shadow(color: .black.opacity(0.12), radius: 8, y: 4)
-                } else {
                     Image(systemName: "suitcase.fill")
-                        .font(.system(size: 56))
-                        .foregroundStyle(.primary)
+                        .font(.system(size: 38, weight: .medium))
+                        .foregroundStyle(.white)
                 }
 
                 VStack(spacing: 8) {
