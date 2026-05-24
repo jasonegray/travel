@@ -552,12 +552,18 @@ private struct BagCard: View {
     let total: Int
 
     private var isDone: Bool { total > 0 && packed == total }
+    private var progressColor: Color { isDone ? .green : .accentColor }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(location.displayName)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            HStack(spacing: 6) {
+                Image(systemName: location.sfSymbol)
+                    .font(.title3)
+                    .foregroundStyle(progressColor)
+                Text(location.displayName)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
 
             if isDone {
                 Image(systemName: "checkmark.circle.fill")
@@ -576,7 +582,7 @@ private struct BagCard: View {
 
             ThinProgressBar(
                 fraction: total > 0 ? Double(packed) / Double(total) : 0,
-                color: isDone ? .green : .accentColor
+                color: progressColor
             )
         }
         .padding(12)
@@ -841,6 +847,21 @@ extension PackingLocation {
         case .checkedBag:        return "Checked Bag"
         case .wearing:           return "Wearing"
         case .pocket:            return "Pocket"
+        }
+    }
+
+    var sfSymbol: String {
+        switch self {
+        case .backpack:          return "backpack.fill"
+        case .carryOn:           return "suitcase.rolling.fill"
+        case .techPouch:         return "cable.connector"
+        case .toiletryBag:       return "drop.fill"
+        case .passportWallet:    return "wallet.pass"
+        case .golfBag:           return "figure.golf"
+        case .flightAccessPouch: return "airplane"
+        case .checkedBag:        return "suitcase.fill"
+        case .wearing:           return "figure.walk"
+        case .pocket:            return "bag.badge.questionmark"
         }
     }
 
