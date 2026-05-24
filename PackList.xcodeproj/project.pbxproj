@@ -30,6 +30,7 @@
 		563A3D38A4411B2251956D40 /* SwiftDataTripItemRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B0A40905C8329393E1D3AA5 /* SwiftDataTripItemRepository.swift */; };
 		617F0F6F1AAE606CABE756E7 /* ItemInsightRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B194C4473A49789ECED2D9EF /* ItemInsightRepository.swift */; };
 		62BA8F8AD0522C440082E430 /* TripDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41ECDB90C4FDC693C96EC06B /* TripDetailView.swift */; };
+		BB151002BB151002BB151002 /* EditTripMetadataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB151001BB151001BB151001 /* EditTripMetadataView.swift */; };
 		651889942C79EB3911D85E4D /* ReplaceabilityRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3AFD96EBEB15D7D1FD2A37 /* ReplaceabilityRule.swift */; };
 		6CAFB2A1EC1111E83BEAA99E /* PendingSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B42C07F95BAEB97E313D96 /* PendingSuggestion.swift */; };
 		6EAEE6A4EC973B50035A6384 /* ImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CACB655272A95791F66BFF /* ImportService.swift */; };
@@ -91,6 +92,7 @@
 		33CACB655272A95791F66BFF /* ImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportService.swift; sourceTree = "<group>"; };
 		3D5D1649BA80085AB9AE5112 /* PendingSuggestionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingSuggestionRepository.swift; sourceTree = "<group>"; };
 		41ECDB90C4FDC693C96EC06B /* TripDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripDetailView.swift; sourceTree = "<group>"; };
+		BB151001BB151001BB151001 /* EditTripMetadataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTripMetadataView.swift; sourceTree = "<group>"; };
 		4B392AB686CF4CA4FC72F3E6 /* TripItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripItem.swift; sourceTree = "<group>"; };
 		4C981BFB10A6C71F74907257 /* SwiftDataTripSessionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataTripSessionRepository.swift; sourceTree = "<group>"; };
 		4E173319E9FA785CD701E449 /* MasterItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterItem.swift; sourceTree = "<group>"; };
@@ -300,6 +302,7 @@
 		D24DD23BDF2E6F5B4ACCC6FB /* Trip */ = {
 			isa = PBXGroup;
 			children = (
+				BB151001BB151001BB151001 /* EditTripMetadataView.swift */,
 				A782456B8A965F7C840C4C20 /* NewTripView.swift */,
 				41ECDB90C4FDC693C96EC06B /* TripDetailView.swift */,
 				A3F0FC88950C4E1D8BBA6C6B /* TripInfoView.swift */,
@@ -504,6 +507,7 @@
 				29D3494D521F4C16BC58B557 /* SwiftDataTripInfoRepository.swift in Sources */,
 				32DAD796FAB34DAEA4F5967C /* TripInfoRepository.swift in Sources */,
 				5D501BCB2E8748B3B8AA7A56 /* TripInfo.swift in Sources */,
+				BB151002BB151002BB151002 /* EditTripMetadataView.swift in Sources */,
 				62BA8F8AD0522C440082E430 /* TripDetailView.swift in Sources */,
 				029CDAAADF9AE9B75CD99D3E /* TripDetailViewModel.swift in Sources */,
 				A63BD6908E1F49388B028BBF /* TripInfoViewModel.swift in Sources */,

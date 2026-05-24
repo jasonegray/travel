@@ -8,6 +8,7 @@ struct TripDetailView: View {
     @State private var selectedTab: Tab = .packing
     @State private var showDeleteConfirmation = false
     @State private var showAddCustomItem = false
+    @State private var showEditTrip = false
     let initialPackingLocation: PackingLocation?
     let showTabPicker: Bool
     let onDismiss: (() -> Void)?
@@ -80,6 +81,13 @@ struct TripDetailView: View {
                         }
                         .accessibilityIdentifier("unarchive_menu_button")
                     } else {
+                        Button {
+                            showEditTrip = true
+                        } label: {
+                            Label("Edit Trip", systemImage: "pencil")
+                        }
+                        .accessibilityIdentifier("edit_trip_menu_button")
+
                         if vm.trip.status == .completed {
                             Button {
                                 Task {
@@ -117,6 +125,19 @@ struct TripDetailView: View {
         .sheet(isPresented: $showAddCustomItem) {
             AddCustomItemView { name, category, location, quantity in
                 Task { await vm.addCustomItem(name: name, category: category, location: location, quantity: quantity) }
+            }
+        }
+        .sheet(isPresented: $showEditTrip) {
+            EditTripMetadataView(trip: vm.trip) { destination, departure, returnDate in
+                Task {
+                    guard let repos = repositories else { return }
+                    await vm.editTrip(
+                        destination: destination,
+                        departureDate: departure,
+                        returnDate: returnDate,
+                        sessions: repos.tripSessions
+                    )
+                }
             }
         }
         .alert("Delete \"\(vm.trip.name)\"?", isPresented: $showDeleteConfirmation) {

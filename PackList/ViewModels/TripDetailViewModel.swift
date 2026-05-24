@@ -83,6 +83,49 @@ final class TripDetailViewModel {
         }
     }
 
+    func editTrip(
+        destination: String,
+        departureDate: Date,
+        returnDate: Date,
+        sessions: any TripSessionRepository
+    ) async {
+        let prev = (
+            destination: trip.destination,
+            departure: trip.departureDate,
+            returnDate: trip.returnDate,
+            name: trip.name
+        )
+        trip.destination = destination
+        trip.departureDate = departureDate
+        trip.returnDate = returnDate
+        trip.name = Self.generatedName(destination: destination, departureDate: departureDate, returnDate: returnDate)
+        trip.updatedAt = Date()
+        do {
+            try await sessions.update(trip)
+        } catch {
+            logger.error("editTrip failed: \(error)")
+            trip.destination = prev.destination
+            trip.departureDate = prev.departure
+            trip.returnDate = prev.returnDate
+            trip.name = prev.name
+        }
+    }
+
+    private static func generatedName(destination: String, departureDate: Date, returnDate: Date) -> String {
+        let dest = destination
+            .components(separatedBy: ",").first?
+            .trimmingCharacters(in: .whitespaces) ?? destination
+        let cal = Calendar.current
+        let depMonth = departureDate.formatted(.dateTime.month(.abbreviated))
+        let retMonth = returnDate.formatted(.dateTime.month(.abbreviated))
+        let depDay = cal.component(.day, from: departureDate)
+        let retDay = cal.component(.day, from: returnDate)
+        let dateRange = depMonth == retMonth
+            ? "\(depMonth) \(depDay)–\(retDay)"
+            : "\(depMonth) \(depDay)–\(retMonth) \(retDay)"
+        return "\(dest) · \(dateRange)"
+    }
+
     // MARK: - Packing
 
     var packingGroups: [(location: PackingLocation, items: [TripItem])] {
