@@ -75,6 +75,21 @@ final class TripDetailViewModel {
         }
     }
 
+    func editItem(_ item: TripItem, quantity: Int, notes: String?) async {
+        guard !trip.isArchived else { return }
+        let prevQuantity = item.quantity
+        let prevNotes = item.notes
+        item.quantity = quantity
+        item.notes = notes
+        do {
+            try await repo?.update(item)
+        } catch {
+            logger.error("editItem failed: \(error)")
+            item.quantity = prevQuantity
+            item.notes = prevNotes
+        }
+    }
+
     func deleteTrip(sessions: any TripSessionRepository) async {
         do {
             try await sessions.delete(trip)
