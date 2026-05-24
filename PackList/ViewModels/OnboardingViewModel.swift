@@ -17,10 +17,6 @@ final class OnboardingViewModel {
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
-        let deviceName = NSFullUserName()
-        if !deviceName.isEmpty {
-            fullName = deviceName
-        }
     }
 
     func flush(to profile: ProfileViewModel) {
