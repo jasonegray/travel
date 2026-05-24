@@ -560,6 +560,7 @@ private struct BagCard: View {
                 Image(systemName: location.sfSymbol)
                     .font(.title3)
                     .foregroundStyle(progressColor)
+                    .accessibilityHidden(true)
                 Text(location.displayName)
                     .font(.caption)
                     .foregroundStyle(.secondary)
