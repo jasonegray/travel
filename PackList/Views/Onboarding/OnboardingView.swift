@@ -160,14 +160,11 @@ private struct WelcomeStep: View {
             Spacer()
 
             VStack(spacing: 20) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(.blue.gradient)
-                        .frame(width: 88, height: 88)
-                        .shadow(color: .black.opacity(0.12), radius: 8, y: 4)
-                    Image(systemName: "suitcase.fill")
-                        .font(.system(size: 38, weight: .medium))
-                        .foregroundStyle(.white)
+                if let icon = UIImage(named: "AppIcon") {
+                    Image(uiImage: icon)
+                        .resizable()
+                        .frame(width: 120, height: 120)
+                        .clipShape(RoundedRectangle(cornerRadius: 26))
                 }
 
                 VStack(spacing: 8) {
