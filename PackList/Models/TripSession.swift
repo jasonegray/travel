@@ -21,6 +21,7 @@ final class TripSession {
     var interacPhone: Bool
     var interacLaptop: Bool
     var hasMedicalAppointment: Bool
+    var isFlyingTrip: Bool = true
     var isArchived: Bool = false
     var manuallyCompletedAt: Date?
     var notes: String?
@@ -59,6 +60,7 @@ final class TripSession {
         interacPhone: Bool = false,
         interacLaptop: Bool = false,
         hasMedicalAppointment: Bool = false,
+        isFlyingTrip: Bool = true,
         isArchived: Bool = false,
         manuallyCompletedAt: Date? = nil,
         notes: String? = nil,
@@ -85,6 +87,7 @@ final class TripSession {
         self.interacPhone = interacPhone
         self.interacLaptop = interacLaptop
         self.hasMedicalAppointment = hasMedicalAppointment
+        self.isFlyingTrip = isFlyingTrip
         self.isArchived = isArchived
         self.manuallyCompletedAt = manuallyCompletedAt
         self.notes = notes

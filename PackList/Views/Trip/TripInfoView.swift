@@ -7,8 +7,10 @@ struct TripInfoView: View {
 
     var body: some View {
         Form {
-            outboundSection
-            returnSection
+            if vm.trip.isFlyingTrip {
+                outboundSection
+                returnSection
+            }
             accommodationSection
         }
         .toolbar {

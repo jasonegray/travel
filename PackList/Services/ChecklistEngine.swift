@@ -64,8 +64,8 @@ struct ChecklistEngine {
         // Duration
         if tripNights(for: session) > 5 { tags.insert(.longTrip) }
 
-        // Long haul: any destination outside Canada/US
-        if session.region != .canada && session.region != .us {
+        // Long haul / flight items: only when flying and destination is outside Canada/US
+        if session.isFlyingTrip && session.region != .canada && session.region != .us {
             tags.formUnion([.longHaul, .flightAccessible])
         }
 
