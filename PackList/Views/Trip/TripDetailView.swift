@@ -7,6 +7,7 @@ struct TripDetailView: View {
     @State private var infoVM: TripInfoViewModel
     @State private var selectedTab: Tab = .packing
     @State private var showDeleteConfirmation = false
+    @State private var showAddCustomItem = false
     let initialPackingLocation: PackingLocation?
     let showTabPicker: Bool
     let onDeleted: (() -> Void)?
@@ -53,6 +54,14 @@ struct TripDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showAddCustomItem = true
+                } label: {
+                    Image(systemName: "plus")
+                }
+                .accessibilityLabel("Add item")
+            }
+            ToolbarItem(placement: .topBarTrailing) {
                 Menu {
                     if vm.trip.status != .completed {
                         Button {
@@ -72,6 +81,11 @@ struct TripDetailView: View {
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }
+            }
+        }
+        .sheet(isPresented: $showAddCustomItem) {
+            AddCustomItemView { name, category, location, quantity in
+                Task { await vm.addCustomItem(name: name, category: category, location: location, quantity: quantity) }
             }
         }
         .alert("Delete \"\(vm.trip.name)\"?", isPresented: $showDeleteConfirmation) {
@@ -142,6 +156,9 @@ private struct PackingTab: View {
                                 onToggle: { item in
                                     withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
                                     Task { await vm.save(item: item) }
+                                },
+                                onDelete: { item in
+                                    Task { await vm.deleteCustomItem(item) }
                                 }
                             )
                         }
@@ -160,6 +177,9 @@ private struct PackingTab: View {
                                 onToggle: { item in
                                     withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
                                     Task { await vm.save(item: item) }
+                                },
+                                onDelete: { item in
+                                    Task { await vm.deleteCustomItem(item) }
                                 }
                             )
                             .tag(index)
@@ -178,6 +198,11 @@ private struct PackingTab: View {
             }
         }
         .onChange(of: mode) { _, _ in expandedSections = [] }
+        .onChange(of: vm.items.count) { _, _ in
+            for item in vm.items where item.source == .manual && item.completedAt == nil {
+                expandedSections.insert(item.category.rawValue)
+            }
+        }
     }
 
     @ViewBuilder
@@ -366,6 +391,7 @@ private struct CollapsiblePackingSection: View {
     let items: [TripItem]
     @Binding var expandedSections: Set<String>
     let onToggle: (TripItem) -> Void
+    let onDelete: (TripItem) -> Void
 
     private var isExpanded: Bool { expandedSections.contains(id) }
     private var remaining: Int { items.filter { $0.completedAt == nil }.count }
@@ -415,7 +441,7 @@ private struct CollapsiblePackingSection: View {
 
                 VStack(spacing: 0) {
                     ForEach(items) { item in
-                        PackingRow(item: item) { onToggle(item) }
+                        PackingRow(item: item, onToggle: { onToggle(item) }, onDelete: { onDelete(item) })
                             .padding(.horizontal)
                             .padding(.vertical, 2)
                         if item.id != items.last?.id {
@@ -436,6 +462,7 @@ private struct CollapsiblePackingSection: View {
 private struct BagPageView: View {
     let group: (location: PackingLocation, items: [TripItem])
     let onToggle: (TripItem) -> Void
+    let onDelete: (TripItem) -> Void
 
     private var remaining: Int { group.items.filter { $0.completedAt == nil }.count }
     private var allPacked: Bool { remaining == 0 }
@@ -466,7 +493,7 @@ private struct BagPageView: View {
             ScrollView {
                 LazyVStack(spacing: 0) {
                     ForEach(group.items) { item in
-                        PackingRow(item: item) { onToggle(item) }
+                        PackingRow(item: item, onToggle: { onToggle(item) }, onDelete: { onDelete(item) })
                             .padding(.horizontal)
                             .padding(.vertical, 2)
                         if item.id != group.items.last?.id {
@@ -540,10 +567,24 @@ private struct PrepTab: View {
 
 private struct PackingRow: View {
     let item: TripItem
-    let action: () -> Void
+    let onToggle: () -> Void
+    let onDelete: () -> Void
 
     var body: some View {
-        Button(action: action) {
+        if item.source == .manual {
+            rowContent
+                .contextMenu {
+                    Button(role: .destructive, action: onDelete) {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
+        } else {
+            rowContent
+        }
+    }
+
+    private var rowContent: some View {
+        Button(action: onToggle) {
             HStack(spacing: 14) {
                 Image(systemName: item.completedAt != nil ? "checkmark.circle.fill" : "circle")
                     .font(.system(size: 22))
@@ -561,6 +602,17 @@ private struct PackingRow: View {
                 }
 
                 Spacer()
+
+                if item.source == .manual {
+                    Text("Custom")
+                        .font(.caption2)
+                        .fontWeight(.medium)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Color.orange.opacity(0.15))
+                        .foregroundStyle(Color.orange)
+                        .clipShape(Capsule())
+                }
 
                 if item.flightAccessible {
                     Image(systemName: "airplane")

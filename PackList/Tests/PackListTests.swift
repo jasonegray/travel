@@ -1046,6 +1046,95 @@ final class ProfileViewModelTests: XCTestCase {
     }
 }
 
+// MARK: - Add custom item tests (#117)
+
+@MainActor
+final class AddCustomItemTests: XCTestCase {
+
+    var container: ModelContainer!
+    var context: ModelContext!
+    var repos: RepositoryContainer!
+
+    override func setUpWithError() throws {
+        let schema = Schema([TripSession.self, TripInfo.self, MasterItem.self,
+                             TripItem.self, ItemInsight.self, PendingSuggestion.self])
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        container = try ModelContainer(for: schema, configurations: config)
+        context = ModelContext(container)
+        repos = RepositoryContainer(modelContext: context)
+    }
+
+    override func tearDown() {
+        repos = nil
+        context = nil
+        container = nil
+    }
+
+    private func makeSession() -> TripSession {
+        TripSession(name: "Custom Item Test", destination: "Tokyo",
+                    departureDate: Date(), returnDate: Date())
+    }
+
+    func testAddCustomItemCreatesCorrectTripItem() async throws {
+        let session = makeSession()
+        try await repos.tripSessions.insert(session)
+
+        let vm = TripDetailViewModel(trip: session)
+        await vm.load(repository: repos.tripItems)
+
+        await vm.addCustomItem(name: "Extra Toothbrush", category: .hygiene,
+                               location: .toiletryBag, quantity: 2)
+
+        XCTAssertEqual(vm.items.count, 1, "Expected 1 item after addCustomItem")
+        let item = try XCTUnwrap(vm.items.first)
+        XCTAssertEqual(item.name, "Extra Toothbrush")
+        XCTAssertEqual(item.category, .hygiene)
+        XCTAssertEqual(item.packingLocation, .toiletryBag)
+        XCTAssertEqual(item.quantity, 2)
+        XCTAssertEqual(item.source, .manual, "Custom item must have source == .manual")
+        XCTAssertEqual(item.tripId, session.id, "Custom item must reference the correct trip")
+    }
+
+    func testCustomItemAppearsInPackingList() async throws {
+        let session = makeSession()
+        try await repos.tripSessions.insert(session)
+
+        let vm = TripDetailViewModel(trip: session)
+        await vm.load(repository: repos.tripItems)
+
+        await vm.addCustomItem(name: "Deck of Cards", category: .misc,
+                               location: .carryOn, quantity: 1)
+
+        let groups = vm.categoryGroups
+        let miscGroup = try XCTUnwrap(groups.first(where: { $0.category == .misc }),
+                                      "Misc category group should exist after adding custom item")
+        XCTAssertTrue(miscGroup.items.contains { $0.name == "Deck of Cards" },
+                      "Custom item should appear in its category group")
+        XCTAssertEqual(miscGroup.items.first?.name, "Deck of Cards",
+                       "Custom item should appear at the top of its category section")
+    }
+
+    func testDeleteCustomItem() async throws {
+        let session = makeSession()
+        try await repos.tripSessions.insert(session)
+
+        let vm = TripDetailViewModel(trip: session)
+        await vm.load(repository: repos.tripItems)
+
+        await vm.addCustomItem(name: "Temporary Item", category: .misc,
+                               location: .carryOn, quantity: 1)
+        XCTAssertEqual(vm.items.count, 1, "Should have 1 item before delete")
+
+        let item = try XCTUnwrap(vm.items.first)
+        await vm.deleteCustomItem(item)
+
+        XCTAssertEqual(vm.items.count, 0, "Should have 0 items in VM after delete")
+
+        let persisted = try await repos.tripItems.fetchAll(for: session.id)
+        XCTAssertEqual(persisted.count, 0, "Repository should also have 0 items after delete")
+    }
+}
+
 // MARK: - Regression tests
 
 @MainActor

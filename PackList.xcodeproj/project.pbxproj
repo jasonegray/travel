@@ -43,6 +43,7 @@
 		AA135002AA135002AA135002 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA135001AA135001AA135001 /* ProfileViewModel.swift */; };
 		98E56A316F147171C2A4B7CC /* PendingSuggestionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D5D1649BA80085AB9AE5112 /* PendingSuggestionRepository.swift */; };
 		9BB754CBC6E719F3411F7F17 /* master_items.json in Resources */ = {isa = PBXBuildFile; fileRef = 238B969C326344064ADA73EB /* master_items.json */; };
+		AA117002AA117002AA117002 /* AddCustomItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA117001AA117001AA117001 /* AddCustomItemView.swift */; };
 		ADB0AFFA130248A8BA1065D0 /* PackingTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA09BC8731D4BB79F402BF7 /* PackingTabView.swift */; };
 		C2709F4DD7122B9B2E051E7E /* SwiftDataMasterItemRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B0049C3396D34C32E9C1B5A /* SwiftDataMasterItemRepository.swift */; };
 		C69B9B68F4E3A51AFCDFF16D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93C413942B93D93169C6F781 /* Assets.xcassets */; };
@@ -124,6 +125,7 @@
 		E5ED70E357A6B8CA9FFC1CC0 /* .gitkeep */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
 		EF0551A5E4104DFAA7943999 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		F18C8E3DF2BAC53703E2E96B /* TripSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSession.swift; sourceTree = "<group>"; };
+		AA117001AA117001AA117001 /* AddCustomItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCustomItemView.swift; sourceTree = "<group>"; };
 		FBA09BC8731D4BB79F402BF7 /* PackingTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackingTabView.swift; sourceTree = "<group>"; };
 		AA000001000000000000001 /* PackListSchemaV1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackListSchemaV1.swift; sourceTree = "<group>"; };
 		AA000002000000000000001 /* PackListMigrationPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackListMigrationPlan.swift; sourceTree = "<group>"; };
@@ -245,6 +247,7 @@
 		7BCD1FBEF0F149088C3A65FE /* Packing */ = {
 			isa = PBXGroup;
 			children = (
+				AA117001AA117001AA117001 /* AddCustomItemView.swift */,
 				FBA09BC8731D4BB79F402BF7 /* PackingTabView.swift */,
 			);
 			path = Packing;
@@ -474,6 +477,7 @@
 				77B65949493F47DB89DE102E /* TasksTabView.swift in Sources */,
 				80D5B1FC5E6A40698A2706F7 /* ProfileView.swift in Sources */,
 				AA135002AA135002AA135002 /* ProfileViewModel.swift in Sources */,
+				AA117002AA117002AA117002 /* AddCustomItemView.swift in Sources */,
 				ADB0AFFA130248A8BA1065D0 /* PackingTabView.swift in Sources */,
 				D5E00EBF68E8B422F4564A5C /* ContentView.swift in Sources */,
 				4CB8BA6D88C0FFD1768A41F6 /* Enums.swift in Sources */,
