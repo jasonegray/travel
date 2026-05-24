@@ -55,6 +55,46 @@ The two mandatory tests that must always pass:
 - testInsertAndFetchRoundTrip
 - testFullAppLaunchSequence
 
+## TestFlight Deployment
+
+Xcode 26 beta has a known bug where the project editor does not load. Use the CLI workflow exclusively for all TestFlight builds.
+
+### Step 1 — Bump build number
+```
+/usr/libexec/PlistBuddy -c "Set :CFBundleVersion [N]" PackList/Info.plist
+git add PackList/Info.plist && git commit -m "Bump build number to [N]" && git push origin main
+```
+
+### Step 2 — Archive
+```
+xcodebuild -project PackList.xcodeproj -scheme PackList -configuration Release -destination 'generic/platform=iOS' -archivePath /tmp/PackList[N].xcarchive DEVELOPMENT_TEAM=8WXGQKFXC3 CODE_SIGN_STYLE=Automatic archive
+```
+
+### Step 3 — Export
+Ensure /tmp/ExportOptions.plist exists:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>method</key>
+    <string>app-store-connect</string>
+    <key>teamID</key>
+    <string>8WXGQKFXC3</string>
+</dict>
+</plist>
+```
+```
+xcodebuild -exportArchive -archivePath /tmp/PackList[N].xcarchive -exportOptionsPlist /tmp/ExportOptions.plist -exportPath /tmp/PackListExport
+```
+
+### Step 4 — Upload
+```
+xcrun altool --upload-app --type ios --file /tmp/PackListExport/PackList.ipa --username jason@level19.com --password APP_SPECIFIC_PASSWORD
+```
+
+Note: Generate a fresh app-specific password at appleid.apple.com for each upload. Revoke after use.
+
 ## SwiftUI / HIG standards
 - Follow Apple Human Interface Guidelines strictly
 - Minimum tap target: 44x44pt
