@@ -55,4 +55,8 @@ final class ProfileViewModel {
         defaults.set(bonvoyTier.rawValue, forKey: "profile_bonvoy_tier")
         defaults.set(appearance.rawValue, forKey: "profile_appearance")
     }
+
+    func resetOnboarding() {
+        defaults.set(false, forKey: UserDefaults.onboardingCompletedKey)
+    }
 }
