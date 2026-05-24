@@ -81,11 +81,13 @@ final class HomeViewModel {
         tripProgressMap[trip.id] = nil
         do {
             try await sessions.update(trip)
-            await load(sessions: sessions)
         } catch {
             logger.error("archiveTrip failed: \(error)")
             trip.isArchived = false
+            await load(sessions: sessions)
+            return
         }
+        await load(sessions: sessions)
     }
 
     func unarchiveTrip(_ trip: TripSession, sessions: any TripSessionRepository) async {
@@ -93,11 +95,13 @@ final class HomeViewModel {
         archivedTrips = archivedTrips.filter { $0.id != trip.id }
         do {
             try await sessions.update(trip)
-            await load(sessions: sessions)
         } catch {
             logger.error("unarchiveTrip failed: \(error)")
             trip.isArchived = true
+            await load(sessions: sessions)
+            return
         }
+        await load(sessions: sessions)
     }
 
     // MARK: - Per-trip computations (accept @Query items so the caller drives reactivity)

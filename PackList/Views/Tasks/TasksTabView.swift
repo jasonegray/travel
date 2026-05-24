@@ -15,7 +15,7 @@ struct TasksTabView: View {
                 if isLoading {
                     ProgressView()
                 } else if let trip = activeTrip {
-                    TripDetailView(trip: trip, initialTab: .prepTasks, showTabPicker: false, onDeleted: { Task { await loadTrip() } })
+                    TripDetailView(trip: trip, initialTab: .prepTasks, showTabPicker: false, onDismiss: { Task { await loadTrip() } })
                         .id(trip.id)
                 } else {
                     NoActiveTripState(

@@ -10,18 +10,18 @@ struct TripDetailView: View {
     @State private var showAddCustomItem = false
     let initialPackingLocation: PackingLocation?
     let showTabPicker: Bool
-    let onDeleted: (() -> Void)?
+    let onDismiss: (() -> Void)?
     @Environment(\.repositories) private var repositories
 
     enum Tab { case packing, prepTasks, info }
 
-    init(trip: TripSession, initialTab: Tab = .packing, initialPackingLocation: PackingLocation? = nil, showTabPicker: Bool = true, onDeleted: (() -> Void)? = nil) {
+    init(trip: TripSession, initialTab: Tab = .packing, initialPackingLocation: PackingLocation? = nil, showTabPicker: Bool = true, onDismiss: (() -> Void)? = nil) {
         _vm = State(wrappedValue: TripDetailViewModel(trip: trip))
         _infoVM = State(wrappedValue: TripInfoViewModel(trip: trip))
         _selectedTab = State(wrappedValue: initialTab)
         self.initialPackingLocation = initialPackingLocation
         self.showTabPicker = showTabPicker
-        self.onDeleted = onDeleted
+        self.onDismiss = onDismiss
     }
 
     var body: some View {
@@ -73,7 +73,7 @@ struct TripDetailView: View {
                             Task {
                                 guard let repos = repositories else { return }
                                 await vm.unarchiveTrip(sessions: repos.tripSessions)
-                                onDeleted?()
+                                // Do not pop — user stays on detail screen, banner updates in place
                             }
                         } label: {
                             Label("Unarchive", systemImage: "archivebox")
@@ -85,7 +85,7 @@ struct TripDetailView: View {
                                 Task {
                                     guard let repos = repositories else { return }
                                     await vm.archiveTrip(sessions: repos.tripSessions)
-                                    onDeleted?()
+                                    onDismiss?()
                                 }
                             } label: {
                                 Label("Archive Trip", systemImage: "archivebox")
@@ -126,7 +126,7 @@ struct TripDetailView: View {
                     // Navigate away first so SwiftUI stops rendering this view before
                     // the TripSession is tombstoned — otherwise the pop animation accesses
                     // deleted object properties and causes EXC_BAD_ACCESS.
-                    onDeleted?()
+                    onDismiss?()
                     await vm.deleteTrip(sessions: repos.tripSessions)
                 }
             }

@@ -41,27 +41,28 @@ struct HomeView: View {
                             )
                         }
 
-                        // MARK: Completed trips
-                        if !vm.completedTrips.isEmpty {
-                            CompletedTripsSection(
-                                trips: vm.completedTrips,
-                                progressMap: vm.tripProgressMap,
-                                onTap: { completed in
-                                    navTarget = TripNavTarget(tripId: completed.id)
-                                },
-                                onArchive: { trip in
-                                    guard let repos = repositories else { return }
-                                    Task { await vm.archiveTrip(trip, sessions: repos.tripSessions) }
-                                },
-                                onDelete: { trip in tripToDelete = trip }
-                            )
-                            .padding(.horizontal)
-                        }
-
-                    } else if !vm.isLoading {
+                    } else if !vm.isLoading && vm.completedTrips.isEmpty && vm.archivedTrips.isEmpty {
                         EmptyHomeState(onNewTrip: { showNewTrip = true })
                             .frame(maxWidth: .infinity)
                             .padding(.horizontal)
+                    }
+
+                    // MARK: Completed trips — rendered outside heroTrip guard so they appear
+                    // even when there are no active/planning trips
+                    if !vm.completedTrips.isEmpty {
+                        CompletedTripsSection(
+                            trips: vm.completedTrips,
+                            progressMap: vm.tripProgressMap,
+                            onTap: { completed in
+                                navTarget = TripNavTarget(tripId: completed.id)
+                            },
+                            onArchive: { trip in
+                                guard let repos = repositories else { return }
+                                Task { await vm.archiveTrip(trip, sessions: repos.tripSessions) }
+                            },
+                            onDelete: { trip in tripToDelete = trip }
+                        )
+                        .padding(.horizontal)
                     }
 
                     // MARK: Archived trips (collapsible, collapsed by default)
@@ -125,7 +126,7 @@ struct HomeView: View {
                         trip: trip,
                         initialTab: target.tab,
                         initialPackingLocation: target.location,
-                        onDeleted: { navTarget = nil }
+                        onDismiss: { navTarget = nil }
                     )
                 }
             }
@@ -316,6 +317,7 @@ private struct CompletedTripsSection: View {
     let onTap: (TripSession) -> Void
     let onArchive: (TripSession) -> Void
     let onDelete: (TripSession) -> Void
+    @ScaledMetric(relativeTo: .subheadline) private var rowHeight: CGFloat = 84
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -361,7 +363,7 @@ private struct CompletedTripsSection: View {
             }
             .scrollDisabled(true)
             .listStyle(.plain)
-            .frame(minHeight: CGFloat(trips.count) * 76)
+            .frame(minHeight: rowHeight * CGFloat(trips.count))
         }
     }
 }
@@ -410,6 +412,7 @@ private struct ArchivedTripsSection: View {
     let onTap: (TripSession) -> Void
     let onUnarchive: (TripSession) -> Void
     let onDelete: (TripSession) -> Void
+    @ScaledMetric(relativeTo: .subheadline) private var rowHeight: CGFloat = 84
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -468,7 +471,7 @@ private struct ArchivedTripsSection: View {
                 }
                 .scrollDisabled(true)
                 .listStyle(.plain)
-                .frame(minHeight: CGFloat(trips.count) * 76)
+                .frame(minHeight: rowHeight * CGFloat(trips.count))
                 .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
