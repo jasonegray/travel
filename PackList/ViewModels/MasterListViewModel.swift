@@ -4,9 +4,15 @@ import os.log
 private let logger = Logger(subsystem: "com.packlist", category: "MasterListViewModel")
 
 enum MasterItemTypeFilter: String, CaseIterable {
-    case all = "All"
-    case physical = "Physical"
-    case task = "Tasks"
+    case all, physical, task
+
+    var displayName: String {
+        switch self {
+        case .all:      return "All"
+        case .physical: return "Physical"
+        case .task:     return "Tasks"
+        }
+    }
 }
 
 @Observable
@@ -40,9 +46,11 @@ final class MasterListViewModel {
             .sorted { $0.sortOrder < $1.sortOrder }
             .compactMap { category -> (category: ItemCategory, items: [MasterItem])? in
                 guard let categoryItems = grouped[category], !categoryItems.isEmpty else { return nil }
-                let active = categoryItems.filter { $0.isActive }.sorted { $0.name < $1.name }
-                let inactive = categoryItems.filter { !$0.isActive }.sorted { $0.name < $1.name }
-                return (category: category, items: active + inactive)
+                let sorted = categoryItems.sorted {
+                    if $0.isActive != $1.isActive { return $0.isActive }
+                    return $0.name < $1.name
+                }
+                return (category: category, items: sorted)
             }
     }
 

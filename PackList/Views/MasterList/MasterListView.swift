@@ -10,7 +10,7 @@ struct MasterListView: View {
             Section {
                 Picker("Type", selection: $vm.typeFilter) {
                     ForEach(MasterItemTypeFilter.allCases, id: \.self) { filter in
-                        Text(filter.rawValue).tag(filter)
+                        Text(filter.displayName).tag(filter)
                     }
                 }
                 .pickerStyle(.segmented)
@@ -24,11 +24,11 @@ struct MasterListView: View {
                 ForEach(vm.filteredGroupedItems, id: \.category) { group in
                     Section(group.category.displayName) {
                         ForEach(group.items) { item in
-                            MasterItemRow(item: item) {
-                                vm.toggleActive(item: item)
-                            }
-                            .contentShape(Rectangle())
-                            .onTapGesture { vm.selectedItem = item }
+                            MasterItemRow(
+                                item: item,
+                                onTap: { vm.selectedItem = item },
+                                onToggle: { vm.toggleActive(item: item) }
+                            )
                             .opacity(item.isActive ? 1.0 : 0.45)
                         }
                     }
@@ -85,19 +85,23 @@ struct MasterListView: View {
 
 private struct MasterItemRow: View {
     let item: MasterItem
+    let onTap: () -> Void
     let onToggle: () -> Void
 
     var body: some View {
         HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(item.name)
-                    .font(.body)
-                if let location = item.packingLocation {
-                    LocationBadge(location: location)
+            Button(action: onTap) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(item.name)
+                        .font(.body)
+                        .foregroundStyle(.primary)
+                    if let location = item.packingLocation {
+                        LocationBadge(location: location)
+                    }
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-
-            Spacer()
+            .buttonStyle(.plain)
 
             Toggle("Active", isOn: Binding(
                 get: { item.isActive },
