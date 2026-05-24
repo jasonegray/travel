@@ -10,6 +10,7 @@ struct TripDetailView: View {
     @State private var showAddCustomItem = false
     @State private var showEditTrip = false
     @State private var showTripSettings = false
+    @State private var showCloneWizard = false
     let initialPackingLocation: PackingLocation?
     let showTabPicker: Bool
     let onDismiss: (() -> Void)?
@@ -119,6 +120,12 @@ struct TripDetailView: View {
                             Label("Trip Settings", systemImage: "slider.horizontal.3")
                         }
                     }
+                    Button {
+                        showCloneWizard = true
+                    } label: {
+                        Label("Duplicate Trip", systemImage: "doc.on.doc")
+                    }
+                    .accessibilityIdentifier("duplicate_trip_button")
                     Button(role: .destructive) {
                         showDeleteConfirmation = true
                     } label: {
@@ -167,6 +174,9 @@ struct TripDetailView: View {
             Button("Cancel", role: .cancel) {}
         } message: {
             Text("This cannot be undone.")
+        }
+        .sheet(isPresented: $showCloneWizard) {
+            NewTripView(prefilledWith: NewTripViewModel(cloning: vm.trip))
         }
         .task(id: repositories != nil) {
             guard let repos = repositories else { return }

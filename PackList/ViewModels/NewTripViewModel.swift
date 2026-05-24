@@ -48,12 +48,49 @@ final class NewTripViewModel {
     var interacChoice: InteracChoice = .none
     var hasMedicalAppointment = false
 
+    // MARK: - Clone state
+
+    var parentTripId: UUID?
+
     // MARK: - Flow state
 
     var currentStep: WizardStep = .activities
     var isGenerating = false
     var isDone = false
     var errorMessage: String?
+
+    // MARK: - Initializers
+
+    init() {}
+
+    init(cloning source: TripSession) {
+        let today = Calendar.current.startOfDay(for: .now)
+        let rawDuration = Calendar.current.dateComponents([.day], from: source.departureDate, to: source.returnDate).day ?? 3
+        let duration = max(rawDuration, 1)
+        let ret = Calendar.current.date(byAdding: .day, value: duration, to: today) ?? today
+
+        parentTripId = source.id
+        destination = source.destination
+        region = source.region
+        purposes = Set(source.purposes)
+        companions = Set(source.companions)
+        activities = Set(source.activities)
+        weather = source.weather
+        carryOnOnly = source.carryOnOnly
+        laundryAvailable = source.laundryAvailable
+        hasMedicalAppointment = source.hasMedicalAppointment
+        departureDate = today
+        returnDate = ret
+        interacChoice = {
+            switch (source.interacPhone, source.interacLaptop) {
+            case (true,  true):  return .both
+            case (true,  false): return .phoneOnly
+            case (false, true):  return .laptopOnly
+            default:             return .none
+            }
+        }()
+        currentStep = .dates
+    }
 
     // MARK: - Derived
 
@@ -196,6 +233,7 @@ final class NewTripViewModel {
         masterItems: any MasterItemRepository
     ) async {
         let session = TripSession(
+            parentTripId:          parentTripId,
             name:                  finalTripName,
             destination:           destination.trimmingCharacters(in: .whitespaces),
             region:                region,
