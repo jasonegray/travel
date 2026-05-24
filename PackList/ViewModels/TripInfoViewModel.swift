@@ -114,13 +114,15 @@ final class TripInfoViewModel {
         let ret = trip.returnDate.formatted(.dateTime.month(.abbreviated).day().year())
         lines.append("\(trip.destination) · \(dep) – \(ret)")
 
-        if let section = outboundFlightSection() {
-            lines.append("")
-            lines.append(contentsOf: section)
-        }
-        if let section = returnFlightSection() {
-            lines.append("")
-            lines.append(contentsOf: section)
+        if trip.isFlyingTrip {
+            if let section = outboundFlightSection() {
+                lines.append("")
+                lines.append(contentsOf: section)
+            }
+            if let section = returnFlightSection() {
+                lines.append("")
+                lines.append(contentsOf: section)
+            }
         }
         if let section = hotelSection() {
             lines.append("")

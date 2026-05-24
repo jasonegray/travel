@@ -170,6 +170,12 @@ final class HomeViewModel {
         }
     }
 
+    // MARK: - Derived state
+
+    var hasAnyTrips: Bool {
+        heroTrip != nil || !otherUpcomingTrips.isEmpty || !completedTrips.isEmpty || !archivedTrips.isEmpty
+    }
+
     // MARK: - Helpers
 
     func recommendedByDate(_ timing: TaskTiming?, departure: Date) -> Date {
