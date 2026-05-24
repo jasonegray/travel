@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ProfileView: View {
     @Environment(ProfileViewModel.self) private var vm
+    @State private var onboardingResetConfirmed = false
 
     var body: some View {
         @Bindable var vm = vm
@@ -60,6 +61,16 @@ struct ProfileView: View {
                     .onChange(of: vm.appearance) { vm.save() }
                     LabeledContent("Version", value: appVersion)
                     LabeledContent("Build", value: buildNumber)
+                    Button("Reset Setup Wizard") {
+                        vm.resetOnboarding()
+                        onboardingResetConfirmed = true
+                    }
+                    .foregroundStyle(.orange)
+                    .accessibilityIdentifier("resetOnboardingButton")
+                } footer: {
+                    if onboardingResetConfirmed {
+                        Text("Setup wizard will show on next launch")
+                    }
                 }
             }
             .navigationTitle("Profile")
