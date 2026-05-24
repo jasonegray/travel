@@ -2,6 +2,8 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(ProfileViewModel.self) private var profile
+    @State private var showOnboarding = !UserDefaults.standard.bool(forKey: UserDefaults.onboardingCompletedKey)
+    @State private var showNewTripAfterOnboarding = false
 
     var body: some View {
         TabView {
@@ -15,6 +17,17 @@ struct ContentView: View {
                 .tabItem { Label("Profile", systemImage: "person.fill") }
         }
         .preferredColorScheme(preferredScheme)
+        .fullScreenCover(isPresented: $showOnboarding) {
+            OnboardingView { createFirstTrip in
+                showOnboarding = false
+                if createFirstTrip {
+                    showNewTripAfterOnboarding = true
+                }
+            }
+        }
+        .sheet(isPresented: $showNewTripAfterOnboarding) {
+            NewTripView()
+        }
     }
 
     private var preferredScheme: ColorScheme? {
