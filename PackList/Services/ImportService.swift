@@ -17,7 +17,14 @@ final class ImportService {
     }
 
     func seedIfNeeded() async {
-        guard !defaults.bool(forKey: Self.seededKey) else { return }
+        if defaults.bool(forKey: Self.seededKey) {
+            // Guard against store-wipe scenario: seededKey is true but DB is actually empty
+            let count = (try? await repository.fetchAll())?.count ?? 0
+            if count > 0 { return }
+            logger.warning("masterListSeeded was set but master items DB is empty — resetting and re-seeding")
+            defaults.removeObject(forKey: Self.seededKey)
+        }
+        logger.info("ImportService: beginning master list seed")
         do {
             // Remove duplicates first if a prior failed seed left stale records
             let existing = try await repository.fetchAll()
@@ -60,11 +67,13 @@ final class ImportService {
     }
 
     private static func parseItems() throws -> [MasterItem] {
-        guard let url = Bundle.main.url(forResource: "master_items", withExtension: "json")
-                     ?? Bundle.main.url(forResource: "master_items", withExtension: "json",
-                                        subdirectory: "SeedData") else {
+        let url = Bundle.main.url(forResource: "master_items", withExtension: "json")
+               ?? Bundle.main.url(forResource: "master_items", withExtension: "json", subdirectory: "SeedData")
+        guard let url else {
+            logger.error("master_items.json not found in bundle — bundlePath: \(Bundle.main.bundlePath)")
             throw ImportError.fileNotFound
         }
+        logger.debug("Loading seed data from \(url.path)")
         let data = try Data(contentsOf: url)
         return try JSONDecoder()
             .decode([MasterItemDTO].self, from: data)
