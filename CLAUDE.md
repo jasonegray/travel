@@ -239,6 +239,36 @@ Every PR must include confirmation that all of the following pass before opening
    Handle all Gemini comments autonomously.
    If Gemini does not review within 15 minutes, merge anyway.
 
+10. Close issue and move to Done on the project board:
+    ```
+    gh issue close [N] --comment "Completed in PR #[PR#]."
+    ```
+
+    Then explicitly move to Done via GraphQL:
+    ```
+    gh api graphql -f query='mutation {
+      updateProjectV2ItemFieldValue(input: {
+        projectId: "PVT_kwHOEMO09M4BWtlG"
+        itemId: "PVTI_ITEM_ID"
+        fieldId: "PVTSSF_lAHOEMO09M4BWtlGzgszYG4"
+        value: { singleSelectOptionId: "98236657" }
+      }) { projectV2Item { id } }
+    }'
+    ```
+
+    To get the item ID for the issue:
+    ```
+    gh api graphql -f query='{ 
+      repository(owner: "jasonegray", name: "travel") { 
+        issue(number: [N]) { 
+          projectItems(first: 1) { 
+            nodes { id } 
+          } 
+        } 
+      } 
+    }' --jq '.data.repository.issue.projectItems.nodes[0].id'
+    ```
+
 ---
 
 ## Project board workflow — mandatory for every issue
