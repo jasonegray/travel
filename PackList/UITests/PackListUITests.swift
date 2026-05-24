@@ -50,7 +50,21 @@ final class PackListUITests: XCTestCase {
         XCTAssertTrue(app.navigationBars["Trips"].waitForExistence(timeout: 3), "Should return to Trips screen after Cancel")
     }
 
-    // MARK: - 3: Info tab share button exists
+    // MARK: - 3: Bag cards section appears after trip creation
+
+    func testBagCardsSectionAppearsAfterTripCreation() throws {
+        app.tabBars.buttons["Trips"].tap()
+
+        if app.staticTexts["No trips planned"].waitForExistence(timeout: 3) {
+            try createMinimalTrip()
+        }
+
+        let bagsHeader = app.staticTexts["Bags"]
+        XCTAssertTrue(bagsHeader.waitForExistence(timeout: 10),
+                      "Bags section with bag cards should appear on home screen after trip creation")
+    }
+
+    // MARK: - 4: Info tab share button exists
 
     func testInfoTabShareButtonExists() throws {
         app.tabBars.buttons["Trips"].tap()

@@ -303,9 +303,9 @@ private struct NameDestinationStep: View {
                     } label: {
                         Image(systemName: "xmark")
                             .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(.black)
+                            .foregroundStyle(Color(.label))
                             .frame(width: 44, height: 44)
-                            .background(Circle().fill(.white))
+                            .background(Circle().fill(.regularMaterial))
                             .shadow(color: .black.opacity(0.15), radius: 4, x: 0, y: 2)
                     }
                     .padding(8)

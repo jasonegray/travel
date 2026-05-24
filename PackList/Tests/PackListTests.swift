@@ -1132,3 +1132,35 @@ final class RegressionTests: XCTestCase {
                       "All remaining items after Trip A deletion must belong to Trip B")
     }
 }
+
+// MARK: - PackingLocation display tests
+
+final class PackingLocationDisplayTests: XCTestCase {
+
+    func testSfSymbolNonEmptyForAllCases() {
+        for location in PackingLocation.allCases {
+            XCTAssertFalse(location.sfSymbol.isEmpty,
+                           "sfSymbol must not be empty for PackingLocation.\(location)")
+        }
+    }
+
+    func testSfSymbolKnownValues() {
+        XCTAssertEqual(PackingLocation.backpack.sfSymbol,          "backpack.fill")
+        XCTAssertEqual(PackingLocation.carryOn.sfSymbol,           "suitcase.rolling.fill")
+        XCTAssertEqual(PackingLocation.checkedBag.sfSymbol,        "suitcase.fill")
+        XCTAssertEqual(PackingLocation.flightAccessPouch.sfSymbol, "airplane")
+        XCTAssertEqual(PackingLocation.techPouch.sfSymbol,         "cable.connector")
+        XCTAssertEqual(PackingLocation.toiletryBag.sfSymbol,       "drop.fill")
+        XCTAssertEqual(PackingLocation.passportWallet.sfSymbol,    "wallet.pass")
+        XCTAssertEqual(PackingLocation.golfBag.sfSymbol,           "figure.golf")
+        XCTAssertEqual(PackingLocation.wearing.sfSymbol,           "figure.walk")
+        XCTAssertEqual(PackingLocation.pocket.sfSymbol,            "bag.badge.questionmark")
+    }
+
+    func testDisplayNameNonEmptyForAllCases() {
+        for location in PackingLocation.allCases {
+            XCTAssertFalse(location.displayName.isEmpty,
+                           "displayName must not be empty for PackingLocation.\(location)")
+        }
+    }
+}
