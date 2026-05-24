@@ -94,8 +94,8 @@ final class PackListUITests: XCTestCase {
         XCTAssertTrue(tripCard.waitForExistence(timeout: 10), "Trip card should be visible on home screen")
         tripCard.tap()
 
-        // TripDetailView opens on packing tab — look for the + button
-        let addButton = app.navigationBars.buttons["Add item"]
+        // TripDetailView opens on packing tab — look for the + button (identified by accessibilityIdentifier)
+        let addButton = app.buttons.matching(identifier: "addItemButton").firstMatch
         XCTAssertTrue(addButton.waitForExistence(timeout: 5), "Add item button should appear in packing toolbar")
         addButton.tap()
 
@@ -106,7 +106,7 @@ final class PackListUITests: XCTestCase {
         nameField.typeText("My Custom Snack")
 
         // Tap the Add confirmation button in the sheet's nav bar
-        let confirmButton = app.navigationBars.buttons["Add"]
+        let confirmButton = app.buttons.matching(identifier: "confirmAddItemButton").firstMatch
         XCTAssertTrue(confirmButton.waitForExistence(timeout: 3), "Add button should be enabled after entering name")
         confirmButton.tap()
 

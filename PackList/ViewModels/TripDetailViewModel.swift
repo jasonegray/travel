@@ -94,6 +94,10 @@ final class TripDetailViewModel {
     // MARK: - Custom items
 
     func addCustomItem(name: String, category: ItemCategory, location: PackingLocation, quantity: Int) async {
+        guard let repo else {
+            logger.error("addCustomItem: repository not loaded")
+            return
+        }
         let item = TripItem(
             tripId: trip.id,
             name: name,
@@ -105,7 +109,7 @@ final class TripDetailViewModel {
         )
         items.append(item)
         do {
-            try await repo?.insert(item)
+            try await repo.insert(item)
         } catch {
             logger.error("addCustomItem failed: \(error)")
             items.removeAll { $0.id == item.id }

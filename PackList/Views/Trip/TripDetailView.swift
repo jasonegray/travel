@@ -53,13 +53,15 @@ struct TripDetailView: View {
         .navigationTitle(vm.trip.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showAddCustomItem = true
-                } label: {
-                    Image(systemName: "plus")
+            if selectedTab == .packing && vm.trip.status != .completed {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showAddCustomItem = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    .accessibilityIdentifier("addItemButton")
                 }
-                .accessibilityLabel("Add item")
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
@@ -198,7 +200,8 @@ private struct PackingTab: View {
             }
         }
         .onChange(of: mode) { _, _ in expandedSections = [] }
-        .onChange(of: vm.items.count) { _, _ in
+        .onChange(of: vm.items.count) { old, new in
+            guard new > old else { return }
             for item in vm.items where item.source == .manual && item.completedAt == nil {
                 expandedSections.insert(item.category.rawValue)
             }

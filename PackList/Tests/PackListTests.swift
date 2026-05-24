@@ -1099,6 +1099,10 @@ final class AddCustomItemTests: XCTestCase {
         let session = makeSession()
         try await repos.tripSessions.insert(session)
 
+        // Pre-seed a generated item in the same Misc category so we can verify sort order
+        let generated = TripItem(tripId: session.id, name: "Alpha Generated", category: .misc)
+        try await repos.tripItems.insert(generated)
+
         let vm = TripDetailViewModel(trip: session)
         await vm.load(repository: repos.tripItems)
 
@@ -1110,8 +1114,14 @@ final class AddCustomItemTests: XCTestCase {
                                       "Misc category group should exist after adding custom item")
         XCTAssertTrue(miscGroup.items.contains { $0.name == "Deck of Cards" },
                       "Custom item should appear in its category group")
-        XCTAssertEqual(miscGroup.items.first?.name, "Deck of Cards",
-                       "Custom item should appear at the top of its category section")
+
+        // Manual item must sort before any generated item regardless of name
+        let manualIndex = try XCTUnwrap(miscGroup.items.firstIndex { $0.source == .manual },
+                                        "Manual item should exist in group")
+        let generatedIndex = try XCTUnwrap(miscGroup.items.firstIndex { $0.source == .generated },
+                                           "Generated item should exist in group")
+        XCTAssertLessThan(manualIndex, generatedIndex,
+                          "Manual item must sort before generated items in the same section")
     }
 
     func testDeleteCustomItem() async throws {

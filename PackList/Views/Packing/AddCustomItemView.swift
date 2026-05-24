@@ -46,6 +46,7 @@ struct AddCustomItemView: View {
                         dismiss()
                     }
                     .disabled(!canAdd)
+                    .accessibilityIdentifier("confirmAddItemButton")
                 }
             }
         }
