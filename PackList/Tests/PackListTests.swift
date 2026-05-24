@@ -1164,3 +1164,399 @@ final class PackingLocationDisplayTests: XCTestCase {
         }
     }
 }
+
+// MARK: - Mock Repositories (used by ImportServiceCoverageTests)
+
+@MainActor
+private final class InsertThrowingMasterItemRepository: MasterItemRepository {
+    func fetchAll() async throws -> [MasterItem] { [] }
+    func fetchActive() async throws -> [MasterItem] { [] }
+    func fetchActive(matchingAnyOf tags: Set<ItemTag>) async throws -> [MasterItem] { [] }
+    func fetch(id: UUID) async throws -> MasterItem? { nil }
+    func insert(_ item: MasterItem) async throws {
+        throw NSError(domain: "test.insert", code: 1,
+                      userInfo: [NSLocalizedDescriptionKey: "Simulated insert failure"])
+    }
+    func delete(_ item: MasterItem) async throws { }
+}
+
+@MainActor
+private final class DeleteThrowingMasterItemRepository: MasterItemRepository {
+    var storedItems: [MasterItem]
+    init(items: [MasterItem]) { storedItems = items }
+    func fetchAll() async throws -> [MasterItem] { storedItems }
+    func fetchActive() async throws -> [MasterItem] { storedItems.filter { $0.isActive } }
+    func fetchActive(matchingAnyOf tags: Set<ItemTag>) async throws -> [MasterItem] { [] }
+    func fetch(id: UUID) async throws -> MasterItem? { storedItems.first { $0.id == id } }
+    func insert(_ item: MasterItem) async throws { storedItems.append(item) }
+    func delete(_ item: MasterItem) async throws {
+        throw NSError(domain: "test.delete", code: 1,
+                      userInfo: [NSLocalizedDescriptionKey: "Simulated delete failure"])
+    }
+}
+
+// MARK: - ImportService coverage tests
+
+@MainActor
+final class ImportServiceCoverageTests: XCTestCase {
+
+    var container: ModelContainer!
+    var context: ModelContext!
+    var repos: RepositoryContainer!
+
+    override func setUpWithError() throws {
+        let schema = Schema([TripSession.self, TripInfo.self, MasterItem.self,
+                             TripItem.self, ItemInsight.self, PendingSuggestion.self])
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        container = try ModelContainer(for: schema, configurations: config)
+        context = ModelContext(container)
+        repos = RepositoryContainer(modelContext: context)
+    }
+
+    override func tearDown() {
+        repos = nil
+        context = nil
+        container = nil
+    }
+
+    // Covers removeDuplicateImportedItems: the dedup delete path
+    func testSeedDeduplicationByName() async throws {
+        let older = MasterItem(name: "zzz_dupe_test", category: .misc, source: .imported,
+                               createdAt: Date().addingTimeInterval(-200))
+        let newer = MasterItem(name: "zzz_dupe_test", category: .misc, source: .imported,
+                               createdAt: Date())
+        try await repos.masterItems.insert(older)
+        try await repos.masterItems.insert(newer)
+
+        let before = try context.fetch(FetchDescriptor<MasterItem>(
+            predicate: #Predicate { $0.name == "zzz_dupe_test" }
+        ))
+        XCTAssertEqual(before.count, 2, "Pre-condition: 2 duplicate items must exist before seed")
+
+        let isolated = UserDefaults(suiteName: UUID().uuidString)!
+        await ImportService(repository: repos.masterItems, defaults: isolated).seedIfNeeded()
+
+        let after = try context.fetch(FetchDescriptor<MasterItem>(
+            predicate: #Predicate { $0.name == "zzz_dupe_test" }
+        ))
+        XCTAssertEqual(after.count, 1, "Deduplication must leave exactly one item with this name")
+        XCTAssertEqual(after.first?.id, older.id,
+                       "Deduplication must keep the OLDER item (earliest createdAt), not the newer one")
+    }
+
+    // Covers seedIfNeeded() catch block — seededKey must not be set on failure
+    func testSeedInsertErrorDoesNotSetSeededFlag() async {
+        let isolated = UserDefaults(suiteName: UUID().uuidString)!
+        let throwingRepo = InsertThrowingMasterItemRepository()
+        await ImportService(repository: throwingRepo, defaults: isolated).seedIfNeeded()
+
+        XCTAssertFalse(isolated.bool(forKey: ImportService.seededKey),
+                       "seededKey must not be set when seed insert fails — ensures retry on next launch")
+    }
+
+    // Covers the guard-return early exit when seededKey is already set
+    func testSeedDoesNotRunWhenAlreadySeeded() async throws {
+        let isolated = UserDefaults(suiteName: UUID().uuidString)!
+        isolated.set(true, forKey: ImportService.seededKey)
+        await ImportService(repository: repos.masterItems, defaults: isolated).seedIfNeeded()
+
+        let items = try context.fetch(FetchDescriptor<MasterItem>())
+        XCTAssertEqual(items.count, 0, "No items must be inserted when the seeded flag is already set")
+    }
+
+    // Covers removeDuplicateImportedItems delete-error catch — must not crash
+    func testSeedDuplicateDeleteErrorIsSilentlyHandled() async {
+        let older = MasterItem(name: "zzz_dupe_delete_err", category: .misc, source: .imported,
+                               createdAt: Date().addingTimeInterval(-200))
+        let newer = MasterItem(name: "zzz_dupe_delete_err", category: .misc, source: .imported,
+                               createdAt: Date())
+        let throwRepo = DeleteThrowingMasterItemRepository(items: [older, newer])
+        let isolated = UserDefaults(suiteName: UUID().uuidString)!
+
+        await ImportService(repository: throwRepo, defaults: isolated).seedIfNeeded()
+        // Seed must complete (delete error is swallowed) and set the seeded flag
+        XCTAssertTrue(isolated.bool(forKey: ImportService.seededKey),
+                      "seededKey must be set — seed must complete successfully despite a delete-error in dedup")
+    }
+
+    // Verifies that user-sourced items with duplicate names are NOT deduped
+    func testSeedDeduplicationIgnoresUserSourceItems() async throws {
+        let user1 = MasterItem(name: "zzz_user_dupe", category: .misc, source: .user,
+                               createdAt: Date().addingTimeInterval(-100))
+        let user2 = MasterItem(name: "zzz_user_dupe", category: .misc, source: .user,
+                               createdAt: Date())
+        try await repos.masterItems.insert(user1)
+        try await repos.masterItems.insert(user2)
+
+        let isolated = UserDefaults(suiteName: UUID().uuidString)!
+        await ImportService(repository: repos.masterItems, defaults: isolated).seedIfNeeded()
+
+        let remaining = try context.fetch(FetchDescriptor<MasterItem>(
+            predicate: #Predicate { $0.name == "zzz_user_dupe" }
+        ))
+        XCTAssertEqual(remaining.count, 2, "User-sourced items must not be touched by deduplication")
+    }
+
+    // Verifies re-seed with existing DB does not create duplicates
+    func testSeedWithExistingItemsDoesNotDuplicate() async throws {
+        let isolated = UserDefaults(suiteName: UUID().uuidString)!
+        let service = ImportService(repository: repos.masterItems, defaults: isolated)
+
+        await service.seedIfNeeded()
+        let firstCount = try context.fetch(FetchDescriptor<MasterItem>()).count
+        XCTAssertGreaterThan(firstCount, 0, "First seed must insert items")
+
+        isolated.set(false, forKey: ImportService.seededKey)
+        await service.seedIfNeeded()
+
+        let secondCount = try context.fetch(FetchDescriptor<MasterItem>()).count
+        XCTAssertEqual(firstCount, secondCount,
+                       "Re-seed with existing items must not duplicate — dedup + skip-present logic must apply")
+    }
+}
+
+// MARK: - MasterItemRepository coverage tests
+
+@MainActor
+final class MasterItemRepositoryTests: XCTestCase {
+
+    var container: ModelContainer!
+    var context: ModelContext!
+    var repo: SwiftDataMasterItemRepository!
+
+    override func setUpWithError() throws {
+        let schema = Schema([TripSession.self, TripInfo.self, MasterItem.self,
+                             TripItem.self, ItemInsight.self, PendingSuggestion.self])
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        container = try ModelContainer(for: schema, configurations: config)
+        context = ModelContext(container)
+        repo = SwiftDataMasterItemRepository(context: context)
+    }
+
+    override func tearDown() {
+        repo = nil
+        context = nil
+        container = nil
+    }
+
+    func testFetchActiveReturnsOnlyActiveItems() async throws {
+        let active1  = MasterItem(name: "Active 1", category: .clothing, isActive: true)
+        let active2  = MasterItem(name: "Active 2", category: .tech,     isActive: true)
+        let inactive = MasterItem(name: "Inactive", category: .misc,     isActive: false)
+        try await repo.insert(active1)
+        try await repo.insert(active2)
+        try await repo.insert(inactive)
+
+        let result = try await repo.fetchActive()
+        XCTAssertEqual(result.count, 2, "fetchActive() must return only active items")
+        XCTAssertFalse(result.contains { $0.name == "Inactive" },
+                       "Inactive item must not appear in fetchActive() results")
+    }
+
+    func testFetchActiveWithMatchingTagsFilters() async throws {
+        let golfItem  = MasterItem(name: "Golf Glove", category: .golf,      tags: [.golf],  isActive: true)
+        let passItem  = MasterItem(name: "Passport",   category: .documents, tags: [.always], isActive: true)
+        let beachItem = MasterItem(name: "Sunscreen",  category: .hygiene,   tags: [.beach], isActive: true)
+        try await repo.insert(golfItem)
+        try await repo.insert(passItem)
+        try await repo.insert(beachItem)
+
+        let result = try await repo.fetchActive(matchingAnyOf: [.golf, .beach])
+        XCTAssertEqual(result.count, 2,
+                       "fetchActive(matchingAnyOf:) must return items matching any of the supplied tags")
+        XCTAssertTrue(result.contains { $0.name == "Golf Glove" })
+        XCTAssertTrue(result.contains { $0.name == "Sunscreen" })
+        XCTAssertFalse(result.contains { $0.name == "Passport" },
+                       "Item without a matching tag must be excluded")
+    }
+
+    func testFetchActiveWithEmptyTagsReturnsAllActive() async throws {
+        let item1 = MasterItem(name: "Item A", category: .misc, tags: [.always], isActive: true)
+        let item2 = MasterItem(name: "Item B", category: .tech, tags: [.golf],   isActive: true)
+        try await repo.insert(item1)
+        try await repo.insert(item2)
+
+        let result = try await repo.fetchActive(matchingAnyOf: [])
+        XCTAssertEqual(result.count, 2,
+                       "fetchActive(matchingAnyOf: []) must return all active items when tag set is empty")
+    }
+
+    func testFetchByIdReturnsCorrectItem() async throws {
+        let item = MasterItem(name: "Known Item", category: .tech)
+        try await repo.insert(item)
+
+        let fetched = try await repo.fetch(id: item.id)
+        XCTAssertNotNil(fetched, "fetch(id:) must return the item for a known ID")
+        XCTAssertEqual(fetched?.name, "Known Item")
+        XCTAssertEqual(fetched?.id, item.id)
+    }
+
+    func testFetchByIdReturnsNilForUnknownId() async throws {
+        let result = try await repo.fetch(id: UUID())
+        XCTAssertNil(result, "fetch(id:) must return nil for an ID that does not exist")
+    }
+
+    func testDeleteRemovesItemFromStore() async throws {
+        let item = MasterItem(name: "To Delete", category: .misc)
+        try await repo.insert(item)
+
+        let before = try context.fetch(FetchDescriptor<MasterItem>())
+        XCTAssertEqual(before.count, 1, "Pre-condition: item must exist before delete")
+
+        try await repo.delete(item)
+
+        let after = try context.fetch(FetchDescriptor<MasterItem>())
+        XCTAssertEqual(after.count, 0, "Item must be removed from store after delete()")
+    }
+
+    func testFetchAllIncludesInactiveItems() async throws {
+        let active   = MasterItem(name: "Active",   category: .misc, isActive: true)
+        let inactive = MasterItem(name: "Inactive", category: .misc, isActive: false)
+        try await repo.insert(active)
+        try await repo.insert(inactive)
+
+        let all = try await repo.fetchAll()
+        XCTAssertEqual(all.count, 2, "fetchAll() must return both active and inactive items")
+    }
+
+    func testDeactivateItemExcludesFromFetchActive() async throws {
+        let item = MasterItem(name: "Deactivate Me", category: .misc, isActive: true)
+        try await repo.insert(item)
+
+        let activeBefore = try await repo.fetchActive()
+        XCTAssertEqual(activeBefore.count, 1, "Item must appear in fetchActive() when active")
+
+        item.isActive = false
+        try context.save()
+
+        let activeAfter = try await repo.fetchActive()
+        XCTAssertEqual(activeAfter.count, 0, "Deactivated item must not appear in fetchActive()")
+    }
+
+    func testFetchByCategory() async throws {
+        let clothing = MasterItem(name: "T-Shirt", category: .clothing, isActive: true)
+        let tech     = MasterItem(name: "Laptop",  category: .tech,     isActive: true)
+        try await repo.insert(clothing)
+        try await repo.insert(tech)
+
+        let all = try await repo.fetchAll()
+        XCTAssertEqual(all.filter { $0.category == .clothing }.count, 1,
+                       "Exactly 1 clothing item must be in the store")
+        XCTAssertEqual(all.filter { $0.category == .tech }.count, 1,
+                       "Exactly 1 tech item must be in the store")
+    }
+}
+
+// MARK: - TripItemRepository coverage tests
+
+@MainActor
+final class TripItemRepositoryTests: XCTestCase {
+
+    var container: ModelContainer!
+    var context: ModelContext!
+    var repo: SwiftDataTripItemRepository!
+
+    override func setUpWithError() throws {
+        let schema = Schema([TripSession.self, TripInfo.self, MasterItem.self,
+                             TripItem.self, ItemInsight.self, PendingSuggestion.self])
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        container = try ModelContainer(for: schema, configurations: config)
+        context = ModelContext(container)
+        repo = SwiftDataTripItemRepository(context: context)
+    }
+
+    override func tearDown() {
+        repo = nil
+        context = nil
+        container = nil
+    }
+
+    func testFetchAllScopedToTripId() async throws {
+        let tripA = UUID()
+        let tripB = UUID()
+        for i in 0..<3 { try await repo.insert(TripItem(tripId: tripA, name: "A\(i)", category: .misc)) }
+        for i in 0..<5 { try await repo.insert(TripItem(tripId: tripB, name: "B\(i)", category: .misc)) }
+
+        let forA = try await repo.fetchAll(for: tripA)
+        let forB = try await repo.fetchAll(for: tripB)
+
+        XCTAssertEqual(forA.count, 3, "fetchAll(for:) must return only Trip A's 3 items")
+        XCTAssertEqual(forB.count, 5, "fetchAll(for:) must return only Trip B's 5 items")
+        XCTAssertTrue(forA.allSatisfy { $0.tripId == tripA }, "All Trip A items must carry Trip A's id")
+        XCTAssertTrue(forB.allSatisfy { $0.tripId == tripB }, "All Trip B items must carry Trip B's id")
+    }
+
+    func testFetchByIdReturnsCorrectItem() async throws {
+        let tripId = UUID()
+        let item = TripItem(tripId: tripId, name: "Specific Item", category: .tech)
+        try await repo.insert(item)
+
+        let fetched = try await repo.fetch(id: item.id)
+        XCTAssertNotNil(fetched, "fetch(id:) must return the item for a known ID")
+        XCTAssertEqual(fetched?.id, item.id)
+        XCTAssertEqual(fetched?.name, "Specific Item")
+    }
+
+    func testFetchByIdReturnsNilForUnknownId() async throws {
+        let result = try await repo.fetch(id: UUID())
+        XCTAssertNil(result, "fetch(id:) must return nil for an ID that does not exist")
+    }
+
+    func testUpdateCompletedAtPersists() async throws {
+        let tripId = UUID()
+        let item = TripItem(tripId: tripId, name: "Pack Me", category: .clothing)
+        try await repo.insert(item)
+
+        XCTAssertNil(item.completedAt, "Item must start with nil completedAt")
+
+        let now = Date()
+        item.completedAt = now
+        try await repo.update(item)
+
+        let fetched = try await repo.fetch(id: item.id)
+        XCTAssertNotNil(fetched?.completedAt, "completedAt must persist after update()")
+        XCTAssertEqual(fetched?.completedAt?.timeIntervalSinceReferenceDate ?? 0,
+                       now.timeIntervalSinceReferenceDate, accuracy: 1,
+                       "Persisted completedAt must match the value set before update()")
+    }
+
+    func testDeleteItemRemovesFromStore() async throws {
+        let tripId = UUID()
+        let item = TripItem(tripId: tripId, name: "Delete Me", category: .misc)
+        try await repo.insert(item)
+
+        let before = try await repo.fetchAll(for: tripId)
+        XCTAssertEqual(before.count, 1, "Pre-condition: item must exist before delete")
+
+        try await repo.delete(item)
+
+        let after = try await repo.fetchAll(for: tripId)
+        XCTAssertEqual(after.count, 0, "Item must be gone after delete()")
+    }
+
+    func testFetchAllForUnknownTripIdReturnsEmpty() async throws {
+        let result = try await repo.fetchAll(for: UUID())
+        XCTAssertEqual(result.count, 0, "fetchAll(for: unknownId) must return an empty array")
+    }
+
+    func testFetchItemsByPackingLocation() async throws {
+        let tripId = UUID()
+        let carryOn    = TripItem(tripId: tripId, name: "Carry-on Item", category: .tech,
+                                   packingLocation: .carryOn)
+        let checkedBag = TripItem(tripId: tripId, name: "Checked Item",  category: .clothing,
+                                   packingLocation: .checkedBag)
+        let backpack   = TripItem(tripId: tripId, name: "Backpack Item", category: .misc,
+                                   packingLocation: .backpack)
+        try await repo.insert(carryOn)
+        try await repo.insert(checkedBag)
+        try await repo.insert(backpack)
+
+        let all = try await repo.fetchAll(for: tripId)
+        XCTAssertEqual(all.filter { $0.packingLocation == .carryOn }.count, 1,
+                       "Exactly 1 carryOn item must be fetched")
+        XCTAssertEqual(all.filter { $0.packingLocation == .checkedBag }.count, 1,
+                       "Exactly 1 checkedBag item must be fetched")
+        XCTAssertEqual(all.filter { $0.packingLocation == .backpack }.count, 1,
+                       "Exactly 1 backpack item must be fetched")
+    }
+}
