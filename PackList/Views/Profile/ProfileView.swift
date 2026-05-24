@@ -115,6 +115,10 @@ private struct ProfileRow: View {
         self.keyboardType = keyboardType
     }
 
+    private var needsDoneButton: Bool {
+        keyboardType == .numberPad || keyboardType == .phonePad
+    }
+
     var body: some View {
         LabeledContent(label) {
             TextField(placeholder, text: $text)
@@ -122,6 +126,16 @@ private struct ProfileRow: View {
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(capitalization)
                 .keyboardType(keyboardType)
+                .toolbar {
+                    if needsDoneButton {
+                        ToolbarItemGroup(placement: .keyboard) {
+                            Spacer()
+                            Button("Done") {
+                                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                            }
+                        }
+                    }
+                }
         }
     }
 }

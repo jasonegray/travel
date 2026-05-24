@@ -310,6 +310,14 @@ private struct AeroplanStep: View {
                     .padding(.vertical, 12)
                     .padding(.horizontal, 16)
                     .background(.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
+                    .toolbar {
+                        ToolbarItemGroup(placement: .keyboard) {
+                            Spacer()
+                            Button("Done") {
+                                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                            }
+                        }
+                    }
 
                 Picker("Status tier", selection: $tier) {
                     ForEach(AeroplanTier.allCases.reversed(), id: \.self) { t in
@@ -346,6 +354,14 @@ private struct BonvoyStep: View {
                     .padding(.vertical, 12)
                     .padding(.horizontal, 16)
                     .background(.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
+                    .toolbar {
+                        ToolbarItemGroup(placement: .keyboard) {
+                            Spacer()
+                            Button("Done") {
+                                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                            }
+                        }
+                    }
 
                 Picker("Status tier", selection: $tier) {
                     ForEach(BonvoyTier.allCases.reversed(), id: \.self) { t in
