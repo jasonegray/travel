@@ -73,4 +73,37 @@ final class MasterListViewModel {
         item.isActive.toggle()
         item.updatedAt = Date()
     }
+
+    // MARK: - Add item
+
+    @MainActor
+    func addItem(
+        name: String,
+        category: ItemCategory,
+        itemType: ItemType,
+        packingLocation: PackingLocation?,
+        tags: Set<ItemTag>,
+        isAlwaysInclude: Bool,
+        defaultQuantity: Int,
+        repository: any MasterItemRepository
+    ) async {
+        let item = MasterItem(
+            name: name,
+            category: category,
+            itemType: itemType,
+            tags: Array(tags),
+            isAlwaysInclude: isAlwaysInclude,
+            defaultQuantity: defaultQuantity,
+            packingLocation: packingLocation,
+            isActive: true,
+            source: .user
+        )
+        items.append(item)
+        do {
+            try await repository.insert(item)
+        } catch {
+            logger.error("addItem failed: \(error)")
+            items.removeAll { $0.id == item.id }
+        }
+    }
 }
