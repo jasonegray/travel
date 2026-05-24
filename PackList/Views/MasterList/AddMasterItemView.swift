@@ -90,7 +90,7 @@ private struct TagsSelectionView: View {
 
     var body: some View {
         List {
-            ForEach(ItemTag.allCases, id: \.self) { tag in
+            ForEach(ItemTag.allCases, id: \.self) { (tag: ItemTag) in
                 Button {
                     if selected.contains(tag) { selected.remove(tag) }
                     else { selected.insert(tag) }
@@ -101,7 +101,7 @@ private struct TagsSelectionView: View {
                         Spacer()
                         if selected.contains(tag) {
                             Image(systemName: "checkmark")
-                                .foregroundStyle(.accentColor)
+                                .foregroundStyle(Color.accentColor)
                         }
                     }
                 }

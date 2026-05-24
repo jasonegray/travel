@@ -52,7 +52,7 @@ struct ProfileView: View {
                 }
 
                 // MARK: Section 5 — App
-                Section("App") {
+                Section {
                     Picker("Appearance", selection: $vm.appearance) {
                         ForEach(AppearancePreference.allCases, id: \.self) { pref in
                             Text(pref.rawValue).tag(pref)
@@ -67,6 +67,8 @@ struct ProfileView: View {
                     }
                     .foregroundStyle(.orange)
                     .accessibilityIdentifier("resetOnboardingButton")
+                } header: {
+                    Text("App")
                 } footer: {
                     if onboardingResetConfirmed {
                         Text("Setup wizard will show on next launch")
