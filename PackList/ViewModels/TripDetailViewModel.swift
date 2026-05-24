@@ -1,5 +1,6 @@
 import Foundation
 import os.log
+import UIKit
 
 private let logger = Logger(subsystem: "com.packlist", category: "TripDetailViewModel")
 
@@ -32,7 +33,9 @@ final class TripDetailViewModel {
 
     func toggle(item: TripItem) {
         guard !trip.isArchived else { return }
-        item.completedAt = item.completedAt == nil ? Date() : nil
+        let completing = item.completedAt == nil
+        item.completedAt = completing ? Date() : nil
+        UIImpactFeedbackGenerator(style: completing ? .medium : .light).impactOccurred()
     }
 
     func save(item: TripItem) async {
