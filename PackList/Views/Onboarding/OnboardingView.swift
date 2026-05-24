@@ -160,14 +160,11 @@ private struct WelcomeStep: View {
             Spacer()
 
             VStack(spacing: 20) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(.blue.gradient)
-                        .frame(width: 88, height: 88)
-                        .shadow(color: .black.opacity(0.12), radius: 8, y: 4)
-                    Image(systemName: "suitcase.fill")
-                        .font(.system(size: 38, weight: .medium))
-                        .foregroundStyle(.white)
+                if let icon = UIImage(named: "AppIcon") {
+                    Image(uiImage: icon)
+                        .resizable()
+                        .frame(width: 120, height: 120)
+                        .clipShape(RoundedRectangle(cornerRadius: 26))
                 }
 
                 VStack(spacing: 8) {
@@ -240,6 +237,7 @@ private struct AirportStep: View {
     @Binding var airport: String
     let onContinue: () -> Void
     let onSkip: () -> Void
+    @State private var showPicker = false
 
     var body: some View {
         OnboardingStepShell(
@@ -248,17 +246,25 @@ private struct AirportStep: View {
             onContinue: onContinue,
             onSkip: onSkip
         ) {
-            TextField("e.g. YYZ", text: $airport)
-                .textInputAutocapitalization(.characters)
-                .autocorrectionDisabled()
-                .font(.body)
-                .onChange(of: airport) { _, new in
-                    let upper = new.uppercased()
-                    if upper != new { airport = upper }
+            Button {
+                showPicker = true
+            } label: {
+                HStack {
+                    Text(airport.isEmpty ? "Search city or airport code" : airport)
+                        .foregroundStyle(airport.isEmpty ? .secondary : .primary)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundStyle(.tertiary)
+                        .font(.caption)
                 }
+                .font(.body)
                 .padding(.vertical, 12)
                 .padding(.horizontal, 16)
                 .background(.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
+            }
+            .sheet(isPresented: $showPicker) {
+                AirportSearchView(selected: $airport)
+            }
         }
     }
 }

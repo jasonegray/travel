@@ -170,24 +170,6 @@ final class HomeViewModel {
         }
     }
 
-    // MARK: - Debug
-
-    #if DEBUG
-    func deleteAllTrips(sessions: any TripSessionRepository) async {
-        do {
-            let all = try await sessions.fetchAll()
-            for trip in all { try await sessions.delete(trip) }
-            heroTrip = nil
-            otherUpcomingTrips = []
-            completedTrips = []
-            archivedTrips = []
-            tripProgressMap = [:]
-        } catch {
-            logger.error("deleteAllTrips failed: \(error)")
-        }
-    }
-    #endif
-
     // MARK: - Helpers
 
     func recommendedByDate(_ timing: TaskTiming?, departure: Date) -> Date {

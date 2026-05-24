@@ -44,6 +44,9 @@
 		77B65949493F47DB89DE102E /* TasksTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F469D2ED106426FADB30C94 /* TasksTabView.swift */; };
 		79C7FC5697C79F9639F8BA72 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8024FC2863C181612B2B89A /* HomeView.swift */; };
 		80D5B1FC5E6A40698A2706F7 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0551A5E4104DFAA7943999 /* ProfileView.swift */; };
+		AA172002AA172002AA172002 /* AirportSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA172001AA172001AA172001 /* AirportSearchView.swift */; };
+		AA172004AA172004AA172004 /* AirportSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA172003AA172003AA172003 /* AirportSearchViewModel.swift */; };
+		AA172006AA172006AA172006 /* airports.json in Resources */ = {isa = PBXBuildFile; fileRef = AA172005AA172005AA172005 /* airports.json */; };
 		AA135002AA135002AA135002 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA135001AA135001AA135001 /* ProfileViewModel.swift */; };
 		98E56A316F147171C2A4B7CC /* PendingSuggestionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D5D1649BA80085AB9AE5112 /* PendingSuggestionRepository.swift */; };
 		9BB754CBC6E719F3411F7F17 /* master_items.json in Resources */ = {isa = PBXBuildFile; fileRef = 238B969C326344064ADA73EB /* master_items.json */; };
@@ -139,6 +142,9 @@
 		E578BE0C4491E2CE40D78899 /* SwiftDataItemInsightRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataItemInsightRepository.swift; sourceTree = "<group>"; };
 		E5ED70E357A6B8CA9FFC1CC0 /* .gitkeep */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
 		EF0551A5E4104DFAA7943999 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		AA172001AA172001AA172001 /* AirportSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirportSearchView.swift; sourceTree = "<group>"; };
+		AA172003AA172003AA172003 /* AirportSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirportSearchViewModel.swift; sourceTree = "<group>"; };
+		AA172005AA172005AA172005 /* airports.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = airports.json; sourceTree = "<group>"; };
 		F18C8E3DF2BAC53703E2E96B /* TripSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSession.swift; sourceTree = "<group>"; };
 		AA117001AA117001AA117001 /* AddCustomItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCustomItemView.swift; sourceTree = "<group>"; };
 		CC220001CC220001CC220001 /* EditPackingItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPackingItemView.swift; sourceTree = "<group>"; };
@@ -205,6 +211,7 @@
 			isa = PBXGroup;
 			children = (
 				EF0551A5E4104DFAA7943999 /* ProfileView.swift */,
+				AA172001AA172001AA172001 /* AirportSearchView.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -308,6 +315,7 @@
 				D1207BA2945A0FAFFDEDA826 /* HomeViewModel.swift */,
 				5ECB5F8B386514C654BBE1E9 /* NewTripViewModel.swift */,
 				AA135001AA135001AA135001 /* ProfileViewModel.swift */,
+				AA172003AA172003AA172003 /* AirportSearchViewModel.swift */,
 				BB200001BB200001BB200001 /* MasterListViewModel.swift */,
 				BC300001BC300001BC300001 /* OnboardingViewModel.swift */,
 				64A12C6D76A50997C8CA0800 /* TripDetailViewModel.swift */,
@@ -371,6 +379,7 @@
 			children = (
 				93C413942B93D93169C6F781 /* Assets.xcassets */,
 				9DC8F422F80F5361D23FA8CA /* SeedData */,
+				AA172005AA172005AA172005 /* airports.json */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -484,6 +493,7 @@
 			files = (
 				C69B9B68F4E3A51AFCDFF16D /* Assets.xcassets in Resources */,
 				9BB754CBC6E719F3411F7F17 /* master_items.json in Resources */,
+				AA172006AA172006AA172006 /* airports.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -509,6 +519,8 @@
 				41977EEBB0B361098BDFE9C0 /* ChecklistEngine.swift in Sources */,
 				77B65949493F47DB89DE102E /* TasksTabView.swift in Sources */,
 				80D5B1FC5E6A40698A2706F7 /* ProfileView.swift in Sources */,
+				AA172002AA172002AA172002 /* AirportSearchView.swift in Sources */,
+				AA172004AA172004AA172004 /* AirportSearchViewModel.swift in Sources */,
 				AA135002AA135002AA135002 /* ProfileViewModel.swift in Sources */,
 				AA117002AA117002AA117002 /* AddCustomItemView.swift in Sources */,
 				CC220002CC220002CC220002 /* EditPackingItemView.swift in Sources */,
