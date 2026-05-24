@@ -724,10 +724,8 @@ final class TripDetailViewModelCoverageTests: XCTestCase {
         let vm = TripDetailViewModel(trip: trip)
         await vm.load(repository: repos.tripItems)
 
-        XCTAssertEqual(vm.completedPacking, 3)
-        XCTAssertEqual(vm.totalPacking, 6)
-        let ratio = Double(vm.completedPacking) / Double(vm.totalPacking)
-        XCTAssertEqual(ratio, 0.5, accuracy: 0.01, "Packing progress must be 50%")
+        XCTAssertEqual(vm.completedPacking, 3, "completedPacking must equal the 3 pre-completed items")
+        XCTAssertEqual(vm.totalPacking, 6, "totalPacking must count all 6 physical items")
     }
 
     // packingProgress at 100%
@@ -864,20 +862,30 @@ final class TripDetailViewModelCoverageTests: XCTestCase {
         XCTAssertNotNil(trip.manuallyCompletedAt, "manuallyCompletedAt must be set after markCompleted()")
     }
 
-    // save(item:) persists the item via the loaded repository
+    // save(item:) persists the item via the loaded repository.
+    // Uses a fresh ModelContext to verify the value was actually saved to the store
+    // (same-context fetch would return the same object reference, masking a missing save).
     func testSaveItemPersists() async throws {
         let trip = try makeTrip()
-        let item = physical(tripId: trip.id, name: "Test Save")
-        try await repos.tripItems.insert(item)
+        let itemId: UUID
+        do {
+            let item = physical(tripId: trip.id, name: "Test Save")
+            itemId = item.id
+            try await repos.tripItems.insert(item)
 
-        let vm = TripDetailViewModel(trip: trip)
-        await vm.load(repository: repos.tripItems)
+            let vm = TripDetailViewModel(trip: trip)
+            await vm.load(repository: repos.tripItems)
 
-        item.completedAt = Date()
-        await vm.save(item: item)
+            item.completedAt = Date()
+            await vm.save(item: item)
+        }
 
-        let fetched = try await repos.tripItems.fetch(id: item.id)
-        XCTAssertNotNil(fetched?.completedAt, "completedAt must persist after save(item:)")
+        // Fresh context reads from the same in-memory store — sees only what was saved
+        let freshContext = ModelContext(container)
+        let freshRepo = SwiftDataTripItemRepository(context: freshContext)
+        let fetched = try await freshRepo.fetch(id: itemId)
+        XCTAssertNotNil(fetched?.completedAt,
+                        "completedAt must be persisted to the store after save(item:) — not just held in memory")
     }
 }
 

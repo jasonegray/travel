@@ -1239,7 +1239,9 @@ final class ImportServiceCoverageTests: XCTestCase {
         let after = try context.fetch(FetchDescriptor<MasterItem>(
             predicate: #Predicate { $0.name == "zzz_dupe_test" }
         ))
-        XCTAssertEqual(after.count, 1, "Deduplication must remove the newer .imported duplicate, keeping the older")
+        XCTAssertEqual(after.count, 1, "Deduplication must leave exactly one item with this name")
+        XCTAssertEqual(after.first?.id, older.id,
+                       "Deduplication must keep the OLDER item (earliest createdAt), not the newer one")
     }
 
     // Covers seedIfNeeded() catch block — seededKey must not be set on failure
@@ -1272,7 +1274,9 @@ final class ImportServiceCoverageTests: XCTestCase {
         let isolated = UserDefaults(suiteName: UUID().uuidString)!
 
         await ImportService(repository: throwRepo, defaults: isolated).seedIfNeeded()
-        XCTAssertTrue(true, "seedIfNeeded must not crash when a duplicate delete throws")
+        // Seed must complete (delete error is swallowed) and set the seeded flag
+        XCTAssertTrue(isolated.bool(forKey: ImportService.seededKey),
+                      "seededKey must be set — seed must complete successfully despite a delete-error in dedup")
     }
 
     // Verifies that user-sourced items with duplicate names are NOT deduped
