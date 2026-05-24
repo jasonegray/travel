@@ -498,6 +498,15 @@ private struct ActivitiesStep: View {
     var body: some View {
         StepShell(title: "What will you be doing?") {
             VStack(alignment: .leading, spacing: 24) {
+                // Flying toggle
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Are you flying?")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.secondary)
+                    BinaryPicker(yesLabel: "Flying", noLabel: "Not flying", value: $vm.isFlyingTrip)
+                }
+
                 // Trip Types
                 VStack(alignment: .leading, spacing: 10) {
                     Text("What type of trip?")

@@ -43,6 +43,7 @@ final class NewTripViewModel {
     var weather: WeatherProfile = .mild
     var companions: Set<TravelCompanion> = [.solo]
     var activities: Set<ActivityType> = [.conference]
+    var isFlyingTrip = true
     var carryOnOnly = true
     var laundryAvailable = true
     var interacChoice: InteracChoice = .none
@@ -76,6 +77,7 @@ final class NewTripViewModel {
         companions = Set(source.companions)
         activities = Set(source.activities)
         weather = source.weather
+        isFlyingTrip = source.isFlyingTrip
         carryOnOnly = source.carryOnOnly
         laundryAvailable = source.laundryAvailable
         hasMedicalAppointment = source.hasMedicalAppointment
@@ -245,6 +247,7 @@ final class NewTripViewModel {
             activities:            Array(activities),
             laundryAvailable:      laundryAvailable,
             carryOnOnly:           carryOnOnly,
+            isFlyingTrip:          isFlyingTrip,
             business:              purposes.contains(.business),
             interacPhone:          interacChoice.interacPhone,
             interacLaptop:         interacChoice.interacLaptop,
