@@ -364,6 +364,49 @@ Never report an issue as created without confirming it is on the board in Backlo
 
 Never leave an issue in Backlog while actively working on it. Never leave a merged PR with its issue still open.
 
+## Project Board Sync — MANDATORY
+
+Every status change to a GitHub issue MUST be reflected on the project board in the same operation. The board is the source of truth; issue state alone is not enough.
+
+### Status transitions and required board moves
+
+| Trigger | Board action |
+|---|---|
+| Agent picks up issue / starts work | Move to **In Progress** (b5cce126) |
+| PR opened referencing issue | Ensure issue is **In Progress** |
+| PR merged + issue closed | Move to **Done** (39656e02) |
+| Issue closed without PR (won't fix, duplicate, already resolved) | Move to **Done** (39656e02) |
+| Issue reset / deprioritized | Move to **Backlog** (ca2d7b25) |
+
+### Required command pattern
+
+When closing or transitioning an issue, run BOTH the issue command AND the board update:
+
+```bash
+# Example: closing issue #N as done
+gh issue close N -c "<reason>"
+gh project item-edit \
+  --project-id PVT_kwHOEMO09M4BWtlG \
+  --id $(gh project item-list 1 --owner jasonegray --format json --limit 200 | jq -r '.items[] | select(.content.number==N) | .id') \
+  --field-id PVTSSF_lAHOEMO09M4BWtlGzhR_g7M \
+  --single-select-option-id 39656e02
+```
+
+### Agent responsibilities
+
+- Terminal agents do NOT run `gh` commands. They report status changes in their TERMINAL REPORT.
+- Jason runs `gh` commands in the Mac terminal.
+- Claude (chat) MUST include the board-update command alongside every issue command it generates. Never give Jason a `gh issue close` or status change command without the paired `gh project item-edit`.
+- If a TERMINAL REPORT indicates an issue is complete, the response MUST include the board-move command, not just the close command.
+
+### Field reference
+
+- Project: PVT_kwHOEMO09M4BWtlG
+- Status field: PVTSSF_lAHOEMO09M4BWtlGzhR_g7M
+- Backlog: ca2d7b25
+- In Progress: b5cce126
+- Done: 39656e02
+
 ## Terminal report format
 
 ```
