@@ -6,6 +6,7 @@ struct HomeView: View {
     @State private var showNewTrip = false
     @State private var navTarget: TripNavTarget?
     @State private var tripToDelete: TripSession?
+    @State private var showArchivedSection = false
     @Environment(\.repositories) private var repositories
 
     var body: some View {
@@ -48,6 +49,10 @@ struct HomeView: View {
                                 onTap: { completed in
                                     navTarget = TripNavTarget(tripId: completed.id)
                                 },
+                                onArchive: { trip in
+                                    guard let repos = repositories else { return }
+                                    Task { await vm.archiveTrip(trip, sessions: repos.tripSessions) }
+                                },
                                 onDelete: { trip in tripToDelete = trip }
                             )
                             .padding(.horizontal)
@@ -57,6 +62,23 @@ struct HomeView: View {
                         EmptyHomeState(onNewTrip: { showNewTrip = true })
                             .frame(maxWidth: .infinity)
                             .padding(.horizontal)
+                    }
+
+                    // MARK: Archived trips (collapsible, collapsed by default)
+                    if !vm.archivedTrips.isEmpty {
+                        ArchivedTripsSection(
+                            trips: vm.archivedTrips,
+                            isExpanded: $showArchivedSection,
+                            onTap: { trip in
+                                navTarget = TripNavTarget(tripId: trip.id)
+                            },
+                            onUnarchive: { trip in
+                                guard let repos = repositories else { return }
+                                Task { await vm.unarchiveTrip(trip, sessions: repos.tripSessions) }
+                            },
+                            onDelete: { trip in tripToDelete = trip }
+                        )
+                        .padding(.horizontal)
                     }
 
                     Spacer(minLength: 24)
@@ -136,7 +158,7 @@ struct HomeView: View {
 
     private func findTrip(id: UUID) -> TripSession? {
         if vm.heroTrip?.id == id { return vm.heroTrip }
-        return (vm.otherUpcomingTrips + vm.completedTrips).first { $0.id == id }
+        return (vm.otherUpcomingTrips + vm.completedTrips + vm.archivedTrips).first { $0.id == id }
     }
 }
 
@@ -292,6 +314,7 @@ private struct CompletedTripsSection: View {
     let trips: [TripSession]
     let progressMap: [UUID: (packed: Int, total: Int)]
     let onTap: (TripSession) -> Void
+    let onArchive: (TripSession) -> Void
     let onDelete: (TripSession) -> Void
 
     var body: some View {
@@ -299,19 +322,46 @@ private struct CompletedTripsSection: View {
             Text("Completed")
                 .font(.headline)
 
-            VStack(spacing: 8) {
+            List {
                 ForEach(trips) { trip in
                     Button { onTap(trip) } label: {
                         CompletedTripCard(trip: trip, progress: progressMap[trip.id])
                     }
                     .buttonStyle(.plain)
+                    .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                        Button {
+                            onArchive(trip)
+                        } label: {
+                            Label("Archive", systemImage: "archivebox")
+                        }
+                        .tint(.indigo)
+                        .accessibilityIdentifier("archive_swipe_button")
+                        Button(role: .destructive) {
+                            onDelete(trip)
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
                     .contextMenu {
-                        Button(role: .destructive) { onDelete(trip) } label: {
+                        Button {
+                            onArchive(trip)
+                        } label: {
+                            Label("Archive Trip", systemImage: "archivebox")
+                        }
+                        Button(role: .destructive) {
+                            onDelete(trip)
+                        } label: {
                             Label("Delete Trip", systemImage: "trash")
                         }
                     }
                 }
             }
+            .scrollDisabled(true)
+            .listStyle(.plain)
+            .frame(minHeight: CGFloat(trips.count) * 76)
         }
     }
 }
@@ -344,6 +394,115 @@ private struct CompletedTripCard: View {
 
             Image(systemName: "checkmark.circle.fill")
                 .foregroundStyle(.green)
+                .font(.title3)
+        }
+        .padding(14)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+}
+
+// MARK: - Archived trips section
+
+private struct ArchivedTripsSection: View {
+    let trips: [TripSession]
+    @Binding var isExpanded: Bool
+    let onTap: (TripSession) -> Void
+    let onUnarchive: (TripSession) -> Void
+    let onDelete: (TripSession) -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Button {
+                withAnimation(.easeInOut(duration: 0.2)) { isExpanded.toggle() }
+            } label: {
+                HStack {
+                    Text("Archived (\(trips.count))")
+                        .font(.headline)
+                    Spacer()
+                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("archived_section_toggle")
+
+            if isExpanded {
+                List {
+                    ForEach(trips) { trip in
+                        Button { onTap(trip) } label: {
+                            ArchivedTripCard(trip: trip)
+                        }
+                        .buttonStyle(.plain)
+                        .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button {
+                                onUnarchive(trip)
+                            } label: {
+                                Label("Unarchive", systemImage: "archivebox")
+                            }
+                            .tint(.indigo)
+                            .accessibilityIdentifier("unarchive_swipe_button")
+                            Button(role: .destructive) {
+                                onDelete(trip)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
+                        .contextMenu {
+                            Button {
+                                onUnarchive(trip)
+                            } label: {
+                                Label("Unarchive", systemImage: "archivebox")
+                            }
+                            Button(role: .destructive) {
+                                onDelete(trip)
+                            } label: {
+                                Label("Delete Trip", systemImage: "trash")
+                            }
+                        }
+                    }
+                }
+                .scrollDisabled(true)
+                .listStyle(.plain)
+                .frame(minHeight: CGFloat(trips.count) * 76)
+                .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+        }
+    }
+}
+
+private struct ArchivedTripCard: View {
+    let trip: TripSession
+
+    private var dateRange: String {
+        "\(trip.departureDate.formatted(.dateTime.month(.abbreviated).day())) – \(trip.returnDate.formatted(.dateTime.month(.abbreviated).day().year()))"
+    }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 3) {
+                Text(trip.name)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .lineLimit(1)
+                    .foregroundStyle(.primary)
+                Text(trip.destination)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                Text(dateRange)
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
+
+            Spacer()
+
+            Image(systemName: "archivebox.fill")
+                .foregroundStyle(.secondary)
                 .font(.title3)
         }
         .padding(14)

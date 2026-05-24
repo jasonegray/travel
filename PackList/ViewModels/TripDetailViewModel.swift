@@ -31,10 +31,12 @@ final class TripDetailViewModel {
     // MARK: - Toggle
 
     func toggle(item: TripItem) {
+        guard !trip.isArchived else { return }
         item.completedAt = item.completedAt == nil ? Date() : nil
     }
 
     func save(item: TripItem) async {
+        guard !trip.isArchived else { return }
         do {
             try await repo?.update(item)
         } catch {
@@ -50,6 +52,26 @@ final class TripDetailViewModel {
         } catch {
             logger.error("markCompleted failed: \(error)")
             trip.manuallyCompletedAt = nil
+        }
+    }
+
+    func archiveTrip(sessions: any TripSessionRepository) async {
+        trip.isArchived = true
+        do {
+            try await sessions.update(trip)
+        } catch {
+            logger.error("archiveTrip failed: \(error)")
+            trip.isArchived = false
+        }
+    }
+
+    func unarchiveTrip(sessions: any TripSessionRepository) async {
+        trip.isArchived = false
+        do {
+            try await sessions.update(trip)
+        } catch {
+            logger.error("unarchiveTrip failed: \(error)")
+            trip.isArchived = true
         }
     }
 

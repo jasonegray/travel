@@ -26,7 +26,10 @@ struct TripDetailView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if vm.trip.status == .completed {
+            if vm.trip.status == .archived {
+                ArchivedBanner()
+                Divider()
+            } else if vm.trip.status == .completed {
                 TripCompletedBanner(manuallyCompletedAt: vm.trip.manuallyCompletedAt)
                 Divider()
             }
@@ -65,14 +68,39 @@ struct TripDetailView: View {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
-                    if vm.trip.status != .completed {
+                    if vm.trip.status == .archived {
                         Button {
                             Task {
                                 guard let repos = repositories else { return }
-                                await vm.markCompleted(sessions: repos.tripSessions)
+                                await vm.unarchiveTrip(sessions: repos.tripSessions)
+                                onDeleted?()
                             }
                         } label: {
-                            Label("Mark as Completed", systemImage: "checkmark.circle")
+                            Label("Unarchive", systemImage: "archivebox")
+                        }
+                        .accessibilityIdentifier("unarchive_menu_button")
+                    } else {
+                        if vm.trip.status == .completed {
+                            Button {
+                                Task {
+                                    guard let repos = repositories else { return }
+                                    await vm.archiveTrip(sessions: repos.tripSessions)
+                                    onDeleted?()
+                                }
+                            } label: {
+                                Label("Archive Trip", systemImage: "archivebox")
+                            }
+                            .accessibilityIdentifier("archive_menu_button")
+                        }
+                        if vm.trip.status != .completed {
+                            Button {
+                                Task {
+                                    guard let repos = repositories else { return }
+                                    await vm.markCompleted(sessions: repos.tripSessions)
+                                }
+                            } label: {
+                                Label("Mark as Completed", systemImage: "checkmark.circle")
+                            }
                         }
                     }
                     Button(role: .destructive) {
@@ -83,6 +111,7 @@ struct TripDetailView: View {
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }
+                .accessibilityIdentifier("trip_detail_menu")
             }
         }
         .sheet(isPresented: $showAddCustomItem) {
@@ -677,6 +706,28 @@ private struct TripCompletedBanner: View {
         .padding(.horizontal)
         .padding(.vertical, 10)
         .background(Color.green.opacity(0.08))
+    }
+}
+
+// MARK: - Archived banner
+
+private struct ArchivedBanner: View {
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "archivebox.fill")
+                .foregroundStyle(.secondary)
+            Text("Archived")
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .foregroundStyle(.secondary)
+            Text("· Read only")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Spacer()
+        }
+        .padding(.horizontal)
+        .padding(.vertical, 10)
+        .background(Color(.secondarySystemBackground))
     }
 }
 

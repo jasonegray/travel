@@ -21,6 +21,7 @@ final class TripSession {
     var interacPhone: Bool
     var interacLaptop: Bool
     var hasMedicalAppointment: Bool
+    var isArchived: Bool = false
     var manuallyCompletedAt: Date?
     var notes: String?
     var createdAt: Date
@@ -29,6 +30,7 @@ final class TripSession {
     @Relationship(deleteRule: .cascade) var tripInfo: TripInfo?
 
     var status: TripStatus {
+        if isArchived { return .archived }
         if manuallyCompletedAt != nil { return .completed }
         let today = Calendar.current.startOfDay(for: .now)
         let retDay = Calendar.current.startOfDay(for: returnDate)
@@ -57,6 +59,7 @@ final class TripSession {
         interacPhone: Bool = false,
         interacLaptop: Bool = false,
         hasMedicalAppointment: Bool = false,
+        isArchived: Bool = false,
         manuallyCompletedAt: Date? = nil,
         notes: String? = nil,
         createdAt: Date = Date(),
@@ -82,6 +85,7 @@ final class TripSession {
         self.interacPhone = interacPhone
         self.interacLaptop = interacLaptop
         self.hasMedicalAppointment = hasMedicalAppointment
+        self.isArchived = isArchived
         self.manuallyCompletedAt = manuallyCompletedAt
         self.notes = notes
         self.createdAt = createdAt

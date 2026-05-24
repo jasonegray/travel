@@ -127,6 +127,59 @@ final class PackListUITests: XCTestCase {
         // The Miscellaneous section auto-expands — item should be visible
         let customItemText = app.staticTexts["My Custom Snack"]
         XCTAssertTrue(customItemText.waitForExistence(timeout: 5), "Custom item should appear in packing list after adding")
+
+    }
+
+    // MARK: - 5: Archive trip flow
+
+    func testArchiveTripFlow() throws {
+        app.tabBars.buttons["Trips"].tap()
+
+        // Create a trip if none exist
+        if app.staticTexts["No trips planned"].waitForExistence(timeout: 3) {
+            try createMinimalTrip()
+        }
+
+        // Find a trip card (trip name contains '·' from the auto-generated "Destination · Month Day–Day" format)
+        let tripCard = app.staticTexts.matching(
+            NSPredicate(format: "label CONTAINS '·'")
+        ).firstMatch
+        XCTAssertTrue(tripCard.waitForExistence(timeout: 10), "Trip card must be visible on home screen")
+        tripCard.tap()
+
+        // Wait for trip detail to load
+        let detailMenu = app.buttons["trip_detail_menu"]
+        XCTAssertTrue(detailMenu.waitForExistence(timeout: 5), "Three-dot menu must be present in trip detail")
+
+        // Step 1: Mark trip as completed if not already
+        detailMenu.tap()
+        if app.buttons["Mark as Completed"].waitForExistence(timeout: 2) {
+            app.buttons["Mark as Completed"].tap()
+            // Wait for completed or archived banner to confirm state has updated
+            _ = app.staticTexts.matching(
+                NSPredicate(format: "label CONTAINS 'Completed' OR label CONTAINS 'Archived'")
+            ).firstMatch.waitForExistence(timeout: 5)
+        } else {
+            // Trip is already completed — dismiss menu by tapping toolbar area
+            app.navigationBars.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.1, dy: 0.5)).tap()
+        }
+
+        // Step 2: Archive trip via three-dot menu
+        XCTAssertTrue(detailMenu.waitForExistence(timeout: 3), "Three-dot menu must still be accessible")
+        detailMenu.tap()
+        let archiveButton = app.buttons["Archive Trip"]
+        XCTAssertTrue(archiveButton.waitForExistence(timeout: 3),
+                      "Archive Trip must appear in menu for completed trips")
+        archiveButton.tap()
+
+        // Should navigate back to Trips screen after archiving
+        XCTAssertTrue(app.navigationBars["Trips"].waitForExistence(timeout: 5),
+                      "Should return to Trips screen after archiving")
+
+        // Archived section toggle must appear
+        let archivedToggle = app.buttons["archived_section_toggle"]
+        XCTAssertTrue(archivedToggle.waitForExistence(timeout: 3),
+                      "Archived section must be visible on Trips screen after archiving a trip")
     }
 
     // MARK: - Wizard helper
@@ -152,8 +205,10 @@ final class PackListUITests: XCTestCase {
         XCTAssertTrue(destField.waitForExistence(timeout: 5), "Destination field should appear")
         destField.tap()
         destField.typeText("Toronto, Canada")
-        // Dismiss the keyboard so it doesn't push Continue off screen
-        app.typeText("\n")
+        // Dismiss keyboard (submitLabel = .search) so Continue button is not blocked
+        destField.typeText("\n")
+        XCTAssertTrue(app.buttons["Continue"].waitForExistence(timeout: 5),
+                      "Continue should appear after entering destination")
         app.buttons["Continue"].tap()
 
         // Step 3: Dates — defaults are 7 and 10 days from now, already valid
