@@ -1353,14 +1353,30 @@ final class ImportServiceCoverageTests: XCTestCase {
                        "seededKey must not be set when seed insert fails — ensures retry on next launch")
     }
 
-    // Covers the guard-return early exit when seededKey is already set
+    // Covers the guard-return early exit when seededKey is set AND items exist in the DB
     func testSeedDoesNotRunWhenAlreadySeeded() async throws {
+        let isolated = UserDefaults(suiteName: UUID().uuidString)!
+        // Seed on first "launch" — populates DB and sets flag
+        await ImportService(repository: repos.masterItems, defaults: isolated).seedIfNeeded()
+        let countAfterFirst = try context.fetch(FetchDescriptor<MasterItem>()).count
+        XCTAssertGreaterThan(countAfterFirst, 0, "Pre-condition: first seed must insert items")
+
+        // New service instance (simulating next app launch) — flag is set, DB has items → skip
+        await ImportService(repository: repos.masterItems, defaults: isolated).seedIfNeeded()
+        let countAfterSecond = try context.fetch(FetchDescriptor<MasterItem>()).count
+        XCTAssertEqual(countAfterFirst, countAfterSecond,
+                       "seedIfNeeded must not insert items when flag is set and DB is already populated")
+    }
+
+    // Covers store-wipe recovery: seededKey is set but DB is empty → must re-seed
+    func testSeedRerunsWhenFlagSetButDbEmpty() async throws {
         let isolated = UserDefaults(suiteName: UUID().uuidString)!
         isolated.set(true, forKey: ImportService.seededKey)
         await ImportService(repository: repos.masterItems, defaults: isolated).seedIfNeeded()
 
         let items = try context.fetch(FetchDescriptor<MasterItem>())
-        XCTAssertEqual(items.count, 0, "No items must be inserted when the seeded flag is already set")
+        XCTAssertGreaterThan(items.count, 0,
+                             "seedIfNeeded must re-seed when flag is set but master items DB is empty (store-wipe scenario)")
     }
 
     // Covers removeDuplicateImportedItems delete-error catch — must not crash
