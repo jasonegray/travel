@@ -130,7 +130,7 @@ final class ChecklistEngineTests: XCTestCase {
     }
 
     func testTagMatch_japanRegion_activatesJapanAsiaInternational() {
-        let session = makeSession(region: .japan)
+        let session = makeSession(region: .japan, isFlyingTrip: true)
         let active  = engine.activeTags(for: session)
         XCTAssertTrue(active.contains(.japan))
         XCTAssertTrue(active.contains(.asia))
@@ -401,6 +401,7 @@ final class ChecklistEngineTests: XCTestCase {
         carryOnOnly: Bool = false,
         interacPhone: Bool = false,
         interacLaptop: Bool = false,
+        isFlyingTrip: Bool = false,
         departure: Date = Date(),
         returnDate: Date? = nil
     ) -> TripSession {
@@ -418,7 +419,8 @@ final class ChecklistEngineTests: XCTestCase {
             carryOnOnly: carryOnOnly,
             business: business,
             interacPhone: interacPhone,
-            interacLaptop: interacLaptop
+            interacLaptop: interacLaptop,
+            isFlyingTrip: isFlyingTrip
         )
     }
 
