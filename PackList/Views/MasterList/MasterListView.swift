@@ -53,7 +53,21 @@ struct MasterListView: View {
             })
         }
         .sheet(isPresented: $vm.showAddItemSheet) {
-            AddMasterItemPlaceholderSheet()
+            AddMasterItemView { name, category, itemType, packingLocation, tags, isAlwaysInclude, defaultQuantity in
+                Task {
+                    guard let repos = repositories else { return }
+                    await vm.addItem(
+                        name: name,
+                        category: category,
+                        itemType: itemType,
+                        packingLocation: packingLocation,
+                        tags: tags,
+                        isAlwaysInclude: isAlwaysInclude,
+                        defaultQuantity: defaultQuantity,
+                        repository: repos.masterItems
+                    )
+                }
+            }
         }
         .task {
             guard let repos = repositories else { return }
@@ -172,33 +186,3 @@ private struct MasterItemDetailSheet: View {
     }
 }
 
-// MARK: - Add item placeholder (links to #23)
-
-private struct AddMasterItemPlaceholderSheet: View {
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        NavigationStack {
-            VStack(spacing: 16) {
-                Image(systemName: "hammer.fill")
-                    .font(.largeTitle)
-                    .foregroundStyle(.secondary)
-                Text("Coming Soon")
-                    .font(.headline)
-                Text("Adding custom master items is coming in a future update.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 32)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .navigationTitle("New Item")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
-            }
-        }
-    }
-}

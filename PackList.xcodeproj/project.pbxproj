@@ -23,6 +23,7 @@
 		20B1F59084706451335AEBA2 /* MasterItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E173319E9FA785CD701E449 /* MasterItem.swift */; };
 		2134F7F6DABE2B7152515106 /* WeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24D01AADFE4616BE261ABDCF /* WeatherService.swift */; };
 		37662EC27A2F4D90991D2470 /* MasterListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A590D447816248599EE5DC11 /* MasterListView.swift */; };
+		CC230001CC230001CC230001 /* AddMasterItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC230002CC230002CC230002 /* AddMasterItemView.swift */; };
 		3C609348FADD98BE70EE2EB3 /* MasterItemRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F742F88F875248408C54E06 /* MasterItemRepository.swift */; };
 		41977EEBB0B361098BDFE9C0 /* ChecklistEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 220BA469B114F4CA9F76D5B9 /* ChecklistEngine.swift */; };
 		49C539B3EDBDF8214C8778B5 /* QuantityRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F46B8496E5A2B364C01053 /* QuantityRule.swift */; };
@@ -119,6 +120,7 @@
 		9F469D2ED106426FADB30C94 /* TasksTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksTabView.swift; sourceTree = "<group>"; };
 		A02A7347CFB68D84511C78D3 /* TripItemRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripItemRepository.swift; sourceTree = "<group>"; };
 		A590D447816248599EE5DC11 /* MasterListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterListView.swift; sourceTree = "<group>"; };
+		CC230002CC230002CC230002 /* AddMasterItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMasterItemView.swift; sourceTree = "<group>"; };
 		A782456B8A965F7C840C4C20 /* NewTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTripView.swift; sourceTree = "<group>"; };
 		A8024FC2863C181612B2B89A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		A94FE458BD7A12AC86FCCB74 /* PackListTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PackListTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -251,6 +253,7 @@
 		6A644ABB91D8459D8ECD523D /* MasterList */ = {
 			isa = PBXGroup;
 			children = (
+				CC230002CC230002CC230002 /* AddMasterItemView.swift */,
 				A590D447816248599EE5DC11 /* MasterListView.swift */,
 			);
 			path = MasterList;
@@ -501,6 +504,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CC230001CC230001CC230001 /* AddMasterItemView.swift in Sources */,
 				37662EC27A2F4D90991D2470 /* MasterListView.swift in Sources */,
 				41977EEBB0B361098BDFE9C0 /* ChecklistEngine.swift in Sources */,
 				77B65949493F47DB89DE102E /* TasksTabView.swift in Sources */,
