@@ -1219,6 +1219,8 @@ final class NewTripViewModelCoverageTests: XCTestCase {
         vm.currentStep = .confirm
         vm.next()
         XCTAssertTrue(vm.isGenerating, "isGenerating must be true after next() is called at the confirm step")
+    }
+}
 
 // MARK: - Trip Archive Tests
 
@@ -1343,3 +1345,5 @@ final class TripArchiveTests: XCTestCase {
         XCTAssertEqual(fetched.count, 1, "One archived trip must persist after save")
         XCTAssertTrue(fetched.first?.isArchived == true, "isArchived must persist as true")
         XCTAssertEqual(fetched.first?.status, .archived, "Fetched trip status must be .archived")
+    }
+}
