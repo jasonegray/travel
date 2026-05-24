@@ -247,11 +247,11 @@ final class NewTripViewModel {
             activities:            Array(activities),
             laundryAvailable:      laundryAvailable,
             carryOnOnly:           carryOnOnly,
-            isFlyingTrip:          isFlyingTrip,
             business:              purposes.contains(.business),
             interacPhone:          interacChoice.interacPhone,
             interacLaptop:         interacChoice.interacLaptop,
-            hasMedicalAppointment: hasMedicalAppointment
+            hasMedicalAppointment: hasMedicalAppointment,
+            isFlyingTrip:          isFlyingTrip
         )
 
         do {
