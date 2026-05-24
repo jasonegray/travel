@@ -6,8 +6,16 @@ import MapKit
 struct NewTripView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.repositories) private var repositories
-    @State private var vm = NewTripViewModel()
+    @State private var vm: NewTripViewModel
     @State private var forward = true
+
+    init() {
+        _vm = State(wrappedValue: NewTripViewModel())
+    }
+
+    init(prefilledWith source: NewTripViewModel) {
+        _vm = State(wrappedValue: source)
+    }
 
     var body: some View {
         NavigationStack {
