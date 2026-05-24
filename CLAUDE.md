@@ -4,6 +4,15 @@
 ## Project overview
 Native iOS app (Swift, SwiftUI, SwiftData, iOS 17+) for intelligent travel packing lists. Solo developer project for personal use. Owned by Jason Gray.
 
+## Session Startup
+At the start of every Claude Code session:
+1. Read this entire CLAUDE.md before doing anything
+2. Run: gh issue list --state open --limit 50 --json number,title,milestone,labels
+3. Run: git log --oneline -10
+4. Run: git status
+5. Report back with: current branch, last 10 commits, open issue count, and any open PRs
+6. Wait for Jason's instructions — do not start any work until instructed
+
 ## Architecture
 - Pattern: MVVM + Repository abstraction
 - Persistence: SwiftData (v1) — all data access via repository protocols only, never access ModelContext directly outside repositories
