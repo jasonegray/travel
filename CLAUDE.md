@@ -250,8 +250,8 @@ Every PR must include confirmation that all of the following pass before opening
       updateProjectV2ItemFieldValue(input: {
         projectId: "PVT_kwHOEMO09M4BWtlG"
         itemId: "PVTI_ITEM_ID"
-        fieldId: "PVTSSF_lAHOEMO09M4BWtlGzgszYG4"
-        value: { singleSelectOptionId: "98236657" }
+        fieldId: "PVTSSF_lAHOEMO09M4BWtlGzhR_g7M"
+        value: { singleSelectOptionId: "39656e02" }
       }) { projectV2Item { id } }
     }'
     ```
@@ -290,7 +290,7 @@ gh api graphql -f query='mutation {
   updateProjectV2ItemFieldValue(input: {
     projectId: "PVT_kwHOEMO09M4BWtlG"
     itemId: "ITEM_ID_HERE"
-    fieldId: "PVTSSF_lAHOEMO09M4BWtlGzgszYG4"
+    fieldId: "PVTSSF_lAHOEMO09M4BWtlGzhR_g7M"
     value: { singleSelectOptionId: "ca2d7b25" }
   }) { projectV2Item { id } }
 }'
