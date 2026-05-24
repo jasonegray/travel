@@ -47,6 +47,8 @@ struct PackListApp: App {
                     at: URL(fileURLWithPath: storeURL.path + suffix)
                 )
             }
+            // Reset seed flag so ImportService re-seeds into the fresh store
+            UserDefaults.standard.removeObject(forKey: ImportService.seededKey)
             // swiftlint:disable:next force_try
             return try! ModelContainer(
                 for: TripSession.self,
