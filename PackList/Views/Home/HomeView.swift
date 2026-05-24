@@ -184,41 +184,46 @@ private struct HeroSection: View {
     }
 
     var body: some View {
-        let tripId = trip.id
+        // Guard: context.save() during deletion fires @Query notifications synchronously,
+        // which can trigger a body re-evaluation before SwiftUI tears down this view.
+        // Accessing any TripSession attribute on a detached model crashes with a fault error.
+        if trip.modelContext != nil {
+            let tripId = trip.id
 
-        ActiveTripCard(
-            trip: trip,
-            packingProgress: vm.packingProgress(from: items),
-            prepProgress: vm.prepProgress(from: items),
-            onPackingTap: { navTarget = TripNavTarget(tripId: tripId, tab: .packing) },
-            onPrepTasksTap: { navTarget = TripNavTarget(tripId: tripId, tab: .prepTasks) }
-        )
-        .padding(.horizontal)
-
-        let bags = vm.bagsSummary(from: items)
-        if !bags.isEmpty {
-            BagsProgressView(
-                summary: bags,
-                onBagTap: { location in
-                    navTarget = TripNavTarget(tripId: tripId, tab: .packing, location: location)
-                }
+            ActiveTripCard(
+                trip: trip,
+                packingProgress: vm.packingProgress(from: items),
+                prepProgress: vm.prepProgress(from: items),
+                onPackingTap: { navTarget = TripNavTarget(tripId: tripId, tab: .packing) },
+                onPrepTasksTap: { navTarget = TripNavTarget(tripId: tripId, tab: .prepTasks) }
             )
             .padding(.horizontal)
-        }
 
-        let upNext = vm.upNextTasks(from: items, departure: trip.departureDate)
-        if !upNext.isEmpty {
-            UpNextView(
-                tasks: upNext,
-                departure: trip.departureDate,
-                deadlineFor: vm.recommendedByDate,
-                onComplete: { item in
-                    withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
-                    guard let repos = repositories else { return }
-                    Task { await vm.save(item: item, repository: repos.tripItems) }
-                }
-            )
-            .padding(.horizontal)
+            let bags = vm.bagsSummary(from: items)
+            if !bags.isEmpty {
+                BagsProgressView(
+                    summary: bags,
+                    onBagTap: { location in
+                        navTarget = TripNavTarget(tripId: tripId, tab: .packing, location: location)
+                    }
+                )
+                .padding(.horizontal)
+            }
+
+            let upNext = vm.upNextTasks(from: items, departure: trip.departureDate)
+            if !upNext.isEmpty {
+                UpNextView(
+                    tasks: upNext,
+                    departure: trip.departureDate,
+                    deadlineFor: vm.recommendedByDate,
+                    onComplete: { item in
+                        withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
+                        guard let repos = repositories else { return }
+                        Task { await vm.save(item: item, repository: repos.tripItems) }
+                    }
+                )
+                .padding(.horizontal)
+            }
         }
     }
 }
