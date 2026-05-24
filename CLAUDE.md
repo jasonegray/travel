@@ -35,50 +35,25 @@ Native iOS app (Swift, SwiftUI, SwiftData, iOS 17+) for intelligent travel packi
 
 ## Testing standards per PR
 
-Every PR must:
-- Pass all existing tests
-- Add tests for any new repository methods
-- Add tests for any new ChecklistEngine logic  
-- Add tests for any new service methods
-- Add tests for any new @Model fields or relationships
-- Never reduce total test count
-- Never reduce code coverage percentage
-
-Coverage targets by layer:
-- Services (ChecklistEngine, ImportService): 90%+
-- Repositories: 80%+
-- ViewModels: 60%+
-- Models: 70%+
-- Views: exempt
-
-Before opening any PR, run the full test suite with coverage:
+Run the full existing test suite before opening any PR:
 ```
 xcodebuild test -scheme PackList \
-  -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
-  -enableCodeCoverage YES \
-  -resultBundlePath /tmp/PackListTestResults.xcresult
+  -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
 ```
 
-Then check coverage:
-```
-xcrun xccov view --report /tmp/PackListTestResults.xcresult | grep -E "(PackList/|TOTAL)"
-```
+If any existing test fails, fix it before opening the PR. Never reduce the test count.
 
-If any tracked layer is below its target, or if coverage drops from the previous run, add tests before opening the PR. Never open a PR that reduces coverage.
+Write new tests only when:
+- The PR touches a Repository or Service (ChecklistEngine, ImportService)
+- The PR is explicitly a testing sprint
 
-If you are unsure what tests to add, run:
-```
-xcrun xccov view --report /tmp/PackListTestResults.xcresult --json | python3 -c "
-import json,sys
-data=json.load(sys.stdin)
-for f in data.get('targets',[{}])[0].get('files',[]):
-    cov=f['lineCoverage']
-    if cov < 0.7:
-        print(f\"{cov:.0%} {f['name']}\")
-" 2>/dev/null || echo "Check coverage report manually"
-```
+ViewModels, Views, and UI changes are exempt from new test requirements.
+Do not run coverage reports — this is handled separately via test-audit.
+Do not write XCUITest unless explicitly assigned as a testing task.
 
-Then write tests for any file below 70%.
+The two mandatory tests that must always pass:
+- testInsertAndFetchRoundTrip
+- testFullAppLaunchSequence
 
 ## SwiftUI / HIG standards
 - Follow Apple Human Interface Guidelines strictly
@@ -194,21 +169,6 @@ A DESIGN section must include at minimum:
 - What the primary action is
 - Any fields explicitly excluded
 
-### XCUITest requirement
-
-Any PR that creates a new screen or significantly modifies an existing screen must include XCUITest coverage for that screen in the same PR.
-
-Minimum required for each new screen:
-- One test that navigates to the screen and asserts it loads without crash
-- One test that exercises the primary action on the screen
-
-If writing XCUITest for the screen is not possible (e.g. requires complex state setup), output:
-`NEEDS JASON: XCUITest not written for [screen name] — [reason]`
-Then proceed with the PR but flag it for follow-up.
-
-XCUITest file: PackList/UITests/PackListUITests.swift
-Use XCUIApplication() — never hardcode element strings, use accessibility identifiers where possible.
-
 ### PR checklist
 Every PR must include confirmation that all of the following pass before opening:
 
@@ -254,6 +214,31 @@ Every PR must include confirmation that all of the following pass before opening
 - Flag anything that looks like technical debt, even if not in scope
 - One PR per issue — do not bundle unrelated changes
 
+### Autonomous terminal workflow — Gemini review threshold
+
+8. Assess PR complexity before waiting for Gemini review.
+
+   Skip Gemini (merge immediately when tests pass) for:
+   - UI-only changes (no model, repository, or service changes)
+   - Single-file changes under 50 lines
+   - Polish, label, copy, or icon changes
+   - Adding new Optional fields with default values
+
+   Wait for Gemini review for:
+   - Any change to a @Model class or repository
+   - Any change to ChecklistEngine or ImportService
+   - Any change to PackListApp.swift or RepositoryContainer
+   - Any PR touching 3+ files with logic changes
+   - Any PR estimated medium complexity (5/10) or above
+
+   When waiting for Gemini:
+   ```
+   gh pr view [PR#] --comments
+   ```
+   Poll every 2 minutes, max 15 minutes.
+   Handle all Gemini comments autonomously.
+   If Gemini does not review within 15 minutes, merge anyway.
+
 ---
 
 ## Project board workflow — mandatory for every issue
@@ -286,3 +271,16 @@ Never report an issue as created without confirming it is on the board in Backlo
 - Remove the terminal label
 
 Never leave an issue in Backlog while actively working on it. Never leave a merged PR with its issue still open.
+
+## Terminal report format
+
+```
+TERMINAL REPORT — T[N]
+Issue: #[N] [title]
+Status: COMPLETE | NEEDS JASON
+PR: #[N] [url] — merged
+Files changed: [list]
+Summary: [1-2 sentences max]
+If NEEDS JASON: [one sentence]
+Next: ready for new assignment
+```
