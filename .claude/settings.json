@@ -15,7 +15,22 @@
       "Bash(cp *)",
       "Bash(mv *)",
       "Bash(echo *)",
-      "Bash(cd *)"
+      "Bash(cd *)",
+      "Bash(log *)",
+      "Bash(tail *)",
+      "Bash(head *)",
+      "Bash(wc *)",
+      "Bash(sort *)",
+      "Bash(uniq *)",
+      "Bash(sed *)",
+      "Bash(awk *)",
+      "Bash(open *)",
+      "Bash(plutil *)",
+      "Bash(defaults *)",
+      "Bash(xcode-select *)",
+      "Bash(instruments *)",
+      "Bash(simctl *)",
+      "Bash(xctest *)"
     ]
   }
 }
