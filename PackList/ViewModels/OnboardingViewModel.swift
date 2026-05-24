@@ -44,7 +44,7 @@ final class OnboardingViewModel {
 
     func flush(to profile: ProfileViewModel) {
         profile.fullName = fullName
-        profile.homeAirport = homeAirport.uppercased()
+        profile.homeAirport = homeAirport
         profile.aeroplanNumber = aeroplanNumber
         profile.aeroplanTier = aeroplanTier
         profile.bonvoyNumber = bonvoyNumber

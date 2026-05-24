@@ -3,6 +3,7 @@ import SwiftUI
 struct ProfileView: View {
     @Environment(ProfileViewModel.self) private var vm
     @State private var onboardingResetConfirmed = false
+    @State private var showAirportPicker = false
 
     var body: some View {
         @Bindable var vm = vm
@@ -13,9 +14,16 @@ struct ProfileView: View {
                     ProfileRow("Full name", text: $vm.fullName, placeholder: "Your name",
                                capitalization: .words)
                         .onChange(of: vm.fullName) { vm.save() }
-                    ProfileRow("Home airport", text: $vm.homeAirport, placeholder: "YYZ",
-                               capitalization: .characters)
-                        .onChange(of: vm.homeAirport) { vm.save() }
+                    Button { showAirportPicker = true } label: {
+                        LabeledContent("Home airport") {
+                            Text(vm.homeAirport.isEmpty ? "Search" : vm.homeAirport)
+                                .foregroundStyle(vm.homeAirport.isEmpty ? .secondary : .primary)
+                        }
+                    }
+                    .foregroundStyle(.primary)
+                    .sheet(isPresented: $showAirportPicker, onDismiss: { vm.save() }) {
+                        AirportSearchView(selected: $vm.homeAirport)
+                    }
                 }
 
                 // MARK: Section 2 — Air Canada
