@@ -181,6 +181,10 @@ final class TripDetailViewModel {
         }
     }
 
+    func setItems(_ newItems: [TripItem]) {
+        items = newItems
+    }
+
     func deleteCustomItem(_ item: TripItem) async {
         items.removeAll { $0.id == item.id }
         do {

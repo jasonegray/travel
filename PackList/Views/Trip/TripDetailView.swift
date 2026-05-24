@@ -9,6 +9,7 @@ struct TripDetailView: View {
     @State private var showDeleteConfirmation = false
     @State private var showAddCustomItem = false
     @State private var showEditTrip = false
+    @State private var showTripSettings = false
     let initialPackingLocation: PackingLocation?
     let showTabPicker: Bool
     let onDismiss: (() -> Void)?
@@ -111,6 +112,13 @@ struct TripDetailView: View {
                             }
                         }
                     }
+                    if vm.trip.status != .archived {
+                        Button {
+                            showTripSettings = true
+                        } label: {
+                            Label("Trip Settings", systemImage: "slider.horizontal.3")
+                        }
+                    }
                     Button(role: .destructive) {
                         showDeleteConfirmation = true
                     } label: {
@@ -138,6 +146,11 @@ struct TripDetailView: View {
                         sessions: repos.tripSessions
                     )
                 }
+            }
+        }
+        .sheet(isPresented: $showTripSettings) {
+            TripSettingsView(trip: vm.trip) { newItems in
+                vm.setItems(newItems)
             }
         }
         .alert("Delete \"\(vm.trip.name)\"?", isPresented: $showDeleteConfirmation) {

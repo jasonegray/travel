@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		029CDAAADF9AE9B75CD99D3E /* TripDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64A12C6D76A50997C8CA0800 /* TripDetailViewModel.swift */; };
+		A1521002A1521002A1521002 /* TripSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1521001A1521001A1521001 /* TripSettingsViewModel.swift */; };
+		A1521004A1521004A1521004 /* TripSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1521003A1521003A1521003 /* TripSettingsView.swift */; };
 		29D3494D521F4C16BC58B557 /* SwiftDataTripInfoRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C6421A77A64F5F80685CCF /* SwiftDataTripInfoRepository.swift */; };
 		32DAD796FAB34DAEA4F5967C /* TripInfoRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC8548F710E447397C72613 /* TripInfoRepository.swift */; };
 		5D501BCB2E8748B3B8AA7A56 /* TripInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D446F9B50A4338800DE83A /* TripInfo.swift */; };
@@ -102,6 +104,8 @@
 		5ECB5F8B386514C654BBE1E9 /* NewTripViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTripViewModel.swift; sourceTree = "<group>"; };
 		63B42C07F95BAEB97E313D96 /* PendingSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingSuggestion.swift; sourceTree = "<group>"; };
 		64A12C6D76A50997C8CA0800 /* TripDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripDetailViewModel.swift; sourceTree = "<group>"; };
+		A1521001A1521001A1521001 /* TripSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSettingsViewModel.swift; sourceTree = "<group>"; };
+		A1521003A1521003A1521003 /* TripSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSettingsView.swift; sourceTree = "<group>"; };
 		64F46B8496E5A2B364C01053 /* QuantityRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantityRule.swift; sourceTree = "<group>"; };
 		715129D87A24E63D4FA7F554 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		76ADB60C49104044689AF712 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -287,6 +291,7 @@
 				AA135001AA135001AA135001 /* ProfileViewModel.swift */,
 				BB200001BB200001BB200001 /* MasterListViewModel.swift */,
 				64A12C6D76A50997C8CA0800 /* TripDetailViewModel.swift */,
+				A1521001A1521001A1521001 /* TripSettingsViewModel.swift */,
 				8C4B276FE8F444A0929F2812 /* TripInfoViewModel.swift */,
 			);
 			path = ViewModels;
@@ -309,6 +314,7 @@
 				A782456B8A965F7C840C4C20 /* NewTripView.swift */,
 				41ECDB90C4FDC693C96EC06B /* TripDetailView.swift */,
 				A3F0FC88950C4E1D8BBA6C6B /* TripInfoView.swift */,
+				A1521003A1521003A1521003 /* TripSettingsView.swift */,
 			);
 			path = Trip;
 			sourceTree = "<group>";
@@ -513,6 +519,8 @@
 				BB151002BB151002BB151002 /* EditTripMetadataView.swift in Sources */,
 				62BA8F8AD0522C440082E430 /* TripDetailView.swift in Sources */,
 				029CDAAADF9AE9B75CD99D3E /* TripDetailViewModel.swift in Sources */,
+				A1521004A1521004A1521004 /* TripSettingsView.swift in Sources */,
+				A1521002A1521002A1521002 /* TripSettingsViewModel.swift in Sources */,
 				A63BD6908E1F49388B028BBF /* TripInfoViewModel.swift in Sources */,
 				F4C06C96E78F411CA3FBC387 /* TripInfoView.swift in Sources */,
 				4F1772C17B7DDF1963DD5D12 /* TripItem.swift in Sources */,
