@@ -1,5 +1,6 @@
 import Foundation
 import os.log
+import UIKit
 
 private let logger = Logger(subsystem: "com.packlist", category: "HomeViewModel")
 
@@ -61,7 +62,9 @@ final class HomeViewModel {
     // MARK: - Hero trip task actions
 
     func toggle(item: TripItem) {
-        item.completedAt = item.completedAt == nil ? Date() : nil
+        let completing = item.completedAt == nil
+        item.completedAt = completing ? Date() : nil
+        UIImpactFeedbackGenerator(style: completing ? .medium : .light).impactOccurred()
     }
 
     func save(item: TripItem, repository: any TripItemRepository) async {
