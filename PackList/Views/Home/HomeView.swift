@@ -88,9 +88,21 @@ struct HomeView: View {
             }
             .navigationTitle("Trips")
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: { showNewTrip = true }) {
-                        Image(systemName: "plus")
+                if vm.heroTrip != nil {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            tripToDelete = vm.heroTrip
+                        } label: {
+                            Image(systemName: "trash")
+                        }
+                        .tint(.red)
+                    }
+                }
+                if vm.hasAnyTrips {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(action: { showNewTrip = true }) {
+                            Image(systemName: "plus")
+                        }
                     }
                 }
             }
@@ -139,12 +151,19 @@ struct HomeView: View {
 
     private var greeting: String {
         let hour = Calendar.current.component(.hour, from: Date())
+        let base: String
         switch hour {
-        case 5..<12: return "Good morning"
-        case 12..<17: return "Good afternoon"
-        case 17..<21: return "Good evening"
-        default:     return "Good night"
+        case 5..<12:  base = "Good morning"
+        case 12..<17: base = "Good afternoon"
+        case 17..<21: base = "Good evening"
+        default:      base = "Good night"
         }
+        if let fullName = UserDefaults.standard.string(forKey: "profile_full_name"),
+           let firstName = fullName.split(separator: " ").first.map(String.init),
+           !firstName.isEmpty {
+            return "\(base), \(firstName)"
+        }
+        return base
     }
 
     private func findTrip(id: UUID) -> TripSession? {
@@ -833,6 +852,17 @@ private struct UpNextRow: View {
 private struct EmptyHomeState: View {
     let onNewTrip: () -> Void
 
+    private static let quotes = [
+        "The world is a book, and those who do not travel read only one page.",
+        "Travel is the only thing you buy that makes you richer.",
+        "Life is short and the world is wide.",
+        "Adventure is worthwhile in itself.",
+        "Not all those who wander are lost.",
+        "Travel far enough, you meet yourself.",
+    ]
+
+    @State private var quoteIndex = Int.random(in: 0..<6)
+
     var body: some View {
         VStack(spacing: 20) {
             Spacer(minLength: 60)
@@ -841,14 +871,20 @@ private struct EmptyHomeState: View {
                 .font(.system(size: 56))
                 .foregroundStyle(.secondary)
 
-            VStack(spacing: 6) {
+            VStack(spacing: 8) {
                 Text("No trips planned")
                     .font(.title2)
                     .fontWeight(.semibold)
-                Text("Create a trip to generate your packing list.")
+                Text("Nothing booked yet. Time to go somewhere!")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
+                Text(Self.quotes[quoteIndex])
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+                    .italic()
+                    .multilineTextAlignment(.center)
+                    .padding(.top, 4)
             }
 
             Button("New Trip", action: onNewTrip)
