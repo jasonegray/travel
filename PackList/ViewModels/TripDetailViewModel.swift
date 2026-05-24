@@ -67,8 +67,11 @@ final class TripDetailViewModel {
         let physical = items.filter { $0.itemType == .physical }
         return Dictionary(grouping: physical, by: \.packingLocation)
             .map { location, rows in
-                let incomplete = rows.filter { $0.completedAt == nil }.sorted { $0.name < $1.name }
-                let complete   = rows.filter { $0.completedAt != nil }.sorted { $0.name < $1.name }
+                let incomplete = rows.filter { $0.completedAt == nil }.sorted {
+                    if ($0.source == .manual) != ($1.source == .manual) { return $0.source == .manual }
+                    return $0.name < $1.name
+                }
+                let complete = rows.filter { $0.completedAt != nil }.sorted { $0.name < $1.name }
                 return (location: location, items: incomplete + complete)
             }
             .sorted { $0.location.sortOrder < $1.location.sortOrder }
@@ -78,11 +81,51 @@ final class TripDetailViewModel {
         let physical = items.filter { $0.itemType == .physical }
         return Dictionary(grouping: physical, by: \.category)
             .map { category, rows in
-                let incomplete = rows.filter { $0.completedAt == nil }.sorted { $0.name < $1.name }
-                let complete   = rows.filter { $0.completedAt != nil }.sorted { $0.name < $1.name }
+                let incomplete = rows.filter { $0.completedAt == nil }.sorted {
+                    if ($0.source == .manual) != ($1.source == .manual) { return $0.source == .manual }
+                    return $0.name < $1.name
+                }
+                let complete = rows.filter { $0.completedAt != nil }.sorted { $0.name < $1.name }
                 return (category: category, items: incomplete + complete)
             }
             .sorted { $0.category.sortOrder < $1.category.sortOrder }
+    }
+
+    // MARK: - Custom items
+
+    func addCustomItem(name: String, category: ItemCategory, location: PackingLocation, quantity: Int) async {
+        guard let repo else {
+            logger.error("addCustomItem: repository not loaded")
+            return
+        }
+        let item = TripItem(
+            tripId: trip.id,
+            name: name,
+            category: category,
+            quantity: quantity,
+            packingLocation: location,
+            flightAccessible: false,
+            source: .manual
+        )
+        items.append(item)
+        do {
+            try await repo.insert(item)
+        } catch {
+            logger.error("addCustomItem failed: \(error)")
+            items.removeAll { $0.id == item.id }
+        }
+    }
+
+    func deleteCustomItem(_ item: TripItem) async {
+        items.removeAll { $0.id == item.id }
+        do {
+            try await repo?.delete(item)
+        } catch {
+            logger.error("deleteCustomItem failed: \(error)")
+            if let r = repo {
+                items = (try? await r.fetchAll(for: trip.id)) ?? items
+            }
+        }
     }
 
     var flightAccessibleItems: [TripItem] {
