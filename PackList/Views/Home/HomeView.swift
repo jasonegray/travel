@@ -93,16 +93,6 @@ struct HomeView: View {
                         Image(systemName: "plus")
                     }
                 }
-                #if DEBUG
-                ToolbarItem(placement: .topBarLeading) {
-                    Button(role: .destructive) {
-                        guard let repos = repositories else { return }
-                        Task { await vm.deleteAllTrips(sessions: repos.tripSessions) }
-                    } label: {
-                        Image(systemName: "trash")
-                    }
-                }
-                #endif
             }
             .sheet(isPresented: $showNewTrip) {
                 NewTripView()
