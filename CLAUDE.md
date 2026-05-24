@@ -35,10 +35,10 @@ Native iOS app (Swift, SwiftUI, SwiftData, iOS 17+) for intelligent travel packi
 
 ## Testing standards per PR
 
-Run the full existing test suite before opening any PR:
+Do NOT run UITests (XCUITest) as part of any PR workflow. UI tests are managed outside of Claude Code sessions. Only run the unit test suite:
+
 ```
-xcodebuild test -scheme PackList \
-  -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
+xcodebuild test -scheme PackList -destination 'platform=iOS Simulator,name=iPhone 17 Pro' -only-testing:PackListTests
 ```
 
 If any existing test fails, fix it before opening the PR. Never reduce the test count.
