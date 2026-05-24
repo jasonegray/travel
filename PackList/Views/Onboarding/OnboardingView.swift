@@ -155,17 +155,36 @@ private struct WelcomeStep: View {
     let onGetStarted: () -> Void
     let onSkip: () -> Void
 
+    @ViewBuilder private var appIcon: some View {
+        if let icons = Bundle.main.infoDictionary?["CFBundleIcons"] as? [String: Any],
+           let primaryIcon = icons["CFBundlePrimaryIcon"] as? [String: Any],
+           let iconFiles = primaryIcon["CFBundleIconFiles"] as? [String],
+           let lastIcon = iconFiles.last,
+           let icon = UIImage(named: lastIcon) {
+            Image(uiImage: icon)
+                .resizable()
+                .frame(width: 120, height: 120)
+                .clipShape(RoundedRectangle(cornerRadius: 26))
+                .shadow(color: .black.opacity(0.12), radius: 8, y: 4)
+        } else {
+            ZStack {
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(.blue.gradient)
+                    .frame(width: 88, height: 88)
+                    .shadow(color: .black.opacity(0.12), radius: 8, y: 4)
+                Image(systemName: "suitcase.fill")
+                    .font(.system(size: 38, weight: .medium))
+                    .foregroundStyle(.white)
+            }
+        }
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             Spacer()
 
             VStack(spacing: 20) {
-                if let icon = UIImage(named: "AppIcon") {
-                    Image(uiImage: icon)
-                        .resizable()
-                        .frame(width: 120, height: 120)
-                        .clipShape(RoundedRectangle(cornerRadius: 26))
-                }
+                appIcon
 
                 VStack(spacing: 8) {
                     Text("PackList")
