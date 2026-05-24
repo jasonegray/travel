@@ -9,6 +9,7 @@ final class HomeViewModel {
     private(set) var heroTrip: TripSession?
     private(set) var otherUpcomingTrips: [TripSession] = []
     private(set) var completedTrips: [TripSession] = []
+    private(set) var archivedTrips: [TripSession] = []
     private(set) var tripProgressMap: [UUID: (packed: Int, total: Int)] = [:]
     private(set) var isLoading = false
 
@@ -28,6 +29,9 @@ final class HomeViewModel {
             let completed = nonArchived
                 .filter { $0.status == .completed }
                 .sorted { $0.departureDate > $1.departureDate }
+            let archived = all
+                .filter { $0.status == .archived }
+                .sorted { $0.departureDate > $1.departureDate }
 
             // Hero: soonest active trip; fall back to soonest planning trip
             let active = nonCompleted.filter { $0.status == .active }
@@ -37,8 +41,9 @@ final class HomeViewModel {
                 nonCompleted.filter { $0.id != hero.id }
             } ?? []
             completedTrips = completed
+            archivedTrips = archived
 
-            // Progress for every trip via SwiftData relationship — used by strip/completed cards
+            // Progress for every non-archived trip via SwiftData relationship
             var map: [UUID: (packed: Int, total: Int)] = [:]
             for trip in nonArchived {
                 let physical = trip.items.filter { $0.itemType == .physical }
@@ -66,6 +71,37 @@ final class HomeViewModel {
             logger.error("Save failed: \(error)")
             toggle(item: item)
         }
+    }
+
+    // MARK: - Archive / Unarchive
+
+    func archiveTrip(_ trip: TripSession, sessions: any TripSessionRepository) async {
+        trip.isArchived = true
+        completedTrips = completedTrips.filter { $0.id != trip.id }
+        tripProgressMap[trip.id] = nil
+        do {
+            try await sessions.update(trip)
+        } catch {
+            logger.error("archiveTrip failed: \(error)")
+            trip.isArchived = false
+            await load(sessions: sessions)
+            return
+        }
+        await load(sessions: sessions)
+    }
+
+    func unarchiveTrip(_ trip: TripSession, sessions: any TripSessionRepository) async {
+        trip.isArchived = false
+        archivedTrips = archivedTrips.filter { $0.id != trip.id }
+        do {
+            try await sessions.update(trip)
+        } catch {
+            logger.error("unarchiveTrip failed: \(error)")
+            trip.isArchived = true
+            await load(sessions: sessions)
+            return
+        }
+        await load(sessions: sessions)
     }
 
     // MARK: - Per-trip computations (accept @Query items so the caller drives reactivity)
@@ -120,6 +156,7 @@ final class HomeViewModel {
         if heroTrip?.id == trip.id { heroTrip = nil }
         otherUpcomingTrips = otherUpcomingTrips.filter { $0.id != trip.id }
         completedTrips = completedTrips.filter { $0.id != trip.id }
+        archivedTrips = archivedTrips.filter { $0.id != trip.id }
         tripProgressMap[trip.id] = nil
 
         do {
@@ -140,6 +177,7 @@ final class HomeViewModel {
             heroTrip = nil
             otherUpcomingTrips = []
             completedTrips = []
+            archivedTrips = []
             tripProgressMap = [:]
         } catch {
             logger.error("deleteAllTrips failed: \(error)")

@@ -1219,5 +1219,127 @@ final class NewTripViewModelCoverageTests: XCTestCase {
         vm.currentStep = .confirm
         vm.next()
         XCTAssertTrue(vm.isGenerating, "isGenerating must be true after next() is called at the confirm step")
+
+// MARK: - Trip Archive Tests
+
+@MainActor
+final class TripArchiveTests: XCTestCase {
+
+    var container: ModelContainer!
+    var context: ModelContext!
+    var repos: RepositoryContainer!
+    var viewModel: HomeViewModel!
+
+    override func setUpWithError() throws {
+        let schema = Schema([TripSession.self, TripInfo.self, MasterItem.self,
+                             TripItem.self, ItemInsight.self, PendingSuggestion.self])
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        container = try ModelContainer(for: schema, configurations: config)
+        context = ModelContext(container)
+        repos = RepositoryContainer(modelContext: context)
+        viewModel = HomeViewModel()
     }
-}
+
+    override func tearDown() {
+        viewModel = nil
+        repos = nil
+        context = nil
+        container = nil
+    }
+
+    private func completedTrip(name: String = "Past Trip") throws -> TripSession {
+        let dep = Calendar.current.date(byAdding: .day, value: -10, to: .now)!
+        let ret = Calendar.current.date(byAdding: .day, value: -5, to: .now)!
+        let trip = TripSession(name: name, destination: "Rome",
+                               departureDate: dep, returnDate: ret)
+        context.insert(trip)
+        try context.save()
+        return trip
+    }
+
+    func testArchiveTripHidesFromActiveList() async throws {
+        let trip = try completedTrip()
+        await viewModel.load(sessions: repos.tripSessions)
+
+        XCTAssertTrue(viewModel.completedTrips.contains { $0.id == trip.id },
+                      "Completed trip must appear in completedTrips before archiving")
+        XCTAssertTrue(viewModel.archivedTrips.isEmpty,
+                      "archivedTrips must be empty before archiving")
+
+        await viewModel.archiveTrip(trip, sessions: repos.tripSessions)
+
+        XCTAssertFalse(viewModel.completedTrips.contains { $0.id == trip.id },
+                       "Archived trip must not appear in completedTrips")
+        XCTAssertTrue(viewModel.archivedTrips.contains { $0.id == trip.id },
+                      "Archived trip must appear in archivedTrips")
+        XCTAssertEqual(trip.status, .archived, "Trip status must be .archived after archiving")
+    }
+
+    func testUnarchivedTripReappearsInActiveList() async throws {
+        let trip = try completedTrip()
+        trip.isArchived = true
+        try context.save()
+
+        await viewModel.load(sessions: repos.tripSessions)
+
+        XCTAssertTrue(viewModel.archivedTrips.contains { $0.id == trip.id },
+                      "Archived trip must appear in archivedTrips")
+        XCTAssertFalse(viewModel.completedTrips.contains { $0.id == trip.id },
+                       "Archived trip must not appear in completedTrips")
+
+        await viewModel.unarchiveTrip(trip, sessions: repos.tripSessions)
+
+        XCTAssertFalse(viewModel.archivedTrips.contains { $0.id == trip.id },
+                       "Unarchived trip must not appear in archivedTrips")
+        XCTAssertTrue(viewModel.completedTrips.contains { $0.id == trip.id },
+                      "Unarchived trip must reappear in completedTrips")
+        XCTAssertEqual(trip.status, .completed, "Trip status must return to .completed after unarchiving")
+    }
+
+    func testArchivedTripIsReadOnly() throws {
+        let dep = Calendar.current.date(byAdding: .day, value: -10, to: .now)!
+        let ret = Calendar.current.date(byAdding: .day, value: -5, to: .now)!
+        let trip = TripSession(name: "Archived", destination: "Tokyo",
+                               departureDate: dep, returnDate: ret,
+                               isArchived: true)
+        context.insert(trip)
+        try context.save()
+
+        let vm = TripDetailViewModel(trip: trip)
+        let item = TripItem(tripId: trip.id, name: "Shirt", category: .clothing)
+        context.insert(item)
+
+        XCTAssertNil(item.completedAt, "Item must start as incomplete")
+        vm.toggle(item: item)
+        XCTAssertNil(item.completedAt, "Archived trip toggle must be a no-op — item must remain incomplete")
+    }
+
+    func testArchivedStatusComputedFromField() throws {
+        let dep = Calendar.current.date(byAdding: .day, value: -10, to: .now)!
+        let ret = Calendar.current.date(byAdding: .day, value: -5, to: .now)!
+        let trip = TripSession(name: "Test", destination: "Paris",
+                               departureDate: dep, returnDate: ret)
+        XCTAssertEqual(trip.status, .completed, "Past trip must be .completed before archiving")
+
+        trip.isArchived = true
+        XCTAssertEqual(trip.status, .archived, "Trip with isArchived=true must have .archived status")
+
+        trip.isArchived = false
+        XCTAssertEqual(trip.status, .completed, "Trip with isArchived=false must revert to computed status")
+    }
+
+    func testArchivedTripPersistsAcrossRoundTrip() throws {
+        let dep = Calendar.current.date(byAdding: .day, value: -10, to: .now)!
+        let ret = Calendar.current.date(byAdding: .day, value: -5, to: .now)!
+        let trip = TripSession(name: "Archive Persist", destination: "London",
+                               departureDate: dep, returnDate: ret,
+                               isArchived: true)
+        context.insert(trip)
+        try context.save()
+
+        let fetched = try context.fetch(FetchDescriptor<TripSession>(
+            predicate: #Predicate { $0.isArchived == true }
+        ))
+        XCTAssertEqual(fetched.count, 1, "One archived trip must persist after save")
+        XCTAssertTrue(fetched.first?.isArchived == true, "isArchived must persist as true")
+        XCTAssertEqual(fetched.first?.status, .archived, "Fetched trip status must be .archived")
