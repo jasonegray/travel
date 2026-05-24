@@ -79,6 +79,8 @@ final class TripSettingsViewModel {
         let prevLaundryAvailable = trip.laundryAvailable
         let prevInteracPhone = trip.interacPhone
         let prevInteracLaptop = trip.interacLaptop
+        let prevBusiness = trip.business
+        let prevUpdatedAt = trip.updatedAt
 
         trip.activities = Array(activities)
         trip.carryOnOnly = carryOnOnly
@@ -135,6 +137,8 @@ final class TripSettingsViewModel {
             trip.laundryAvailable = prevLaundryAvailable
             trip.interacPhone = prevInteracPhone
             trip.interacLaptop = prevInteracLaptop
+            trip.business = prevBusiness
+            trip.updatedAt = prevUpdatedAt
             errorMessage = error.localizedDescription
             return nil
         }
