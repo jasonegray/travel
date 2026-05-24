@@ -7,6 +7,7 @@ struct HomeView: View {
     @State private var navTarget: TripNavTarget?
     @State private var tripToDelete: TripSession?
     @State private var showArchivedSection = false
+    @AppStorage("profile_full_name") private var profileFullName: String = ""
     @Environment(\.repositories) private var repositories
 
     var body: some View {
@@ -158,8 +159,7 @@ struct HomeView: View {
         case 17..<21: base = "Good evening"
         default:      base = "Good night"
         }
-        if let fullName = UserDefaults.standard.string(forKey: "profile_full_name"),
-           let firstName = fullName.split(separator: " ").first.map(String.init),
+        if let firstName = profileFullName.split(separator: " ").first.map(String.init),
            !firstName.isEmpty {
             return "\(base), \(firstName)"
         }
@@ -861,7 +861,7 @@ private struct EmptyHomeState: View {
         "Travel far enough, you meet yourself.",
     ]
 
-    @State private var quoteIndex = Int.random(in: 0..<6)
+    @State private var quoteIndex = Int.random(in: Self.quotes.indices)
 
     var body: some View {
         VStack(spacing: 20) {
