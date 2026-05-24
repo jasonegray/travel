@@ -280,10 +280,23 @@ After every `gh issue create` command, always run:
 ```
 gh project item-add 1 --owner jasonegray --url https://github.com/jasonegray/travel/issues/[N]
 ```
-Then move to Backlog via GraphQL:
+
+Then immediately get the item ID and set its status to Backlog:
 ```
-gh api graphql -f query='mutation { updateProjectV2ItemFieldValue(input: { projectId: "PVT_kwHOEMO09M4BWtlG" itemId: "[ITEM_ID]" fieldId: "PVTSSF_lAHOEMO09M4BWtlGzhR_g7M" value: { singleSelectOptionId: "ca2d7b25" } }) { projectV2Item { id } } }'
+gh api graphql -f query='{ repository(owner: "jasonegray", name: "travel") { issue(number: [N]) { projectItems(first: 1) { nodes { id } } } } }' --jq '.data.repository.issue.projectItems.nodes[0].id'
 ```
+```
+gh api graphql -f query='mutation {
+  updateProjectV2ItemFieldValue(input: {
+    projectId: "PVT_kwHOEMO09M4BWtlG"
+    itemId: "ITEM_ID_HERE"
+    fieldId: "PVTSSF_lAHOEMO09M4BWtlGzgszYG4"
+    value: { singleSelectOptionId: "ca2d7b25" }
+  }) { projectV2Item { id } }
+}'
+```
+
+Every issue must have a status the moment it lands on the board. No issue should ever be in No Status.
 
 Never report an issue as created without confirming it is on the board in Backlog.
 
