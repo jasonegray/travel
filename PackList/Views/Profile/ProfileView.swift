@@ -43,7 +43,14 @@ struct ProfileView: View {
                     .onChange(of: vm.bonvoyTier) { vm.save() }
                 }
 
-                // MARK: Section 4 — App
+                // MARK: Section 4 — Lists
+                Section("Lists") {
+                    NavigationLink(destination: MasterListView()) {
+                        Label("Master List", systemImage: "list.bullet.rectangle")
+                    }
+                }
+
+                // MARK: Section 5 — App
                 Section("App") {
                     Picker("Appearance", selection: $vm.appearance) {
                         ForEach(AppearancePreference.allCases, id: \.self) { pref in
