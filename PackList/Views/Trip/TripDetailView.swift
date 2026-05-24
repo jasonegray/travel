@@ -197,6 +197,7 @@ private struct PackingTab: View {
     @State private var flightPouchExpanded: Bool
     @State private var expandedSections: Set<String>
     @State private var selectedBagIndex: Int = 0
+    @State private var editingItem: TripItem? = nil
 
     init(vm: TripDetailViewModel, initialLocation: PackingLocation? = nil) {
         self.vm = vm
@@ -234,6 +235,10 @@ private struct PackingTab: View {
                                 },
                                 onDelete: { item in
                                     Task { await vm.deleteCustomItem(item) }
+                                },
+                                onEdit: { item in
+                                    guard !vm.trip.isArchived else { return }
+                                    editingItem = item
                                 }
                             )
                         }
@@ -255,6 +260,10 @@ private struct PackingTab: View {
                                 },
                                 onDelete: { item in
                                     Task { await vm.deleteCustomItem(item) }
+                                },
+                                onEdit: { item in
+                                    guard !vm.trip.isArchived else { return }
+                                    editingItem = item
                                 }
                             )
                             .tag(index)
@@ -277,6 +286,11 @@ private struct PackingTab: View {
             guard new > old else { return }
             for item in vm.items where item.source == .manual && item.completedAt == nil {
                 expandedSections.insert(item.category.rawValue)
+            }
+        }
+        .sheet(item: $editingItem) { item in
+            EditPackingItemView(item: item) { quantity, notes in
+                Task { await vm.editItem(item, quantity: quantity, notes: notes) }
             }
         }
     }
@@ -468,6 +482,7 @@ private struct CollapsiblePackingSection: View {
     @Binding var expandedSections: Set<String>
     let onToggle: (TripItem) -> Void
     let onDelete: (TripItem) -> Void
+    let onEdit: (TripItem) -> Void
 
     private var isExpanded: Bool { expandedSections.contains(id) }
     private var remaining: Int { items.filter { $0.completedAt == nil }.count }
@@ -517,11 +532,11 @@ private struct CollapsiblePackingSection: View {
 
                 VStack(spacing: 0) {
                     ForEach(items) { item in
-                        PackingRow(item: item, onToggle: { onToggle(item) }, onDelete: { onDelete(item) })
+                        PackingRow(item: item, onToggle: { onToggle(item) }, onDelete: { onDelete(item) }, onEdit: { onEdit(item) })
                             .padding(.horizontal)
                             .padding(.vertical, 2)
                         if item.id != items.last?.id {
-                            Divider().padding(.leading, 52)
+                            Divider().padding(.leading, 60)
                         }
                     }
                 }
@@ -539,6 +554,7 @@ private struct BagPageView: View {
     let group: (location: PackingLocation, items: [TripItem])
     let onToggle: (TripItem) -> Void
     let onDelete: (TripItem) -> Void
+    let onEdit: (TripItem) -> Void
 
     private var remaining: Int { group.items.filter { $0.completedAt == nil }.count }
     private var allPacked: Bool { remaining == 0 }
@@ -569,11 +585,11 @@ private struct BagPageView: View {
             ScrollView {
                 LazyVStack(spacing: 0) {
                     ForEach(group.items) { item in
-                        PackingRow(item: item, onToggle: { onToggle(item) }, onDelete: { onDelete(item) })
+                        PackingRow(item: item, onToggle: { onToggle(item) }, onDelete: { onDelete(item) }, onEdit: { onEdit(item) })
                             .padding(.horizontal)
                             .padding(.vertical, 2)
                         if item.id != group.items.last?.id {
-                            Divider().padding(.leading, 52)
+                            Divider().padding(.leading, 60)
                         }
                     }
                     Spacer(minLength: 60)
@@ -645,6 +661,7 @@ private struct PackingRow: View {
     let item: TripItem
     let onToggle: () -> Void
     let onDelete: () -> Void
+    let onEdit: () -> Void
 
     var body: some View {
         if item.source == .manual {
@@ -660,45 +677,57 @@ private struct PackingRow: View {
     }
 
     private var rowContent: some View {
-        Button(action: onToggle) {
-            HStack(spacing: 14) {
+        HStack(spacing: 0) {
+            Button(action: onToggle) {
                 Image(systemName: item.completedAt != nil ? "checkmark.circle.fill" : "circle")
                     .font(.system(size: 22))
                     .foregroundStyle(item.completedAt != nil ? Color.accentColor : Color.secondary)
+                    .frame(width: 44, height: 44)
+            }
+            .buttonStyle(.plain)
 
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(item.name)
-                        .strikethrough(item.completedAt != nil, color: .secondary)
-                        .foregroundStyle(item.completedAt != nil ? Color.secondary : Color.primary)
-                    if item.quantity > 1 {
-                        Text("×\(item.quantity)")
+            Button(action: onEdit) {
+                HStack(spacing: 10) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(item.name)
+                            .strikethrough(item.completedAt != nil, color: .secondary)
+                            .foregroundStyle(item.completedAt != nil ? Color.secondary : Color.primary)
+                        if item.quantity > 1 {
+                            Text("×\(item.quantity)")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        if let notes = item.notes, !notes.isEmpty {
+                            Text(notes)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(2)
+                        }
+                    }
+
+                    Spacer()
+
+                    if item.source == .manual {
+                        Text("Custom")
+                            .font(.caption2)
+                            .fontWeight(.medium)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color.orange.opacity(0.15))
+                            .foregroundStyle(Color.orange)
+                            .clipShape(Capsule())
+                    }
+
+                    if item.flightAccessible {
+                        Image(systemName: "airplane")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.tertiary)
                     }
                 }
-
-                Spacer()
-
-                if item.source == .manual {
-                    Text("Custom")
-                        .font(.caption2)
-                        .fontWeight(.medium)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(Color.orange.opacity(0.15))
-                        .foregroundStyle(Color.orange)
-                        .clipShape(Capsule())
-                }
-
-                if item.flightAccessible {
-                    Image(systemName: "airplane")
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
-                }
+                .contentShape(Rectangle())
             }
-            .contentShape(Rectangle())
+            .buttonStyle(.plain)
         }
-        .buttonStyle(.plain)
     }
 }
 
