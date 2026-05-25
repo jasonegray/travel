@@ -22,8 +22,6 @@
 	<string>3</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>NSContactsUsageDescription</key>
-	<string>Used to pre-fill your name during setup.</string>
 	<key>UILaunchScreen</key>
 	<dict/>
 	<key>UISupportedInterfaceOrientations</key>

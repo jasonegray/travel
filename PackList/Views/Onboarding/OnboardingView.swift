@@ -58,7 +58,6 @@ struct OnboardingView: View {
                     .padding(.top, 16)
             }
         }
-        .task { await vm.prefillNameFromMeCard() }
     }
 
     private func advance() {
