@@ -378,6 +378,42 @@ Every status change to a GitHub issue MUST be reflected on the project board in 
 | Issue closed without PR (won't fix, duplicate, already resolved) | Move to **Done** (39656e02) |
 | Issue reset / deprioritized | Move to **Backlog** (ca2d7b25) |
 
+### New issue creation — board status gotcha
+
+`gh issue create --project "PackList"` adds the issue to the board but leaves it in **No Status**, not Backlog. Every new issue creation must be immediately followed by a board-edit command to set the status to Backlog.
+
+**Single issue:**
+```bash
+# Step 1 — create the issue and capture the number
+NUM=$(gh issue create --repo jasonegray/travel --title "..." --body "..." | grep -o '[0-9]*$')
+
+# Step 2 — set board status to Backlog
+gh api graphql -f query="mutation {
+  updateProjectV2ItemFieldValue(input: {
+    projectId: \"PVT_kwHOEMO09M4BWtlG\"
+    itemId: \"$(gh api graphql -f query='{ repository(owner: \"jasonegray\", name: \"travel\") { issue(number: '$NUM') { projectItems(first: 1) { nodes { id } } } } }' --jq '.data.repository.issue.projectItems.nodes[0].id')\"
+    fieldId: \"PVTSSF_lAHOEMO09M4BWtlGzhR_g7M\"
+    value: { singleSelectOptionId: \"ca2d7b25\" }
+  }) { projectV2Item { id } }
+}"
+```
+
+**Batch (multiple new issues):**
+```bash
+for num in N1 N2 N3; do
+  item_id=$(gh api graphql -f query="{ repository(owner: \"jasonegray\", name: \"travel\") { issue(number: $num) { projectItems(first: 1) { nodes { id } } } } }" --jq '.data.repository.issue.projectItems.nodes[0].id')
+  gh api graphql -f query="mutation { updateProjectV2ItemFieldValue(input: { projectId: \"PVT_kwHOEMO09M4BWtlG\" itemId: \"$item_id\" fieldId: \"PVTSSF_lAHOEMO09M4BWtlGzhR_g7M\" value: { singleSelectOptionId: \"ca2d7b25\" } }) { projectV2Item { id } } }"
+  echo "✓ #$num → Backlog"
+done
+```
+
+**Verification:**
+```bash
+gh api graphql -f query='{ repository(owner: "jasonegray", name: "travel") { issue(number: N) { projectItems(first: 1) { nodes { fieldValues(first: 10) { nodes { ... on ProjectV2ItemFieldSingleSelectValue { name field { ... on ProjectV2SingleSelectField { name } } } } } } } } } }' --jq '.data.repository.issue.projectItems.nodes[0].fieldValues.nodes[] | select(.field.name == "Status") | .name'
+```
+
+Claude (chat) MUST include the board-status command paired with every `gh issue create` it generates. Never give Jason a `gh issue create` command without the paired Backlog-set command.
+
 ### Required command pattern
 
 When closing or transitioning an issue, run BOTH the issue command AND the board update:
