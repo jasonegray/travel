@@ -443,6 +443,37 @@ gh project item-edit \
 - In Progress: b5cce126
 - Done: 39656e02
 
+## Pre-merge verification — MANDATORY
+
+> **Background:** PR #201 shipped `CNContactStore.unifiedMeContact(withKeys:)` which does not exist on iOS, broke the simulator build, and was caught only after merge because unit tests mocked the framework. This rule prevents that class of failure.
+
+### Rule 1 — SDK API verification
+
+Any agent writing code against an iOS framework (Contacts, HealthKit, EventKit, CoreLocation, CloudKit, AuthenticationServices, etc.) must verify that every framework method or property used actually exists in the current iOS SDK before writing the code.
+
+**"Verify" means one of:**
+- Citing the Apple developer documentation URL in the PR description (e.g. `https://developer.apple.com/documentation/contacts/...`)
+- Grepping the SDK headers: `find $(xcrun --show-sdk-path)/System/Library/Frameworks -name "*.h" | xargs grep -l "methodName"`
+
+**Does not count as verification:**
+- Unit tests that mock the framework object — mocks compile against your own fake, not the SDK
+- Assuming a method exists because it "sounds right"
+- Citing a Stack Overflow answer or LLM output without an Apple docs URL
+
+If a method cannot be verified against Apple docs, do not use it. Find the correct API that does exist.
+
+### Rule 2 — Simulator build gate
+
+Unit tests passing is necessary but not sufficient. Before opening a PR, the agent must run a simulator build and confirm it compiles against the real SDK:
+
+```bash
+xcodebuild -scheme PackList -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
+```
+
+The TERMINAL REPORT must include either the full build output or an explicit "Build succeeded" confirmation. The PR description must also include this confirmation.
+
+**No PR may be opened without a passing simulator build. Tests alone do not clear this bar.**
+
 ## Terminal report format
 
 ```
