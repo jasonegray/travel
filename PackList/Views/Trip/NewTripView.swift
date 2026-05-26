@@ -602,9 +602,9 @@ private struct AddOnChip: View {
                     .fontWeight(.medium)
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
+                    .minimumScaleFactor(0.8)
             }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 12)
+            .frame(maxWidth: .infinity, minHeight: 80, maxHeight: 80)
             .background(isSelected ? Color.accentColor.opacity(0.1) : Color(.secondarySystemBackground))
             .overlay(
                 RoundedRectangle(cornerRadius: 10)
