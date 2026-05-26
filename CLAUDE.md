@@ -474,6 +474,33 @@ The TERMINAL REPORT must include either the full build output or an explicit "Bu
 
 **No PR may be opened without a passing simulator build. Tests alone do not clear this bar.**
 
+## Research spike conventions
+
+> **Background:** Spike #217 recommended AeroDataBox without addressing backend architecture, exposing an API key in the iOS binary as a deployment plan. These rules prevent that class of incomplete analysis.
+
+### Rule 1 — Spike output format
+
+Research spikes must produce an options analysis with explicit tradeoffs and a recommended next decision — not a single-answer recommendation.
+
+Required format:
+- Candidate options with strengths and weaknesses for each
+- A scoring or comparison framework applied consistently across candidates
+- A recommended next step (which may be "do a second pass with sharper criteria" rather than "pick the winner")
+
+Spikes that return only a single recommendation without surfacing alternatives and tradeoffs will be rejected and re-run. The purpose of a spike is to give Jason enough structured information to make a well-informed decision, not to make the decision for him.
+
+### Rule 2 — External API spike requirements
+
+Any spike evaluating an external API or third-party service must address all of the following in the deliverable:
+
+- **(a) Credential storage and request architecture** — client-side API keys are extractable from app binaries and are never acceptable for production. The spike must propose a backend proxy architecture or explain why one is not needed.
+- **(b) Caching strategy and cost modeling** — estimate request volume at expected usage scale and document the cost. Identify what can be cached and for how long.
+- **(c) Graceful degradation** — describe how the app behaves if the service is unavailable, rate-limited, or returns unexpected data.
+- **(d) Privacy implications** — identify any user data transmitted to the third party and document required privacy disclosures. Flag any App Store privacy nutrition label updates required.
+- **(e) Cost projection with kill criteria** — project cost at indie/side-project scale (e.g. 500 MAU). Define a specific kill criterion: the condition under which the integration would be abandoned.
+
+Spikes that recommend an API without addressing all five points will be rejected.
+
 ## Terminal report format
 
 ```
