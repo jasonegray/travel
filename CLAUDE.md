@@ -512,6 +512,18 @@ Format:
 
 Every simulator verification ask must include both: (1) the git pull + Xcode refresh sequence above, and (2) a numbered checklist with issue/PR references and specific expected behaviors.
 
+## Device-only validation rule
+
+Some classes of bugs reproduce only on real hardware, not on simulator. Common categories include keyboard behavior, SwiftData refresh timing under real-device main-thread pressure, haptic feedback, camera and contacts permission flows, background task behavior, and most performance issues.
+
+When an agent fixes a bug in one of these categories:
+
+1. The agent's PR description must explicitly note "simulator passes but original bug requires device validation to confirm fix"
+2. After the PR merges, the issue must be tagged with the `device-validation-required` label
+3. Chat Claude, when generating smoke test checklists, must flag which items require device validation and which can be confirmed on simulator
+
+This prevents the false-completeness pattern where unit tests plus simulator build success are mistaken for actual fix validation on a bug class where the simulator cannot reproduce the original problem.
+
 ## Research spike conventions
 
 > **Background:** Spike #217 recommended AeroDataBox without addressing backend architecture, exposing an API key in the iOS binary as a deployment plan. These rules prevent that class of incomplete analysis.
