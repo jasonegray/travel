@@ -2,22 +2,25 @@ import SwiftUI
 import MapKit
 
 struct EditTripMetadataView: View {
-    let onSave: (String, Date, Date) -> Void
+    let onSave: (String, String, Date, Date) -> Void
     @Environment(\.dismiss) private var dismiss
 
+    @State private var tripName: String
     @State private var destinationText: String
     @State private var departureDate: Date
     @State private var returnDate: Date
     @State private var completer = LocationSearchCompleter()
 
-    init(trip: TripSession, onSave: @escaping (String, Date, Date) -> Void) {
+    init(trip: TripSession, onSave: @escaping (String, String, Date, Date) -> Void) {
         self.onSave = onSave
+        _tripName = State(wrappedValue: trip.name)
         _destinationText = State(wrappedValue: trip.destination)
         _departureDate = State(wrappedValue: trip.departureDate)
         _returnDate = State(wrappedValue: trip.returnDate)
     }
 
     private var canSave: Bool {
+        !tripName.trimmingCharacters(in: .whitespaces).isEmpty &&
         !destinationText.trimmingCharacters(in: .whitespaces).isEmpty &&
         returnDate > departureDate
     }
@@ -29,6 +32,11 @@ struct EditTripMetadataView: View {
     var body: some View {
         NavigationStack {
             Form {
+                Section("Trip Name") {
+                    TextField("Trip name", text: $tripName)
+                        .autocorrectionDisabled()
+                }
+
                 Section("Destination") {
                     TextField("e.g. Orlando, Tokyo", text: $destinationText)
                         .autocorrectionDisabled()
@@ -77,7 +85,7 @@ struct EditTripMetadataView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
-                        onSave(destinationText.trimmingCharacters(in: .whitespaces), departureDate, returnDate)
+                        onSave(tripName.trimmingCharacters(in: .whitespaces), destinationText.trimmingCharacters(in: .whitespaces), departureDate, returnDate)
                         dismiss()
                     }
                     .disabled(!canSave)

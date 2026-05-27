@@ -150,10 +150,11 @@ struct TripDetailView: View {
             }
         }
         .sheet(isPresented: $showEditTrip) {
-            EditTripMetadataView(trip: vm.trip) { destination, departure, returnDate in
+            EditTripMetadataView(trip: vm.trip) { name, destination, departure, returnDate in
                 Task {
                     guard let repos = repositories else { return }
                     await vm.editTrip(
+                        name: name,
                         destination: destination,
                         departureDate: departure,
                         returnDate: returnDate,
