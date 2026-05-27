@@ -25,7 +25,7 @@ struct TripInfoView: View {
     // MARK: - Outbound Flight
 
     private var outboundSection: some View {
-        Section("Outbound Flight") {
+        Section(header: Label("Outbound Flight", systemImage: "airplane.departure")) {
             InfoRow("Airline", text: $vm.outboundAirline, placeholder: "e.g. Air Canada", capitalization: .words)
                 .onChange(of: vm.outboundAirline) { vm.scheduleAutoSave() }
             InfoRow("Flight number", text: $vm.outboundFlightNumber, placeholder: "e.g. AC 123")
@@ -46,7 +46,7 @@ struct TripInfoView: View {
     // MARK: - Return Flight
 
     private var returnSection: some View {
-        Section("Return Flight") {
+        Section(header: Label("Return Flight", systemImage: "airplane.arrival")) {
             InfoRow("Airline", text: $vm.returnAirline, placeholder: "e.g. Air Canada", capitalization: .words)
                 .onChange(of: vm.returnAirline) { vm.scheduleAutoSave() }
             InfoRow("Flight number", text: $vm.returnFlightNumber, placeholder: "e.g. AC 124")
