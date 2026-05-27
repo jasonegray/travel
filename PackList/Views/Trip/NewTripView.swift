@@ -596,9 +596,10 @@ private struct AddOnChip: View {
 
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 5) {
+            VStack(spacing: 4) {
                 Image(systemName: icon)
                     .font(.title3)
+                    .frame(height: 28)
                     .foregroundStyle(isSelected ? Color.accentColor : Color.secondary)
                 Text(title)
                     .font(.caption2)
@@ -606,6 +607,7 @@ private struct AddOnChip: View {
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
                     .minimumScaleFactor(0.8)
+                    .frame(height: 28)
             }
             .frame(maxWidth: .infinity, minHeight: 80, maxHeight: 80)
             .background(isSelected ? Color.accentColor.opacity(0.1) : Color(.secondarySystemBackground))
