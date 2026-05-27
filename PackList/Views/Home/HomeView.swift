@@ -9,6 +9,7 @@ struct HomeView: View {
     @State private var showArchivedSection = false
     @AppStorage("profile_full_name") private var profileFullName: String = ""
     @Environment(\.repositories) private var repositories
+    @Query private var _allTripSessions: [TripSession]
 
     var body: some View {
         NavigationStack {
@@ -107,11 +108,14 @@ struct HomeView: View {
                     }
                 }
             }
-            .sheet(isPresented: $showNewTrip) {
+            .sheet(isPresented: $showNewTrip, onDismiss: {
+                guard let repos = repositories else { return }
+                Task { await vm.load(sessions: repos.tripSessions) }
+            }) {
                 NewTripView()
             }
-            .onChange(of: showNewTrip) { _, isShowing in
-                guard !isShowing, let repos = repositories else { return }
+            .onChange(of: _allTripSessions.count) { _, _ in
+                guard let repos = repositories else { return }
                 Task { await vm.load(sessions: repos.tripSessions) }
             }
             .onChange(of: navTarget) { old, new in
