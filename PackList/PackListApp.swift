@@ -11,6 +11,7 @@ struct PackListApp: App {
     private let container: ModelContainer
     private let repositories: RepositoryContainer
     private let profile = ProfileViewModel()
+    @State private var showLaunchScreen = true
 
     init() {
         let c = Self.makeContainer()
@@ -20,9 +21,22 @@ struct PackListApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environment(\.repositories, repositories)
-                .environment(profile)
+            ZStack {
+                ContentView()
+                    .environment(\.repositories, repositories)
+                    .environment(profile)
+
+                if showLaunchScreen {
+                    LaunchView()
+                        .transition(.opacity)
+                }
+            }
+            .task {
+                try? await Task.sleep(for: .milliseconds(800))
+                withAnimation(.easeInOut(duration: 0.35)) {
+                    showLaunchScreen = false
+                }
+            }
         }
         .modelContainer(container)
     }

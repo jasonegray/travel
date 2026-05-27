@@ -59,6 +59,7 @@
 		BB10000200000000000000001 /* ViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB10000100000000000000001 /* ViewModelTests.swift */; };
 		BB200002BB200002BB200002 /* MasterListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB200001BB200001BB200001 /* MasterListViewModel.swift */; };
 		BC300002BC300002BC300002 /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC300001BC300001BC300001 /* OnboardingViewModel.swift */; };
+		BC215002BC215002BC215002 /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC215001BC215001BC215001 /* LaunchView.swift */; };
 		BC300004BC300004BC300004 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC300003BC300003BC300003 /* OnboardingView.swift */; };
 		D5E00EBF68E8B422F4564A5C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76ADB60C49104044689AF712 /* ContentView.swift */; };
 		DA8B3A345FFA9B0C8893EF2F /* TripSessionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11D2DC008310A0B5751D2B6D /* TripSessionRepository.swift */; };
@@ -135,6 +136,7 @@
 		AA135001AA135001AA135001 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		BB200001BB200001BB200001 /* MasterListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterListViewModel.swift; sourceTree = "<group>"; };
 		BC300001BC300001BC300001 /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
+		BC215001BC215001BC215001 /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
 		BC300003BC300003BC300003 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		D3EE44A2859D10DC98A781DC /* PackListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackListTests.swift; sourceTree = "<group>"; };
 		DC8FE75F40765FAADB8A1176 /* RepositoryContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryContainer.swift; sourceTree = "<group>"; };
@@ -238,6 +240,7 @@
 			isa = PBXGroup;
 			children = (
 				50CC6DA1AAFDD4D9AB6C6E85 /* .gitkeep */,
+				BC215001BC215001BC215001 /* LaunchView.swift */,
 				10B403022F82DCF4BE8F3D84 /* Home */,
 				6A644ABB91D8459D8ECD523D /* MasterList */,
 				BC300005BC300005BC300005 /* Onboarding */,
@@ -564,6 +567,7 @@
 				2134F7F6DABE2B7152515106 /* WeatherService.swift in Sources */,
 				BB200002BB200002BB200002 /* MasterListViewModel.swift in Sources */,
 				BC300002BC300002BC300002 /* OnboardingViewModel.swift in Sources */,
+				BC215002BC215002BC215002 /* LaunchView.swift in Sources */,
 				BC300004BC300004BC300004 /* OnboardingView.swift in Sources */,
 				AA000004000000000000001 /* PackListSchemaV1.swift in Sources */,
 				AA000005000000000000001 /* PackListMigrationPlan.swift in Sources */,
