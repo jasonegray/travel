@@ -248,6 +248,7 @@ private struct NameDestinationStep: View {
     @State private var mapPosition: MapCameraPosition = .automatic
     @State private var poiAnnotations: [POIAnnotation] = []
     @State private var selectedPOIId: UUID?
+    @FocusState private var searchFocused: Bool
 
     private var categories: [MKPointOfInterestCategory] {
         poiCategories(for: vm.activities)
@@ -272,6 +273,7 @@ private struct NameDestinationStep: View {
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     .submitLabel(.search)
                     .autocorrectionDisabled()
+                    .focused($searchFocused)
                     .onChange(of: destinationText) { _, text in
                         vm.destination = text
                         completer.updateQuery(text)
@@ -364,6 +366,7 @@ private struct NameDestinationStep: View {
 
     @MainActor
     private func pick(_ suggestion: MKLocalSearchCompletion) async {
+        searchFocused = false
         _ = await completer.select(suggestion)
         destinationText          = completer.query
         vm.destination           = completer.query
