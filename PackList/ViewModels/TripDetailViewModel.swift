@@ -112,7 +112,8 @@ final class TripDetailViewModel {
             name: trip.name,
             destination: trip.destination,
             departure: trip.departureDate,
-            returnDate: trip.returnDate
+            returnDate: trip.returnDate,
+            updatedAt: trip.updatedAt
         )
         trip.name = name
         trip.destination = destination
@@ -127,6 +128,7 @@ final class TripDetailViewModel {
             trip.destination = prev.destination
             trip.departureDate = prev.departure
             trip.returnDate = prev.returnDate
+            trip.updatedAt = prev.updatedAt
         }
     }
 
