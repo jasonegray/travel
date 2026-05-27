@@ -201,7 +201,7 @@ private struct PackingTab: View {
     let vm: TripDetailViewModel
     let initialLocation: PackingLocation?
     @State private var mode: PackingMode
-    @State private var expandedSections: Set<String>
+    @State private var selectedCategoryIndex: Int = 0
     @State private var selectedBagIndex: Int = 0
     @State private var editingItem: TripItem? = nil
 
@@ -209,7 +209,6 @@ private struct PackingTab: View {
         self.vm = vm
         self.initialLocation = initialLocation
         _mode = State(wrappedValue: initialLocation != nil ? .bags : .category)
-        _expandedSections = State(wrappedValue: [])
     }
 
     var body: some View {
@@ -225,30 +224,27 @@ private struct PackingTab: View {
 
             switch mode {
             case .category:
-                ScrollView {
-                    LazyVStack(spacing: 0) {
-                        ForEach(vm.categoryGroups, id: \.category) { group in
-                            CollapsiblePackingSection(
-                                id: group.category.rawValue,
-                                title: group.category.displayName,
-                                items: group.items,
-                                expandedSections: $expandedSections,
-                                onToggle: { item in
-                                    withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
-                                    Task { await vm.save(item: item) }
-                                },
-                                onDelete: { item in
-                                    Task { await vm.deleteCustomItem(item) }
-                                },
-                                onEdit: { item in
-                                    guard !vm.trip.isArchived else { return }
-                                    editingItem = item
-                                }
-                            )
-                        }
-                        Spacer(minLength: 32)
+                TabView(selection: $selectedCategoryIndex) {
+                    ForEach(Array(vm.categoryGroups.enumerated()), id: \.offset) { index, group in
+                        CategoryPageView(
+                            group: group,
+                            onToggle: { item in
+                                withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
+                                Task { await vm.save(item: item) }
+                            },
+                            onDelete: { item in
+                                Task { await vm.deleteCustomItem(item) }
+                            },
+                            onEdit: { item in
+                                guard !vm.trip.isArchived else { return }
+                                editingItem = item
+                            }
+                        )
+                        .tag(index)
                     }
                 }
+                .tabViewStyle(.page(indexDisplayMode: .always))
+                .indexViewStyle(.page(backgroundDisplayMode: .always))
                 .animation(.easeInOut(duration: 0.2), value: vm.completedPacking)
 
             case .bags:
@@ -280,13 +276,6 @@ private struct PackingTab: View {
                         selectedBagIndex = index
                     }
                 }
-            }
-        }
-        .onChange(of: mode) { _, _ in expandedSections = [] }
-        .onChange(of: vm.items.count) { old, new in
-            guard new > old else { return }
-            for item in vm.items where item.source == .manual && item.completedAt == nil {
-                expandedSections.insert(item.category.rawValue)
             }
         }
         .sheet(item: $editingItem) { item in
@@ -337,77 +326,53 @@ private struct PackingHeaderStrip: View {
     }
 }
 
-// MARK: - Collapsible section
+// MARK: - Category page
 
-private struct CollapsiblePackingSection: View {
-    let id: String
-    let title: String
-    let items: [TripItem]
-    @Binding var expandedSections: Set<String>
+private struct CategoryPageView: View {
+    let group: (category: ItemCategory, items: [TripItem])
     let onToggle: (TripItem) -> Void
     let onDelete: (TripItem) -> Void
     let onEdit: (TripItem) -> Void
 
-    private var isExpanded: Bool { expandedSections.contains(id) }
-    private var remaining: Int { items.filter { $0.completedAt == nil }.count }
+    private var remaining: Int { group.items.filter { $0.completedAt == nil }.count }
     private var allPacked: Bool { remaining == 0 }
 
     var body: some View {
         VStack(spacing: 0) {
-            Button {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    if isExpanded { expandedSections.remove(id) }
-                    else { expandedSections.insert(id) }
+            HStack {
+                Text(group.category.displayName)
+                    .font(.headline)
+                Spacer()
+                if allPacked {
+                    Text("All packed ✓")
+                        .font(.caption)
+                        .fontWeight(.medium)
+                        .foregroundStyle(Color.green)
+                } else {
+                    Text("\(remaining) remaining")
+                        .font(.caption)
+                        .fontWeight(.medium)
+                        .foregroundStyle(Color.red)
                 }
-            } label: {
-                HStack {
-                    Text(title)
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.primary)
-
-                    Spacer()
-
-                    if allPacked {
-                        Text("All packed ✓")
-                            .font(.caption)
-                            .fontWeight(.medium)
-                            .foregroundStyle(Color.green)
-                    } else {
-                        Text("\(remaining) remaining")
-                            .font(.caption)
-                            .fontWeight(.medium)
-                            .foregroundStyle(Color.red)
-                    }
-
-                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                        .font(.caption2)
-                        .foregroundStyle(Color.secondary)
-                        .padding(.leading, 4)
-                }
-                .padding(.horizontal)
-                .padding(.vertical, 12)
-                .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .padding(.horizontal)
+            .padding(.vertical, 12)
 
-            if isExpanded {
-                Divider().padding(.horizontal)
+            Divider()
 
-                VStack(spacing: 0) {
-                    ForEach(items) { item in
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    ForEach(group.items) { item in
                         PackingRow(item: item, onToggle: { onToggle(item) }, onDelete: { onDelete(item) }, onEdit: { onEdit(item) })
                             .padding(.horizontal)
                             .padding(.vertical, 2)
-                        if item.id != items.last?.id {
+                        if item.id != group.items.last?.id {
                             Divider().padding(.leading, 60)
                         }
                     }
+                    Spacer(minLength: 60)
                 }
-                .padding(.bottom, 4)
             }
-
-            Divider()
         }
     }
 }
