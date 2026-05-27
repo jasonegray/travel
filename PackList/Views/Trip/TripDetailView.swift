@@ -194,7 +194,6 @@ private struct PackingTab: View {
     let vm: TripDetailViewModel
     let initialLocation: PackingLocation?
     @State private var mode: PackingMode
-    @State private var flightPouchExpanded: Bool
     @State private var expandedSections: Set<String>
     @State private var selectedBagIndex: Int = 0
     @State private var editingItem: TripItem? = nil
@@ -202,7 +201,6 @@ private struct PackingTab: View {
     init(vm: TripDetailViewModel, initialLocation: PackingLocation? = nil) {
         self.vm = vm
         self.initialLocation = initialLocation
-        _flightPouchExpanded = State(wrappedValue: false)
         _mode = State(wrappedValue: initialLocation != nil ? .bags : .category)
         _expandedSections = State(wrappedValue: [])
     }
@@ -222,7 +220,6 @@ private struct PackingTab: View {
             case .category:
                 ScrollView {
                     LazyVStack(spacing: 0) {
-                        flightPouchCardView
                         ForEach(vm.categoryGroups, id: \.category) { group in
                             CollapsiblePackingSection(
                                 id: group.category.rawValue,
@@ -248,35 +245,32 @@ private struct PackingTab: View {
                 .animation(.easeInOut(duration: 0.2), value: vm.completedPacking)
 
             case .bags:
-                VStack(spacing: 0) {
-                    flightPouchCardView
-                    TabView(selection: $selectedBagIndex) {
-                        ForEach(Array(vm.packingGroups.enumerated()), id: \.offset) { index, group in
-                            BagPageView(
-                                group: group,
-                                onToggle: { item in
-                                    withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
-                                    Task { await vm.save(item: item) }
-                                },
-                                onDelete: { item in
-                                    Task { await vm.deleteCustomItem(item) }
-                                },
-                                onEdit: { item in
-                                    guard !vm.trip.isArchived else { return }
-                                    editingItem = item
-                                }
-                            )
-                            .tag(index)
-                        }
+                TabView(selection: $selectedBagIndex) {
+                    ForEach(Array(vm.packingGroups.enumerated()), id: \.offset) { index, group in
+                        BagPageView(
+                            group: group,
+                            onToggle: { item in
+                                withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
+                                Task { await vm.save(item: item) }
+                            },
+                            onDelete: { item in
+                                Task { await vm.deleteCustomItem(item) }
+                            },
+                            onEdit: { item in
+                                guard !vm.trip.isArchived else { return }
+                                editingItem = item
+                            }
+                        )
+                        .tag(index)
                     }
-                    .tabViewStyle(.page(indexDisplayMode: .always))
-                    .indexViewStyle(.page(backgroundDisplayMode: .always))
-                    .animation(.easeInOut(duration: 0.2), value: vm.completedPacking)
-                    .task(id: vm.packingGroups.count) {
-                        guard let location = initialLocation, !vm.packingGroups.isEmpty else { return }
-                        if let index = vm.packingGroups.firstIndex(where: { $0.location == location }) {
-                            selectedBagIndex = index
-                        }
+                }
+                .tabViewStyle(.page(indexDisplayMode: .always))
+                .indexViewStyle(.page(backgroundDisplayMode: .always))
+                .animation(.easeInOut(duration: 0.2), value: vm.completedPacking)
+                .task(id: vm.packingGroups.count) {
+                    guard let location = initialLocation, !vm.packingGroups.isEmpty else { return }
+                    if let index = vm.packingGroups.firstIndex(where: { $0.location == location }) {
+                        selectedBagIndex = index
                     }
                 }
             }
@@ -295,22 +289,6 @@ private struct PackingTab: View {
         }
     }
 
-    @ViewBuilder
-    private var flightPouchCardView: some View {
-        if !vm.flightAccessibleItems.isEmpty {
-            FlightPouchCard(
-                items: vm.flightAccessibleItems,
-                isExpanded: $flightPouchExpanded,
-                onToggle: { item in
-                    withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
-                    Task { await vm.save(item: item) }
-                }
-            )
-            .padding(.horizontal)
-            .padding(.top, 12)
-            .padding(.bottom, 8)
-        }
-    }
 }
 
 // MARK: - Header strip
@@ -349,127 +327,6 @@ private struct PackingHeaderStrip: View {
         .padding(.horizontal)
         .padding(.vertical, 10)
         .background(Color(.systemBackground))
-    }
-}
-
-// MARK: - Flight Pouch card
-
-private struct FlightPouchCard: View {
-    let items: [TripItem]
-    @Binding var isExpanded: Bool
-    let onToggle: (TripItem) -> Void
-
-    private let chipLimit = 4
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Button {
-                withAnimation(.easeInOut(duration: 0.2)) { isExpanded.toggle() }
-            } label: {
-                HStack(spacing: 10) {
-                    Image(systemName: "airplane")
-                        .font(.subheadline)
-                        .foregroundStyle(Color.blue)
-
-                    Text("Flight pouch")
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(Color.blue)
-
-                    Spacer()
-
-                    if !isExpanded {
-                        ChipRow(items: items, limit: chipLimit)
-                    }
-
-                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                        .font(.caption)
-                        .foregroundStyle(Color.blue.opacity(0.7))
-                }
-                .padding(.horizontal, 14)
-                .padding(.vertical, 12)
-            }
-            .buttonStyle(.plain)
-
-            if isExpanded {
-                Divider()
-                    .padding(.horizontal, 14)
-
-                VStack(spacing: 0) {
-                    ForEach(items) { item in
-                        FlightPouchRow(item: item, onToggle: { onToggle(item) })
-                        if item.id != items.last?.id {
-                            Divider().padding(.leading, 44)
-                        }
-                    }
-                }
-                .padding(.bottom, 4)
-            }
-        }
-        .background(Color.blue.opacity(0.08))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .strokeBorder(Color.blue.opacity(0.2), lineWidth: 1)
-        )
-    }
-}
-
-private struct ChipRow: View {
-    let items: [TripItem]
-    let limit: Int
-
-    private var visible: [TripItem] { Array(items.prefix(limit)) }
-    private var overflow: Int { max(0, items.count - limit) }
-
-    var body: some View {
-        HStack(spacing: 4) {
-            ForEach(visible) { item in
-                Text(item.name)
-                    .font(.caption2)
-                    .lineLimit(1)
-                    .padding(.horizontal, 7)
-                    .padding(.vertical, 3)
-                    .background(Color.blue.opacity(0.15))
-                    .clipShape(Capsule())
-                    .foregroundStyle(Color.blue)
-            }
-            if overflow > 0 {
-                Text("+\(overflow) more")
-                    .font(.caption2)
-                    .padding(.horizontal, 7)
-                    .padding(.vertical, 3)
-                    .background(Color.blue.opacity(0.1))
-                    .clipShape(Capsule())
-                    .foregroundStyle(Color.blue.opacity(0.7))
-            }
-        }
-    }
-}
-
-private struct FlightPouchRow: View {
-    let item: TripItem
-    let onToggle: () -> Void
-
-    var body: some View {
-        Button(action: onToggle) {
-            HStack(spacing: 14) {
-                Image(systemName: item.completedAt != nil ? "checkmark.circle.fill" : "circle")
-                    .font(.system(size: 20))
-                    .foregroundStyle(item.completedAt != nil ? Color.blue : Color.blue.opacity(0.4))
-
-                Text(item.name)
-                    .font(.subheadline)
-                    .strikethrough(item.completedAt != nil, color: .secondary)
-                    .foregroundStyle(item.completedAt != nil ? Color.secondary : Color.primary)
-
-                Spacer()
-            }
-            .contentShape(Rectangle())
-            .padding(.horizontal, 14)
-            .padding(.vertical, 10)
-        }
-        .buttonStyle(.plain)
     }
 }
 
