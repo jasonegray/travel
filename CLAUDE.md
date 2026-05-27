@@ -368,6 +368,10 @@ Never leave an issue in Backlog while actively working on it. Never leave a merg
 
 Every status change to a GitHub issue MUST be reflected on the project board in the same operation. The board is the source of truth; issue state alone is not enough.
 
+### Who runs gh commands
+
+All gh commands now run via Claude Code as part of the work session, not in Jason's Mac terminal. This applies to issue creation, board state changes, PR merges, label changes, comment posting, and any other gh CLI operation. Chat Claude generates the work plan; Claude Code executes the gh commands directly. Terminal agents (T1/T2/T3/T4 in Agent View) continue to NOT run gh commands — they do code work only and report status changes for Claude Code to action. If Jason explicitly says "I'll run this myself" or "give me the commands," fall back to the previous pattern of presenting paste blocks. Default is Claude Code executes.
+
 ### Status transitions and required board moves
 
 | Trigger | Board action |
