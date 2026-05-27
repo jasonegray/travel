@@ -370,7 +370,7 @@ Every status change to a GitHub issue MUST be reflected on the project board in 
 
 ### Who runs gh commands
 
-All gh commands now run via Claude Code as part of the work session, not in Jason's Mac terminal. This applies to issue creation, board state changes, PR merges, label changes, comment posting, and any other gh CLI operation. Chat Claude generates the work plan; Claude Code executes the gh commands directly. Terminal agents (T1/T2/T3/T4 in Agent View) continue to NOT run gh commands — they do code work only and report status changes for Claude Code to action. If Jason explicitly says "I'll run this myself" or "give me the commands," fall back to the previous pattern of presenting paste blocks. Default is Claude Code executes.
+Agents run gh commands as part of their unit of work. When an agent completes an issue, they handle the full lifecycle: open the PR, merge it after pre-merge verification, close the issue, move the board status to Done, add or remove labels as needed, post relevant comments. The TERMINAL REPORT confirms what was done — it does not punt gh commands to Jason or Claude Code chat for follow-up action. Chat Claude can also run gh commands directly for orchestration work (creating new issues, batch board updates, milestone management). Jason can run standalone gh commands in the macOS terminal if it's convenient or the work is independent of any agent or chat session, but the default for any work that is part of an active unit is: the agent or Claude Code session that owns the work executes the gh commands. The "report status changes for Jason to action" pattern is deprecated — do not generate it.
 
 ### Status transitions and required board moves
 
