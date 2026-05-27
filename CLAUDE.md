@@ -478,6 +478,26 @@ The TERMINAL REPORT must include either the full build output or an explicit "Bu
 
 **No PR may be opened without a passing simulator build. Tests alone do not clear this bar.**
 
+## Local verification refresh — always include before manual testing
+
+Any time Claude (chat) asks Jason to smoke-test, manually verify, or visually check work on the simulator after merges have landed, the response must include the local refresh command sequence so Jason isn't building against stale code or stale build artifacts.
+
+**Mandatory sequence — include this verbatim in every simulator verification ask:**
+
+In Terminal:
+```bash
+cd ~/Documents/Projects/PackList
+git checkout main
+git pull
+```
+
+Then in Xcode:
+- **Shift+Cmd+K** — Clean Build Folder
+- **Cmd+B** — Build
+- **Cmd+R** — Run on simulator
+
+Never ask Jason to verify on the simulator without these instructions in the same response. Skipping any step risks building against stale code, stale build artifacts, or both.
+
 ## Research spike conventions
 
 > **Background:** Spike #217 recommended AeroDataBox without addressing backend architecture, exposing an API key in the iOS binary as a deployment plan. These rules prevent that class of incomplete analysis.
