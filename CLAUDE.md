@@ -498,6 +498,20 @@ Then in Xcode:
 
 Never ask Jason to verify on the simulator without these instructions in the same response. Skipping any step risks building against stale code, stale build artifacts, or both.
 
+**Mandatory checklist — include a specific smoke test checklist in every simulator verification ask:**
+
+When asking Jason to smoke-test, also provide a numbered checklist tied to the work that merged in the current session. Name each issue or PR by number, describe the specific flow to walk, and state the expected behavior. Generic "go try the app" instructions are not acceptable.
+
+Format:
+
+> Smoke test these flows on simulator:
+> 1. **#203 (extras tile sizing)** — start a new trip, get to the extras screen, confirm all option tiles render at the same size including longer labels.
+> 2. **#204 (keyboard dismiss)** — on Where Are You Headed, type a destination, tap a result — keyboard should dismiss immediately.
+> 3. **#205 (first trip refresh)** — fresh app launch with no trips, create your first trip, confirm it appears on Trips list without tab-switching.
+> 4. **#207 (Flight Pouch removal)** — open a trip detail, confirm no standalone Flight Pouch section at top, but Flight Pouch still accessible via bag swipe.
+
+Every simulator verification ask must include both: (1) the git pull + Xcode refresh sequence above, and (2) a numbered checklist with issue/PR references and specific expected behaviors.
+
 ## Research spike conventions
 
 > **Background:** Spike #217 recommended AeroDataBox without addressing backend architecture, exposing an API key in the iOS binary as a deployment plan. These rules prevent that class of incomplete analysis.
