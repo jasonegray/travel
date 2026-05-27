@@ -129,25 +129,30 @@ final class NewTripViewModel {
     // MARK: - Trip name
 
     var generatedTripName: String {
+        let month = departureDate.formatted(.dateTime.month(.wide))
+        if let type = primaryActivityType {
+            return "\(month) \(type)"
+        }
         let dest = destination
             .components(separatedBy: ",").first?
             .trimmingCharacters(in: .whitespaces) ?? destination
-        return "\(dest) · \(formattedDateRange)"
+        return dest.isEmpty ? "Trip" : dest
     }
 
     var finalTripName: String {
         tripName.trimmingCharacters(in: .whitespaces).isEmpty ? generatedTripName : tripName
     }
 
-    private var formattedDateRange: String {
-        let cal = Calendar.current
-        let depMonth = departureDate.formatted(.dateTime.month(.abbreviated))
-        let retMonth = returnDate.formatted(.dateTime.month(.abbreviated))
-        let depDay   = cal.component(.day, from: departureDate)
-        let retDay   = cal.component(.day, from: returnDate)
-        return depMonth == retMonth
-            ? "\(depMonth) \(depDay)–\(retDay)"
-            : "\(depMonth) \(depDay)–\(retMonth) \(retDay)"
+    private var primaryActivityType: String? {
+        if activities.contains(.conference)   { return "Conference" }
+        if activities.contains(.golf)         { return "Golf" }
+        if activities.contains(.beach)        { return "Beach" }
+        if activities.contains(.pool)         { return "Pool" }
+        if activities.contains(.hiking)       { return "Hiking" }
+        if activities.contains(.formalDinner) { return "Formal Dinner" }
+        if activities.contains(.workout)      { return "Workout" }
+        if activities.contains(.sightseeing)  { return "Sightseeing" }
+        return nil
     }
 
     // MARK: - Navigation
