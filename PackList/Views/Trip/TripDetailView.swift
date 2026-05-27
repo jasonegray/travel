@@ -59,6 +59,13 @@ struct TripDetailView: View {
         .navigationTitle(vm.trip.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text(vm.trip.name)
+                    .font(.headline)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
             if selectedTab == .packing && vm.trip.status != .completed {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
