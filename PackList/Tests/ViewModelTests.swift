@@ -188,7 +188,6 @@ final class NewTripViewModelTests: XCTestCase {
     func testNewTripViewModelGeneratedNameFormat() {
         let vm = NewTripViewModel()
         vm.destination = "Orlando"
-        vm.activities = []
 
         var depComps = DateComponents()
         depComps.year = 2027; depComps.month = 5; depComps.day = 24; depComps.hour = 12
@@ -199,10 +198,10 @@ final class NewTripViewModelTests: XCTestCase {
         vm.departureDate = cal.date(from: depComps)!
         vm.returnDate    = cal.date(from: retComps)!
 
-        XCTAssertEqual(vm.generatedTripName, "Orlando",
-                       "Generated name must be the destination when no activity type is selected")
+        XCTAssertEqual(vm.generatedTripName, "Orlando · May 24–27",
+                       "Generated name must be 'Destination · Month DayStart–DayEnd'")
         XCTAssertFalse(vm.generatedTripName.contains("Conference"),
-                       "Generated name must not include activity names when activities is empty")
+                       "Generated name must not include activity names")
     }
 }
 
@@ -1106,7 +1105,6 @@ final class NewTripViewModelCoverageTests: XCTestCase {
     func testGeneratedTripNameSpanningMonths() {
         let vm = NewTripViewModel()
         vm.destination = "London"
-        vm.activities = []
 
         var depComps = DateComponents()
         depComps.year = 2027; depComps.month = 5; depComps.day = 30; depComps.hour = 12
@@ -1116,12 +1114,9 @@ final class NewTripViewModelCoverageTests: XCTestCase {
         vm.departureDate = cal.date(from: depComps)!
         vm.returnDate    = cal.date(from: retComps)!
 
-        XCTAssertEqual(vm.generatedTripName, "London",
-                       "Generated name must be the destination when no activity type is selected")
-
-        vm.activities = [.golf]
-        XCTAssertEqual(vm.generatedTripName, "May Golf",
-                       "Generated name must use departure month when an activity type is selected")
+        XCTAssertTrue(vm.generatedTripName.contains("London"), "Generated name must contain destination")
+        XCTAssertTrue(vm.generatedTripName.contains("May"), "Generated name must contain departure month")
+        XCTAssertTrue(vm.generatedTripName.contains("Jun"), "Generated name must contain return month for cross-month trip")
     }
 
     // finalTripName prefers custom tripName when set

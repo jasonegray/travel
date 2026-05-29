@@ -340,7 +340,10 @@ private struct CategoryPageView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
+            HStack(spacing: 8) {
+                Image(systemName: group.category.sfSymbol)
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
                 Text(group.category.displayName)
                     .font(.headline)
                 Spacer()
@@ -391,7 +394,10 @@ private struct BagPageView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
+            HStack(spacing: 8) {
+                Image(systemName: group.location.sfSymbol)
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
                 Text(group.location.displayName)
                     .font(.headline)
                 Spacer()
@@ -485,7 +491,10 @@ private struct TaskPageView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
+            HStack(spacing: 8) {
+                Image(systemName: group.timing.sfSymbol)
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
                 Text(group.timing.sectionLabel)
                     .font(.headline)
                 Spacer()
@@ -686,6 +695,18 @@ extension TaskTiming {
         case .uponArrival:     return "Upon arrival"
         }
     }
+
+    var sfSymbol: String {
+        switch self {
+        case .weekBefore:      return "calendar"
+        case .threeDaysBefore: return "calendar.badge.clock"
+        case .dayBefore:       return "moon.stars.fill"
+        case .morningOf:       return "sunrise.fill"
+        case .atAirport:       return "airplane.departure"
+        case .onPlane:         return "airplane"
+        case .uponArrival:     return "airplane.arrival"
+        }
+    }
 }
 
 // MARK: - ItemCategory display
@@ -702,6 +723,20 @@ extension ItemCategory {
         case .documents:       return "Documents"
         case .misc:            return "Miscellaneous"
         case .workoutClothing: return "Workout"
+        }
+    }
+
+    var sfSymbol: String {
+        switch self {
+        case .clothing:        return "tshirt.fill"
+        case .golf:            return "figure.golf"
+        case .tech:            return "laptopcomputer"
+        case .health:          return "cross.case.fill"
+        case .meds:            return "pills.fill"
+        case .hygiene:         return "shower.fill"
+        case .documents:       return "doc.fill"
+        case .misc:            return "ellipsis.circle.fill"
+        case .workoutClothing: return "figure.run"
         }
     }
 
