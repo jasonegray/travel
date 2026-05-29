@@ -10,14 +10,12 @@ struct LaunchView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 20) {
-                if let icon = UIImage(named: "AppIcon") {
-                    Image(uiImage: icon)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 120, height: 120)
-                        .clipShape(RoundedRectangle(cornerRadius: 27, style: .continuous))
-                        .shadow(color: .black.opacity(0.12), radius: 12, x: 0, y: 4)
-                }
+                Image("LaunchLogo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 120, height: 120)
+                    .clipShape(RoundedRectangle(cornerRadius: 27, style: .continuous))
+                    .shadow(color: .black.opacity(0.12), radius: 12, x: 0, y: 4)
 
                 Text("PackList")
                     .font(.title2)
@@ -25,8 +23,8 @@ struct LaunchView: View {
                     .foregroundStyle(.primary)
             }
             .opacity(contentOpacity)
-            .onAppear {
-                withAnimation(.easeIn(duration: 0.25)) {
+            .task {
+                withAnimation(.easeIn(duration: 0.3)) {
                     contentOpacity = 1
                 }
             }

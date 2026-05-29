@@ -32,8 +32,9 @@ struct PackListApp: App {
                 }
             }
             .task {
-                try? await Task.sleep(for: .milliseconds(800))
-                withAnimation(.easeInOut(duration: 0.35)) {
+                // fade-in 0.3s + hold 1.2s = 1.5s before fade-out begins; total visible ~2.0s
+                try? await Task.sleep(for: .milliseconds(1500))
+                withAnimation(.easeInOut(duration: 0.5)) {
                     showLaunchScreen = false
                 }
             }
