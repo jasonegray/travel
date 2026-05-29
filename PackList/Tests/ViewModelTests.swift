@@ -232,14 +232,10 @@ final class TripInfoViewModelShareTests: XCTestCase {
         context.insert(trip)
         vm = TripInfoViewModel(trip: trip)
         UserDefaults.standard.removeObject(forKey: "profile_full_name")
-        UserDefaults.standard.removeObject(forKey: "profile_aeroplan_number")
-        UserDefaults.standard.removeObject(forKey: "profile_bonvoy_number")
     }
 
     override func tearDown() {
         UserDefaults.standard.removeObject(forKey: "profile_full_name")
-        UserDefaults.standard.removeObject(forKey: "profile_aeroplan_number")
-        UserDefaults.standard.removeObject(forKey: "profile_bonvoy_number")
         vm = nil; trip = nil; context = nil; container = nil
     }
 
@@ -307,42 +303,6 @@ final class TripInfoViewModelShareTests: XCTestCase {
         let summary = vm.shareSummary
         XCTAssertTrue(summary.contains("%2B"), "Apple Maps URL must percent-encode + as %2B")
         XCTAssertFalse(summary.contains("?q=M+G"), "Literal + in query value must not appear unencoded")
-    }
-
-    func testShareSummary_omitsLoyaltyFooterWhenNoNumbers() {
-        let summary = vm.shareSummary
-        XCTAssertFalse(summary.contains("—"), "Loyalty footer must be absent when no numbers are set")
-        XCTAssertFalse(summary.contains("Aeroplan"), "Aeroplan line must be absent")
-        XCTAssertFalse(summary.contains("Marriott"), "Marriott line must be absent")
-    }
-
-    func testShareSummary_includesAeroplanWhenSet() {
-        UserDefaults.standard.set("12345678", forKey: "profile_aeroplan_number")
-        let summary = vm.shareSummary
-        XCTAssertTrue(summary.contains("—"), "Loyalty separator must appear")
-        XCTAssertTrue(summary.contains("Aeroplan Super Elite: 12345678"), "Aeroplan line must appear")
-        XCTAssertFalse(summary.contains("Marriott"), "Marriott must not appear when not set")
-    }
-
-    func testShareSummary_includesBonvoyWhenSet() {
-        UserDefaults.standard.set("99999999", forKey: "profile_bonvoy_number")
-        let summary = vm.shareSummary
-        XCTAssertTrue(summary.contains("Marriott Titanium Elite: 99999999"), "Bonvoy line must appear")
-        XCTAssertFalse(summary.contains("Aeroplan"), "Aeroplan must not appear when not set")
-    }
-
-    func testShareSummary_includesFullNameWhenBothSet() {
-        UserDefaults.standard.set("Jason Gray", forKey: "profile_full_name")
-        UserDefaults.standard.set("12345678", forKey: "profile_aeroplan_number")
-        let summary = vm.shareSummary
-        XCTAssertTrue(summary.contains("Jason Gray"), "Full name must appear in footer")
-    }
-
-    func testShareSummary_omitsFullNameWhenOnlyNameSet() {
-        UserDefaults.standard.set("Jason Gray", forKey: "profile_full_name")
-        let summary = vm.shareSummary
-        XCTAssertFalse(summary.contains("Jason Gray"),
-                       "Full name alone must not trigger loyalty footer — need at least one loyalty number")
     }
 
     func testLoadFromModel_populatesFields() throws {

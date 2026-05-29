@@ -128,11 +128,6 @@ final class TripInfoViewModel {
             lines.append("")
             lines.append(contentsOf: section)
         }
-        if let footer = loyaltyFooter() {
-            lines.append("")
-            lines.append(contentsOf: footer)
-        }
-
         return lines.joined(separator: "\n")
     }
 
@@ -176,22 +171,6 @@ final class TripInfoViewModel {
         allowed.remove(charactersIn: "+&=")
         let encoded = name.addingPercentEncoding(withAllowedCharacters: allowed) ?? name
         return ["HOTEL", name, "https://maps.apple.com/?q=\(encoded)"]
-    }
-
-    private func loyaltyFooter() -> [String]? {
-        let defaults = UserDefaults.standard
-        let aeroplan = defaults.string(forKey: "profile_aeroplan_number")?.nilIfEmpty
-        let bonvoy   = defaults.string(forKey: "profile_bonvoy_number")?.nilIfEmpty
-
-        guard aeroplan != nil || bonvoy != nil else { return nil }
-
-        var lines: [String] = ["—"]
-        if let name = defaults.string(forKey: "profile_full_name")?.nilIfEmpty {
-            lines.append(name)
-        }
-        if let n = aeroplan { lines.append("Aeroplan Super Elite: \(n)") }
-        if let n = bonvoy   { lines.append("Marriott Titanium Elite: \(n)") }
-        return lines
     }
 
     private func formatDateTime(_ date: Date) -> String {

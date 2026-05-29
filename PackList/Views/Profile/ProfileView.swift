@@ -26,40 +26,14 @@ struct ProfileView: View {
                     }
                 }
 
-                // MARK: Section 2 — Air Canada
-                Section("Air Canada") {
-                    ProfileRow("Aeroplan number", text: $vm.aeroplanNumber,
-                               placeholder: "e.g. 123456789", keyboardType: .numberPad)
-                        .onChange(of: vm.aeroplanNumber) { vm.save() }
-                    Picker("Status tier", selection: $vm.aeroplanTier) {
-                        ForEach(AeroplanTier.allCases, id: \.self) { tier in
-                            Text(tier.rawValue).tag(tier)
-                        }
-                    }
-                    .onChange(of: vm.aeroplanTier) { vm.save() }
-                }
-
-                // MARK: Section 3 — Marriott Bonvoy
-                Section("Marriott Bonvoy") {
-                    ProfileRow("Bonvoy number", text: $vm.bonvoyNumber,
-                               placeholder: "e.g. 123456789", keyboardType: .numberPad)
-                        .onChange(of: vm.bonvoyNumber) { vm.save() }
-                    Picker("Status tier", selection: $vm.bonvoyTier) {
-                        ForEach(BonvoyTier.allCases, id: \.self) { tier in
-                            Text(tier.rawValue).tag(tier)
-                        }
-                    }
-                    .onChange(of: vm.bonvoyTier) { vm.save() }
-                }
-
-                // MARK: Section 4 — Lists
+                // MARK: Section 2 — Lists
                 Section("Lists") {
                     NavigationLink(destination: MasterListView()) {
                         Label("Master List", systemImage: "list.bullet.rectangle")
                     }
                 }
 
-                // MARK: Section 5 — App
+                // MARK: Section 3 — App
                 Section {
                     Picker("Appearance", selection: $vm.appearance) {
                         ForEach(AppearancePreference.allCases, id: \.self) { pref in
