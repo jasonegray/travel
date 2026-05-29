@@ -433,6 +433,7 @@ private struct BagPageView: View {
 
 private struct PrepTab: View {
     let vm: TripDetailViewModel
+    @State private var selectedTaskIndex: Int = 0
 
     var body: some View {
         let daysAway = daysUntilDeparture(from: vm.trip.departureDate)
@@ -451,36 +452,73 @@ private struct PrepTab: View {
 
             Divider()
 
-            List {
-                ForEach(vm.taskGroups, id: \.timing) { group in
-                    let deadline = vm.deadline(for: group.timing)
-                    let hasIncomplete = group.items.contains { $0.completedAt == nil }
-                    let overdue = hasIncomplete && deadline < Calendar.current.startOfDay(for: .now)
-
-                    Section {
-                        ForEach(group.items) { item in
-                            TaskRow(item: item) {
-                                withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
-                                Task { await vm.save(item: item) }
-                            }
+            TabView(selection: $selectedTaskIndex) {
+                ForEach(Array(vm.taskGroups.enumerated()), id: \.offset) { index, group in
+                    TaskPageView(
+                        group: group,
+                        deadline: vm.deadline(for: group.timing),
+                        onToggle: { item in
+                            withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
+                            Task { await vm.save(item: item) }
                         }
-                    } header: {
-                        HStack {
-                            Text(group.timing.sectionLabel)
-                                .fontWeight(.semibold)
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Text(deadline, format: .dateTime.month(.abbreviated).day())
-                                .foregroundStyle(overdue ? Color.red : Color.secondary)
-                        }
-                        .font(.subheadline)
-                        .textCase(nil)
-                        .padding(.vertical, 4)
-                    }
+                    )
+                    .tag(index)
                 }
             }
-            .listStyle(.plain)
-            .animation(.default, value: vm.completedTasks)
+            .tabViewStyle(.page(indexDisplayMode: .always))
+            .indexViewStyle(.page(backgroundDisplayMode: .always))
+            .animation(.easeInOut(duration: 0.2), value: vm.completedTasks)
+        }
+    }
+}
+
+// MARK: - Task page
+
+private struct TaskPageView: View {
+    let group: (timing: TaskTiming, items: [TripItem])
+    let deadline: Date
+    let onToggle: (TripItem) -> Void
+
+    private var remaining: Int { group.items.filter { $0.completedAt == nil }.count }
+    private var allDone: Bool { remaining == 0 }
+    private var overdue: Bool { !allDone && deadline < Calendar.current.startOfDay(for: .now) }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Text(group.timing.sectionLabel)
+                    .font(.headline)
+                Spacer()
+                if allDone {
+                    Text("All done ✓")
+                        .font(.caption)
+                        .fontWeight(.medium)
+                        .foregroundStyle(Color.green)
+                } else {
+                    Text(deadline, format: .dateTime.month(.abbreviated).day())
+                        .font(.caption)
+                        .fontWeight(.medium)
+                        .foregroundStyle(overdue ? Color.red : Color.secondary)
+                }
+            }
+            .padding(.horizontal)
+            .padding(.vertical, 12)
+
+            Divider()
+
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    ForEach(group.items) { item in
+                        TaskRow(item: item) { onToggle(item) }
+                            .padding(.horizontal)
+                            .padding(.vertical, 2)
+                        if item.id != group.items.last?.id {
+                            Divider().padding(.leading, 60)
+                        }
+                    }
+                    Spacer(minLength: 60)
+                }
+            }
         }
     }
 }
