@@ -32,7 +32,7 @@ struct OnboardingView: View {
                 .tag(2)
 
                 DoneStep(onCreateFirstTrip: { finish(createTrip: true) })
-                    .tag(3)
+                    .tag(stepCount)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .ignoresSafeArea()
@@ -46,7 +46,7 @@ struct OnboardingView: View {
 
     private func advance() {
         withAnimation(.easeInOut(duration: 0.25)) {
-            currentStep = min(currentStep + 1, 3)
+            currentStep = min(currentStep + 1, stepCount)
         }
     }
 
