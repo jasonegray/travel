@@ -206,34 +206,45 @@ private struct OptionCard: View {
 private struct BinaryPicker: View {
     let yesLabel: String
     let noLabel: String
+    var yesIcon: String? = nil
+    var noIcon: String? = nil
     @Binding var value: Bool
 
     var body: some View {
         HStack(spacing: 12) {
-            BinaryCard(label: yesLabel, isSelected: value)  { value = true }
-            BinaryCard(label: noLabel,  isSelected: !value) { value = false }
+            BinaryCard(label: yesLabel, icon: yesIcon, isSelected: value)  { value = true }
+            BinaryCard(label: noLabel,  icon: noIcon,  isSelected: !value) { value = false }
         }
     }
 }
 
 private struct BinaryCard: View {
     let label: String
+    var icon: String? = nil
     let isSelected: Bool
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            Text(label)
-                .font(.subheadline)
-                .fontWeight(.medium)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 18)
-                .background(isSelected ? Color.accentColor.opacity(0.1) : Color(.secondarySystemBackground))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .strokeBorder(isSelected ? Color.accentColor : Color.clear, lineWidth: 1.5)
-                )
-                .clipShape(RoundedRectangle(cornerRadius: 10))
+            VStack(spacing: 8) {
+                if let icon {
+                    Image(systemName: icon)
+                        .font(.title2)
+                        .foregroundStyle(isSelected ? Color.accentColor : Color.secondary)
+                }
+                Text(label)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 18)
+            .background(isSelected ? Color.accentColor.opacity(0.1) : Color(.secondarySystemBackground))
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .strokeBorder(isSelected ? Color.accentColor : Color.clear, lineWidth: 1.5)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 10))
         }
         .buttonStyle(.plain)
     }
@@ -507,7 +518,7 @@ private struct ActivitiesStep: View {
                         .font(.subheadline)
                         .fontWeight(.semibold)
                         .foregroundStyle(.secondary)
-                    BinaryPicker(yesLabel: "Flying", noLabel: "Not flying", value: $vm.isFlyingTrip)
+                    BinaryPicker(yesLabel: "Flying", noLabel: "Not flying", yesIcon: "airplane", noIcon: "car.fill", value: $vm.isFlyingTrip)
                 }
 
                 // Trip Types
