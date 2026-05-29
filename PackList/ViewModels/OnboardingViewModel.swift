@@ -8,10 +8,6 @@ extension UserDefaults {
 final class OnboardingViewModel {
     var fullName = ""
     var homeAirport = ""
-    var aeroplanNumber = ""
-    var aeroplanTier: AeroplanTier = .none
-    var bonvoyNumber = ""
-    var bonvoyTier: BonvoyTier = .member
 
     private let defaults: UserDefaults
 
@@ -22,10 +18,6 @@ final class OnboardingViewModel {
     func flush(to profile: ProfileViewModel) {
         profile.fullName = fullName
         profile.homeAirport = homeAirport
-        profile.aeroplanNumber = aeroplanNumber
-        profile.aeroplanTier = aeroplanTier
-        profile.bonvoyNumber = bonvoyNumber
-        profile.bonvoyTier = bonvoyTier
         profile.save()
         defaults.set(true, forKey: UserDefaults.onboardingCompletedKey)
     }

@@ -6,7 +6,7 @@ struct OnboardingView: View {
     @Environment(ProfileViewModel.self) private var profile
     let onFinish: (_ createFirstTrip: Bool) -> Void
 
-    private let stepCount = 5  // steps 1–5 tracked by dots (welcome has no dots)
+    private let stepCount = 3  // steps 1–3 tracked by dots (welcome has no dots)
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -31,24 +31,8 @@ struct OnboardingView: View {
                 )
                 .tag(2)
 
-                AeroplanStep(
-                    number: $vm.aeroplanNumber,
-                    tier: $vm.aeroplanTier,
-                    onContinue: { advance() },
-                    onSkip: { finish(createTrip: false) }
-                )
-                .tag(3)
-
-                BonvoyStep(
-                    number: $vm.bonvoyNumber,
-                    tier: $vm.bonvoyTier,
-                    onContinue: { advance() },
-                    onSkip: { finish(createTrip: false) }
-                )
-                .tag(4)
-
                 DoneStep(onCreateFirstTrip: { finish(createTrip: true) })
-                    .tag(5)
+                    .tag(3)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .ignoresSafeArea()
@@ -62,7 +46,7 @@ struct OnboardingView: View {
 
     private func advance() {
         withAnimation(.easeInOut(duration: 0.25)) {
-            currentStep = min(currentStep + 1, 5)
+            currentStep = min(currentStep + 1, 3)
         }
     }
 
@@ -288,95 +272,7 @@ private struct AirportStep: View {
     }
 }
 
-// MARK: - Step 4: Aeroplan
-
-private struct AeroplanStep: View {
-    @Binding var number: String
-    @Binding var tier: AeroplanTier
-    let onContinue: () -> Void
-    let onSkip: () -> Void
-
-    var body: some View {
-        OnboardingStepShell(
-            title: "Air Canada Aeroplan",
-            onContinue: onContinue,
-            onSkip: onSkip
-        ) {
-            VStack(spacing: 12) {
-                TextField("Aeroplan number", text: $number)
-                    .keyboardType(.numberPad)
-                    .autocorrectionDisabled()
-                    .font(.body)
-                    .padding(.vertical, 12)
-                    .padding(.horizontal, 16)
-                    .background(.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
-                    .toolbar {
-                        ToolbarItemGroup(placement: .keyboard) {
-                            Spacer()
-                            Button("Done") {
-                                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                            }
-                        }
-                    }
-
-                Picker("Status tier", selection: $tier) {
-                    ForEach(AeroplanTier.allCases.reversed(), id: \.self) { t in
-                        Text(t.rawValue).tag(t)
-                    }
-                }
-                .pickerStyle(.wheel)
-                .frame(height: 120)
-                .clipped()
-            }
-        }
-    }
-}
-
-// MARK: - Step 5: Bonvoy
-
-private struct BonvoyStep: View {
-    @Binding var number: String
-    @Binding var tier: BonvoyTier
-    let onContinue: () -> Void
-    let onSkip: () -> Void
-
-    var body: some View {
-        OnboardingStepShell(
-            title: "Marriott Bonvoy",
-            onContinue: onContinue,
-            onSkip: onSkip
-        ) {
-            VStack(spacing: 12) {
-                TextField("Bonvoy number", text: $number)
-                    .keyboardType(.numberPad)
-                    .autocorrectionDisabled()
-                    .font(.body)
-                    .padding(.vertical, 12)
-                    .padding(.horizontal, 16)
-                    .background(.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
-                    .toolbar {
-                        ToolbarItemGroup(placement: .keyboard) {
-                            Spacer()
-                            Button("Done") {
-                                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                            }
-                        }
-                    }
-
-                Picker("Status tier", selection: $tier) {
-                    ForEach(BonvoyTier.allCases.reversed(), id: \.self) { t in
-                        Text(t.rawValue).tag(t)
-                    }
-                }
-                .pickerStyle(.wheel)
-                .frame(height: 120)
-                .clipped()
-            }
-        }
-    }
-}
-
-// MARK: - Step 6: Done
+// MARK: - Step 4: Done
 
 private struct DoneStep: View {
     let onCreateFirstTrip: () -> Void
