@@ -129,30 +129,28 @@ final class NewTripViewModel {
     // MARK: - Trip name
 
     var generatedTripName: String {
-        let month = departureDate.formatted(.dateTime.month(.wide))
-        if let type = primaryActivityType {
-            return "\(month) \(type)"
-        }
         let dest = destination
             .components(separatedBy: ",").first?
             .trimmingCharacters(in: .whitespaces) ?? destination
-        return dest.isEmpty ? "Trip" : dest
+        let name = dest.isEmpty ? "Trip" : dest
+
+        let cal = Calendar(identifier: .gregorian)
+        let depMonth = cal.component(.month, from: departureDate)
+        let retMonth = cal.component(.month, from: returnDate)
+        let depDay   = cal.component(.day,   from: departureDate)
+        let retDay   = cal.component(.day,   from: returnDate)
+        let depMonthStr = departureDate.formatted(.dateTime.month(.abbreviated))
+
+        if depMonth == retMonth {
+            return "\(name) · \(depMonthStr) \(depDay)–\(retDay)"
+        } else {
+            let retMonthStr = returnDate.formatted(.dateTime.month(.abbreviated))
+            return "\(name) · \(depMonthStr) \(depDay)–\(retMonthStr) \(retDay)"
+        }
     }
 
     var finalTripName: String {
         tripName.trimmingCharacters(in: .whitespaces).isEmpty ? generatedTripName : tripName
-    }
-
-    private var primaryActivityType: String? {
-        if activities.contains(.conference)   { return "Conference" }
-        if activities.contains(.golf)         { return "Golf" }
-        if activities.contains(.beach)        { return "Beach" }
-        if activities.contains(.pool)         { return "Pool" }
-        if activities.contains(.hiking)       { return "Hiking" }
-        if activities.contains(.formalDinner) { return "Formal Dinner" }
-        if activities.contains(.workout)      { return "Workout" }
-        if activities.contains(.sightseeing)  { return "Sightseeing" }
-        return nil
     }
 
     // MARK: - Navigation
