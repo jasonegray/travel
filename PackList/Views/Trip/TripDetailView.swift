@@ -676,9 +676,17 @@ private struct TaskRow: View {
                     .font(.system(size: 22))
                     .foregroundStyle(item.completedAt != nil ? Color.accentColor : Color.secondary)
 
-                Text(item.name)
-                    .strikethrough(item.completedAt != nil, color: .secondary)
-                    .foregroundStyle(item.completedAt != nil ? Color.secondary : Color.primary)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(item.name)
+                        .strikethrough(item.completedAt != nil, color: .secondary)
+                        .foregroundStyle(item.completedAt != nil ? Color.secondary : Color.primary)
+                    if let notes = item.notes, !notes.isEmpty {
+                        Text(notes)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(2)
+                    }
+                }
 
                 Spacer()
             }
