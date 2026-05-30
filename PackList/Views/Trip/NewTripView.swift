@@ -662,7 +662,7 @@ private struct InteracStep: View {
     @Bindable var vm: NewTripViewModel
 
     var body: some View {
-        StepShell(title: "Are you bringing Interac-connected assets?", subtitle: "We'll include the right charging cables and accessories.") {
+        StepShell(title: "Are you travelling with electronics?", subtitle: "We'll include the right charging cables and accessories.") {
             VStack(spacing: 10) {
                 ForEach(NewTripViewModel.InteracChoice.allCases, id: \.self) { choice in
                     OptionCard(
