@@ -14,6 +14,12 @@ struct AddCustomTaskView: View {
             Form {
                 Section {
                     TextField("Task name", text: $name)
+                        .onSubmit {
+                            let trimmed = name.trimmingCharacters(in: .whitespaces)
+                            guard !trimmed.isEmpty else { return }
+                            onAdd(trimmed, timing)
+                            dismiss()
+                        }
                 }
                 Section {
                     Picker("When", selection: $timing) {

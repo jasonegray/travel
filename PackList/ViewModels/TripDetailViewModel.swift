@@ -188,6 +188,7 @@ final class TripDetailViewModel {
     }
 
     func addCustomTask(name: String, timing: TaskTiming) async {
+        guard !trip.isArchived else { return }
         guard let repo else {
             logger.error("addCustomTask: repository not loaded")
             return
