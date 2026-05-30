@@ -8,6 +8,7 @@ struct TripDetailView: View {
     @State private var selectedTab: Tab = .packing
     @State private var showDeleteConfirmation = false
     @State private var showAddCustomItem = false
+    @State private var showAddCustomTask = false
     @State private var showEditTrip = false
     @State private var showTripSettings = false
     @State private var showCloneWizard = false
@@ -52,7 +53,7 @@ struct TripDetailView: View {
 
             switch selectedTab {
             case .packing:   PackingTab(vm: vm, initialLocation: initialPackingLocation)
-            case .prepTasks: PrepTab(vm: vm)
+            case .prepTasks: PrepTab(vm: vm, onAddTask: { showAddCustomTask = true })
             case .info:      TripInfoView(vm: infoVM)
             }
         }
@@ -74,6 +75,15 @@ struct TripDetailView: View {
                         Image(systemName: "plus")
                     }
                     .accessibilityIdentifier("addItemButton")
+                }
+            }
+            if selectedTab == .prepTasks && vm.trip.status != .completed {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showAddCustomTask = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
                 }
             }
             ToolbarItem(placement: .topBarTrailing) {
@@ -147,6 +157,11 @@ struct TripDetailView: View {
         .sheet(isPresented: $showAddCustomItem) {
             AddCustomItemView { name, category, location, quantity in
                 Task { await vm.addCustomItem(name: name, category: category, location: location, quantity: quantity) }
+            }
+        }
+        .sheet(isPresented: $showAddCustomTask) {
+            AddCustomTaskView { name, timing in
+                Task { await vm.addCustomTask(name: name, timing: timing) }
             }
         }
         .sheet(isPresented: $showEditTrip) {
