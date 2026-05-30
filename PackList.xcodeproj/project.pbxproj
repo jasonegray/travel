@@ -52,6 +52,7 @@
 		9BB754CBC6E719F3411F7F17 /* master_items.json in Resources */ = {isa = PBXBuildFile; fileRef = 238B969C326344064ADA73EB /* master_items.json */; };
 		AA117002AA117002AA117002 /* AddCustomItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA117001AA117001AA117001 /* AddCustomItemView.swift */; };
 		DD253002DD253002DD253002 /* AddCustomTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD253001DD253001DD253001 /* AddCustomTaskView.swift */; };
+		EE255002EE255002EE255002 /* EditTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE255001EE255001EE255001 /* EditTaskView.swift */; };
 		CC220002CC220002CC220002 /* EditPackingItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC220001CC220001CC220001 /* EditPackingItemView.swift */; };
 		ADB0AFFA130248A8BA1065D0 /* PackingTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA09BC8731D4BB79F402BF7 /* PackingTabView.swift */; };
 		C2709F4DD7122B9B2E051E7E /* SwiftDataMasterItemRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B0049C3396D34C32E9C1B5A /* SwiftDataMasterItemRepository.swift */; };
@@ -151,6 +152,7 @@
 		F18C8E3DF2BAC53703E2E96B /* TripSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSession.swift; sourceTree = "<group>"; };
 		AA117001AA117001AA117001 /* AddCustomItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCustomItemView.swift; sourceTree = "<group>"; };
 		DD253001DD253001DD253001 /* AddCustomTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCustomTaskView.swift; sourceTree = "<group>"; };
+		EE255001EE255001EE255001 /* EditTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTaskView.swift; sourceTree = "<group>"; };
 		CC220001CC220001CC220001 /* EditPackingItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPackingItemView.swift; sourceTree = "<group>"; };
 		FBA09BC8731D4BB79F402BF7 /* PackingTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackingTabView.swift; sourceTree = "<group>"; };
 		AA000001000000000000001 /* PackListSchemaV1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackListSchemaV1.swift; sourceTree = "<group>"; };
@@ -347,6 +349,7 @@
 				A782456B8A965F7C840C4C20 /* NewTripView.swift */,
 				41ECDB90C4FDC693C96EC06B /* TripDetailView.swift */,
 				DD253001DD253001DD253001 /* AddCustomTaskView.swift */,
+				EE255001EE255001EE255001 /* EditTaskView.swift */,
 				A3F0FC88950C4E1D8BBA6C6B /* TripInfoView.swift */,
 				A1521003A1521003A1521003 /* TripSettingsView.swift */,
 			);
@@ -530,6 +533,7 @@
 				AA135002AA135002AA135002 /* ProfileViewModel.swift in Sources */,
 				AA117002AA117002AA117002 /* AddCustomItemView.swift in Sources */,
 				DD253002DD253002DD253002 /* AddCustomTaskView.swift in Sources */,
+				EE255002EE255002EE255002 /* EditTaskView.swift in Sources */,
 				CC220002CC220002CC220002 /* EditPackingItemView.swift in Sources */,
 				ADB0AFFA130248A8BA1065D0 /* PackingTabView.swift in Sources */,
 				D5E00EBF68E8B422F4564A5C /* ContentView.swift in Sources */,

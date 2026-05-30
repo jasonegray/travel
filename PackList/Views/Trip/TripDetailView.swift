@@ -456,6 +456,7 @@ private struct PrepTab: View {
     let vm: TripDetailViewModel
     var onAddTask: (() -> Void)? = nil
     @State private var selectedTaskIndex: Int = 0
+    @State private var editingTask: TripItem? = nil
 
     var body: some View {
         let daysAway = daysUntilDeparture(from: vm.trip.departureDate)
@@ -485,6 +486,13 @@ private struct PrepTab: View {
                             onToggle: { item in
                                 withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
                                 Task { await vm.save(item: item) }
+                            },
+                            onDelete: { item in
+                                Task { await vm.deleteCustomItem(item) }
+                            },
+                            onEdit: { item in
+                                guard !vm.trip.isArchived else { return }
+                                editingTask = item
                             }
                         )
                         .tag(index)
@@ -493,6 +501,11 @@ private struct PrepTab: View {
                 .tabViewStyle(.page(indexDisplayMode: .always))
                 .indexViewStyle(.page(backgroundDisplayMode: .always))
                 .animation(.easeInOut(duration: 0.2), value: vm.completedTasks)
+            }
+        }
+        .sheet(item: $editingTask) { task in
+            EditTaskView(item: task) { timing, notes in
+                Task { await vm.editTask(task, timing: timing, notes: notes) }
             }
         }
     }
@@ -539,6 +552,8 @@ private struct TaskPageView: View {
     let group: (timing: TaskTiming, items: [TripItem])
     let deadline: Date
     let onToggle: (TripItem) -> Void
+    let onDelete: (TripItem) -> Void
+    let onEdit: (TripItem) -> Void
 
     private var remaining: Int { group.items.filter { $0.completedAt == nil }.count }
     private var allDone: Bool { remaining == 0 }
@@ -573,9 +588,14 @@ private struct TaskPageView: View {
             ScrollView {
                 LazyVStack(spacing: 0) {
                     ForEach(group.items) { item in
-                        TaskRow(item: item) { onToggle(item) }
-                            .padding(.horizontal)
-                            .padding(.vertical, 2)
+                        TaskRow(
+                            item: item,
+                            onToggle: { onToggle(item) },
+                            onDelete: { onDelete(item) },
+                            onEdit: { onEdit(item) }
+                        )
+                        .padding(.horizontal)
+                        .padding(.vertical, 2)
                         if item.id != group.items.last?.id {
                             Divider().padding(.leading, 60)
                         }
@@ -667,32 +687,64 @@ private struct PackingRow: View {
 
 private struct TaskRow: View {
     let item: TripItem
-    let action: () -> Void
+    let onToggle: () -> Void
+    let onDelete: () -> Void
+    let onEdit: () -> Void
 
     var body: some View {
-        Button(action: action) {
-            HStack(spacing: 14) {
+        if item.source == .manual {
+            rowContent
+                .contextMenu {
+                    Button(role: .destructive, action: onDelete) {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
+        } else {
+            rowContent
+        }
+    }
+
+    private var rowContent: some View {
+        HStack(spacing: 0) {
+            Button(action: onToggle) {
                 Image(systemName: item.completedAt != nil ? "checkmark.circle.fill" : "circle")
                     .font(.system(size: 22))
                     .foregroundStyle(item.completedAt != nil ? Color.accentColor : Color.secondary)
+                    .frame(width: 44, height: 44)
+            }
+            .buttonStyle(.plain)
 
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(item.name)
-                        .strikethrough(item.completedAt != nil, color: .secondary)
-                        .foregroundStyle(item.completedAt != nil ? Color.secondary : Color.primary)
-                    if let notes = item.notes, !notes.isEmpty {
-                        Text(notes)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(2)
+            Button(action: onEdit) {
+                HStack(spacing: 10) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(item.name)
+                            .strikethrough(item.completedAt != nil, color: .secondary)
+                            .foregroundStyle(item.completedAt != nil ? Color.secondary : Color.primary)
+                        if let notes = item.notes, !notes.isEmpty {
+                            Text(notes)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(2)
+                        }
+                    }
+
+                    Spacer()
+
+                    if item.source == .manual {
+                        Text("Custom")
+                            .font(.caption2)
+                            .fontWeight(.medium)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color.orange.opacity(0.15))
+                            .foregroundStyle(Color.orange)
+                            .clipShape(Capsule())
                     }
                 }
-
-                Spacer()
+                .contentShape(Rectangle())
             }
-            .contentShape(Rectangle())
+            .buttonStyle(.plain)
         }
-        .buttonStyle(.plain)
     }
 }
 
