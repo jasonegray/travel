@@ -439,6 +439,7 @@ private struct BagPageView: View {
 
 private struct PrepTab: View {
     let vm: TripDetailViewModel
+    var onAddTask: (() -> Void)? = nil
     @State private var selectedTaskIndex: Int = 0
 
     var body: some View {
@@ -458,23 +459,62 @@ private struct PrepTab: View {
 
             Divider()
 
-            TabView(selection: $selectedTaskIndex) {
-                ForEach(Array(vm.taskGroups.enumerated()), id: \.offset) { index, group in
-                    TaskPageView(
-                        group: group,
-                        deadline: vm.deadline(for: group.timing),
-                        onToggle: { item in
-                            withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
-                            Task { await vm.save(item: item) }
-                        }
-                    )
-                    .tag(index)
+            if vm.taskGroups.isEmpty {
+                PrepTasksEmptyState(onAddTask: onAddTask)
+            } else {
+                TabView(selection: $selectedTaskIndex) {
+                    ForEach(Array(vm.taskGroups.enumerated()), id: \.offset) { index, group in
+                        TaskPageView(
+                            group: group,
+                            deadline: vm.deadline(for: group.timing),
+                            onToggle: { item in
+                                withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
+                                Task { await vm.save(item: item) }
+                            }
+                        )
+                        .tag(index)
+                    }
                 }
+                .tabViewStyle(.page(indexDisplayMode: .always))
+                .indexViewStyle(.page(backgroundDisplayMode: .always))
+                .animation(.easeInOut(duration: 0.2), value: vm.completedTasks)
             }
-            .tabViewStyle(.page(indexDisplayMode: .always))
-            .indexViewStyle(.page(backgroundDisplayMode: .always))
-            .animation(.easeInOut(duration: 0.2), value: vm.completedTasks)
         }
+    }
+}
+
+// MARK: - Prep tasks empty state
+
+private struct PrepTasksEmptyState: View {
+    var onAddTask: (() -> Void)? = nil
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Spacer()
+
+            Image(systemName: "checkmark.circle")
+                .font(.system(size: 56))
+                .foregroundStyle(.secondary)
+
+            VStack(spacing: 6) {
+                Text("No prep tasks yet")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                Text("Add tasks to prep before your trip.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+
+            if let onAddTask {
+                Button("Add Task", action: onAddTask)
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+            }
+
+            Spacer()
+        }
+        .padding(.horizontal)
     }
 }
 
