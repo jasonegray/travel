@@ -187,6 +187,32 @@ final class TripDetailViewModel {
         }
     }
 
+    func addCustomTask(name: String, timing: TaskTiming) async {
+        guard !trip.isArchived else { return }
+        guard let repo else {
+            logger.error("addCustomTask: repository not loaded")
+            return
+        }
+        let item = TripItem(
+            tripId: trip.id,
+            name: name,
+            category: .misc,
+            itemType: .task,
+            quantity: 1,
+            packingLocation: .carryOn,
+            flightAccessible: false,
+            recommendedTiming: timing,
+            source: .manual
+        )
+        items.append(item)
+        do {
+            try await repo.insert(item)
+        } catch {
+            logger.error("addCustomTask failed: \(error)")
+            items.removeAll { $0.id == item.id }
+        }
+    }
+
     func setItems(_ newItems: [TripItem]) {
         items = newItems
     }
