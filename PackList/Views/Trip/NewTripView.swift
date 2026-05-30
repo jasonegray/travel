@@ -639,7 +639,7 @@ private struct CarryOnStep: View {
 
     var body: some View {
         StepShell(title: "Carry-on only?", subtitle: "No checked bag on this trip.") {
-            BinaryPicker(yesLabel: "Yes, carry-on only", noLabel: "No, I'm checking a bag", value: $vm.carryOnOnly)
+            BinaryPicker(yesLabel: "Yes, carry-on only", noLabel: "No, I'm checking a bag", yesIcon: "bag.fill", noIcon: "shippingbox.fill", value: $vm.carryOnOnly)
         }
     }
 }
@@ -651,7 +651,7 @@ private struct LaundryStep: View {
 
     var body: some View {
         StepShell(title: "Will laundry be available?", subtitle: "Affects how many clothes we suggest.") {
-            BinaryPicker(yesLabel: "Yes", noLabel: "No", value: $vm.laundryAvailable)
+            BinaryPicker(yesLabel: "Yes", noLabel: "No", yesIcon: "washer.fill", noIcon: "xmark.circle.fill", value: $vm.laundryAvailable)
         }
     }
 }
@@ -686,7 +686,7 @@ private struct MedicalStep: View {
             title: "Any medical appointments?",
             subtitle: "We'll add relevant items like your health card, referral letters, and any specific supplies."
         ) {
-            BinaryPicker(yesLabel: "Yes", noLabel: "No", value: $vm.hasMedicalAppointment)
+            BinaryPicker(yesLabel: "Yes", noLabel: "No", yesIcon: "cross.case.fill", noIcon: "xmark.circle.fill", value: $vm.hasMedicalAppointment)
         }
     }
 }
