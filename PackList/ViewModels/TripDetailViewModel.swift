@@ -93,6 +93,25 @@ final class TripDetailViewModel {
         }
     }
 
+    func editTask(_ item: TripItem, timing: TaskTiming, notes: String?) async {
+        guard !trip.isArchived else { return }
+        guard let repo else {
+            logger.error("editTask: repository not loaded")
+            return
+        }
+        let prevTiming = item.recommendedTiming
+        let prevNotes = item.notes
+        item.recommendedTiming = timing
+        item.notes = notes
+        do {
+            try await repo.update(item)
+        } catch {
+            logger.error("editTask failed: \(error)")
+            item.recommendedTiming = prevTiming
+            item.notes = prevNotes
+        }
+    }
+
     func deleteTrip(sessions: any TripSessionRepository) async {
         do {
             try await sessions.delete(trip)
