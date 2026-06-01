@@ -106,8 +106,19 @@ final class NewTripViewModel {
     }
 
     var skipsMedicalStep: Bool { region == .canada || region == .us }
-    var totalSteps: Int { skipsMedicalStep ? 7 : 8 }
-    var displayStep: Int { currentStep == .confirm ? totalSteps : currentStep.rawValue }
+    var skipsCarryOnStep: Bool { !isFlyingTrip }
+    var totalSteps: Int {
+        var count = WizardStep.allCases.count
+        if skipsMedicalStep { count -= 1 }
+        if skipsCarryOnStep { count -= 1 }
+        return count
+    }
+    var displayStep: Int {
+        if currentStep == .confirm { return totalSteps }
+        let raw = currentStep.rawValue
+        let carryOnOffset = (skipsCarryOnStep && raw > WizardStep.carryOnOnly.rawValue) ? 1 : 0
+        return raw - carryOnOffset
+    }
     var canGoBack: Bool { currentStep != .activities }
     var isLastStep: Bool { currentStep == .confirm }
 
@@ -162,7 +173,12 @@ final class NewTripViewModel {
         case .dates:
             region = inferRegion(from: destination)
             fetchWeatherIfPossible()
-            currentStep = .carryOnOnly
+            if skipsCarryOnStep {
+                carryOnOnly = false
+                currentStep = .laundry
+            } else {
+                currentStep = .carryOnOnly
+            }
         case .carryOnOnly:      currentStep = .laundry
         case .laundry:          currentStep = .interac
         case .interac:
@@ -180,7 +196,7 @@ final class NewTripViewModel {
         case .nameDestination:      currentStep = .activities
         case .dates:                currentStep = .nameDestination
         case .carryOnOnly:          currentStep = .dates
-        case .laundry:              currentStep = .carryOnOnly
+        case .laundry:              currentStep = skipsCarryOnStep ? .dates : .carryOnOnly
         case .interac:              currentStep = .laundry
         case .medicalAppointments:  currentStep = .interac
         case .confirm:
