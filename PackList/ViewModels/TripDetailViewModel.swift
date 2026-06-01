@@ -1,6 +1,5 @@
 import Foundation
 import os.log
-import UIKit
 
 private let logger = Logger(subsystem: "com.packlist", category: "TripDetailViewModel")
 
@@ -39,7 +38,7 @@ final class TripDetailViewModel {
         guard !trip.isArchived else { return }
         let completing = item.completedAt == nil
         item.completedAt = completing ? Date() : nil
-        UIImpactFeedbackGenerator(style: completing ? .medium : .light).impactOccurred()
+        completing ? HapticManager.mediumImpact() : HapticManager.lightImpact()
     }
 
     func save(item: TripItem) async {
@@ -57,6 +56,7 @@ final class TripDetailViewModel {
         trip.manuallyCompletedAt = Date()
         do {
             try await sessions.update(trip)
+            HapticManager.success()
         } catch {
             logger.error("markCompleted failed: \(error)")
             trip.manuallyCompletedAt = nil
@@ -118,6 +118,7 @@ final class TripDetailViewModel {
     }
 
     func deleteTrip(sessions: any TripSessionRepository) async {
+        HapticManager.warning()
         do {
             try await sessions.delete(trip)
         } catch {

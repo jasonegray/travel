@@ -264,6 +264,7 @@ final class NewTripViewModel {
             for item in generated {
                 try await tripItems.insert(item)
             }
+            HapticManager.success()
             isDone = true
         } catch {
             errorMessage = error.localizedDescription
