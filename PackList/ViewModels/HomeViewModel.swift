@@ -1,6 +1,5 @@
 import Foundation
 import os.log
-import UIKit
 
 private let logger = Logger(subsystem: "com.packlist", category: "HomeViewModel")
 
@@ -68,7 +67,11 @@ final class HomeViewModel {
     func toggle(item: TripItem) {
         let completing = item.completedAt == nil
         item.completedAt = completing ? Date() : nil
-        UIImpactFeedbackGenerator(style: completing ? .medium : .light).impactOccurred()
+        if completing {
+            HapticManager.mediumImpact()
+        } else {
+            HapticManager.lightImpact()
+        }
     }
 
     func save(item: TripItem, repository: any TripItemRepository) async {
@@ -159,6 +162,7 @@ final class HomeViewModel {
     // MARK: - Delete
 
     func deleteTrip(_ trip: TripSession, sessions: any TripSessionRepository) async {
+        HapticManager.warning()
         // Clear state before deletion so SwiftUI stops rendering the object.
         // Accessing properties on a SwiftData object after context.delete() causes EXC_BAD_ACCESS.
         if heroTrip?.id == trip.id { heroTrip = nil }

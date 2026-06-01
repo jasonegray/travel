@@ -100,6 +100,7 @@ struct NewTripView: View {
     }
 
     private func goNext() {
+        HapticManager.lightImpact()
         forward = true
         withAnimation(.easeInOut(duration: 0.28)) { vm.next() }
     }

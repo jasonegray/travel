@@ -26,6 +26,7 @@
 		CC230001CC230001CC230001 /* AddMasterItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC230002CC230002CC230002 /* AddMasterItemView.swift */; };
 		3C609348FADD98BE70EE2EB3 /* MasterItemRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F742F88F875248408C54E06 /* MasterItemRepository.swift */; };
 		41977EEBB0B361098BDFE9C0 /* ChecklistEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 220BA469B114F4CA9F76D5B9 /* ChecklistEngine.swift */; };
+		HAPT000200000000HAPT0002 /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = HAPT000100000000HAPT0001 /* HapticManager.swift */; };
 		49C539B3EDBDF8214C8778B5 /* QuantityRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F46B8496E5A2B364C01053 /* QuantityRule.swift */; };
 		4CB8BA6D88C0FFD1768A41F6 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 715129D87A24E63D4FA7F554 /* Enums.swift */; };
 		4F1772C17B7DDF1963DD5D12 /* TripItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B392AB686CF4CA4FC72F3E6 /* TripItem.swift */; };
@@ -101,6 +102,7 @@
 		E9C6421A77A64F5F80685CCF /* SwiftDataTripInfoRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataTripInfoRepository.swift; sourceTree = "<group>"; };
 		11D2DC008310A0B5751D2B6D /* TripSessionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSessionRepository.swift; sourceTree = "<group>"; };
 		220BA469B114F4CA9F76D5B9 /* ChecklistEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistEngine.swift; sourceTree = "<group>"; };
+		HAPT000100000000HAPT0001 /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
 		238B969C326344064ADA73EB /* master_items.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = master_items.json; sourceTree = "<group>"; };
 		24D01AADFE4616BE261ABDCF /* WeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
 		2B0049C3396D34C32E9C1B5A /* SwiftDataMasterItemRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataMasterItemRepository.swift; sourceTree = "<group>"; };
@@ -211,6 +213,7 @@
 			isa = PBXGroup;
 			children = (
 				220BA469B114F4CA9F76D5B9 /* ChecklistEngine.swift */,
+				HAPT000100000000HAPT0001 /* HapticManager.swift */,
 				33CACB655272A95791F66BFF /* ImportService.swift */,
 				24D01AADFE4616BE261ABDCF /* WeatherService.swift */,
 			);
@@ -542,6 +545,7 @@
 				TOAS000200000000TOAS0002 /* ToastModifier.swift in Sources */,
 				37662EC27A2F4D90991D2470 /* MasterListView.swift in Sources */,
 				41977EEBB0B361098BDFE9C0 /* ChecklistEngine.swift in Sources */,
+				HAPT000200000000HAPT0002 /* HapticManager.swift in Sources */,
 				77B65949493F47DB89DE102E /* TasksTabView.swift in Sources */,
 				80D5B1FC5E6A40698A2706F7 /* ProfileView.swift in Sources */,
 				AA172002AA172002AA172002 /* AirportSearchView.swift in Sources */,
