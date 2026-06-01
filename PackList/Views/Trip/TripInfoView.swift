@@ -201,6 +201,7 @@ private struct OptionalDateRow: View {
 
             if date != nil {
                 Button("Clear \(label.lowercased())", role: .destructive) {
+                    HapticManager.mediumImpact()
                     withAnimation(.easeInOut(duration: 0.2)) {
                         date = nil
                         isExpanded = false

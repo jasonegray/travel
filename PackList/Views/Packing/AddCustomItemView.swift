@@ -42,6 +42,7 @@ struct AddCustomItemView: View {
                     Button("Add") {
                         let trimmed = name.trimmingCharacters(in: .whitespaces)
                         guard !trimmed.isEmpty else { return }
+                        HapticManager.rigidImpact()
                         onAdd(trimmed, category, location, quantity)
                         dismiss()
                     }

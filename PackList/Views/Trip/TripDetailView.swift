@@ -128,6 +128,7 @@ struct TripDetailView: View {
                             Button {
                                 Task {
                                     guard let repos = repositories else { return }
+                                    HapticManager.mediumImpact()
                                     await vm.archiveTrip(sessions: repos.tripSessions)
                                     onDismiss?()
                                 }
@@ -425,6 +426,10 @@ private struct CategoryPageView: View {
                 }
             }
         }
+        .onChange(of: allPacked) { old, new in
+            guard !old && new else { return }
+            HapticManager.success()
+        }
     }
 }
 
@@ -478,6 +483,10 @@ private struct BagPageView: View {
                     Spacer(minLength: 60)
                 }
             }
+        }
+        .onChange(of: allPacked) { old, new in
+            guard !old && new else { return }
+            HapticManager.success()
         }
     }
 }
@@ -678,7 +687,10 @@ private struct PackingRow: View {
         if item.source == .manual {
             rowContent
                 .contextMenu {
-                    Button(role: .destructive, action: onDelete) {
+                    Button(role: .destructive) {
+                        HapticManager.warning()
+                        onDelete()
+                    } label: {
                         Label("Delete", systemImage: "trash")
                     }
                 }
@@ -754,7 +766,10 @@ private struct TaskRow: View {
         if item.source == .manual {
             rowContent
                 .contextMenu {
-                    Button(role: .destructive, action: onDelete) {
+                    Button(role: .destructive) {
+                        HapticManager.warning()
+                        onDelete()
+                    } label: {
                         Label("Delete", systemImage: "trash")
                     }
                 }

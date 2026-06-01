@@ -298,7 +298,10 @@ private struct DoneStep: View {
 
             Spacer()
 
-            Button(action: onCreateFirstTrip) {
+            Button {
+                HapticManager.success()
+                onCreateFirstTrip()
+            } label: {
                 Text("Create your first trip")
                     .font(.body)
                     .fontWeight(.semibold)
