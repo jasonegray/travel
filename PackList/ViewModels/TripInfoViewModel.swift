@@ -101,7 +101,7 @@ final class TripInfoViewModel {
     private func setSaved() {
         saveStatus = .saved
         savedStatusTask?.cancel()
-        savedStatusTask = Task { [weak self] in
+        savedStatusTask = Task { @MainActor [weak self] in
             try? await Task.sleep(for: .seconds(2))
             guard !Task.isCancelled else { return }
             self?.saveStatus = .idle

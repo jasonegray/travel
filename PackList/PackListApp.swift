@@ -14,7 +14,7 @@ struct PackListApp: App {
     private let repositories: RepositoryContainer
     private let profile = ProfileViewModel()
     @State private var showLaunchScreen = true
-    @State private var showStoreWipeAlert = UserDefaults.standard.bool(forKey: PackListApp.storeWipedKey)
+    @AppStorage("packListStoreWasReset") private var showStoreWipeAlert = false
 
     init() {
         let c = Self.makeContainer()
@@ -43,7 +43,7 @@ struct PackListApp: App {
             }
             .alert("Your data was reset", isPresented: $showStoreWipeAlert) {
                 Button("OK") {
-                    UserDefaults.standard.removeObject(forKey: PackListApp.storeWipedKey)
+                    showStoreWipeAlert = false
                 }
             } message: {
                 Text("A database error required PackList to start fresh. Your previous trips could not be recovered.")

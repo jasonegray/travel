@@ -10,16 +10,17 @@ struct ToastModifier: ViewModifier {
             if let msg = message {
                 ToastBanner(message: msg)
                     .transition(.move(edge: .top).combined(with: .opacity))
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                            withAnimation(.easeInOut(duration: 0.2)) {
-                                message = nil
-                            }
-                        }
-                    }
             }
         }
         .animation(.easeInOut(duration: 0.2), value: message)
+        .task(id: message) {
+            guard message != nil else { return }
+            try? await Task.sleep(for: .seconds(3))
+            guard !Task.isCancelled else { return }
+            withAnimation(.easeInOut(duration: 0.2)) {
+                message = nil
+            }
+        }
     }
 }
 
