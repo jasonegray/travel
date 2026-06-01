@@ -67,7 +67,11 @@ final class HomeViewModel {
     func toggle(item: TripItem) {
         let completing = item.completedAt == nil
         item.completedAt = completing ? Date() : nil
-        completing ? HapticManager.mediumImpact() : HapticManager.lightImpact()
+        if completing {
+            HapticManager.mediumImpact()
+        } else {
+            HapticManager.lightImpact()
+        }
     }
 
     func save(item: TripItem, repository: any TripItemRepository) async {

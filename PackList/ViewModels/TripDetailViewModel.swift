@@ -38,7 +38,11 @@ final class TripDetailViewModel {
         guard !trip.isArchived else { return }
         let completing = item.completedAt == nil
         item.completedAt = completing ? Date() : nil
-        completing ? HapticManager.mediumImpact() : HapticManager.lightImpact()
+        if completing {
+            HapticManager.mediumImpact()
+        } else {
+            HapticManager.lightImpact()
+        }
     }
 
     func save(item: TripItem) async {
