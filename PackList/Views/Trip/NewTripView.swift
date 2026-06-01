@@ -265,85 +265,48 @@ private struct NameDestinationStep: View {
     @Bindable var vm: NewTripViewModel
     @State private var completer = LocationSearchCompleter()
     @State private var destinationText = ""
-    @State private var mapPosition: MapCameraPosition = .automatic
-    @State private var poiAnnotations: [POIAnnotation] = []
-    @State private var selectedPOIId: UUID?
     @FocusState private var searchFocused: Bool
 
-    private var categories: [MKPointOfInterestCategory] {
-        poiCategories(for: vm.activities)
-    }
-
     var body: some View {
-        VStack(spacing: 0) {
-            // Search header (non-scrollable)
-            VStack(alignment: .leading, spacing: 12) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Where are you headed?")
-                        .font(.title2).fontWeight(.bold)
-                    Text(poiSubtitle)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-
-                TextField("e.g. Orlando, Tokyo, Paris", text: $destinationText)
-                    .textFieldStyle(.plain)
-                    .padding()
-                    .background(Color(.secondarySystemBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                    .submitLabel(.search)
-                    .autocorrectionDisabled()
-                    .focused($searchFocused)
-                    .onChange(of: destinationText) { _, text in
-                        vm.destination = text
-                        completer.updateQuery(text)
-                    }
-
-                if !completer.suggestions.isEmpty {
-                    suggestionsDropdown
-                }
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Where are you headed?")
+                    .font(.title2).fontWeight(.bold)
+                Text("Search for your destination.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
             }
-            .padding(.horizontal)
-            .padding(.top, 20)
-            .padding(.bottom, 12)
 
-            // Full-height interactive map
-            if completer.selectedCoordinate != nil {
-                Map(position: $mapPosition, selection: $selectedPOIId) {
-                    if let coord = completer.selectedCoordinate {
-                        Marker("", coordinate: coord)
-                            .tint(.red)
-                    }
-                    ForEach(poiAnnotations) { poi in
-                        Marker(poi.name, coordinate: poi.coordinate)
-                            .tag(poi.id)
-                            .tint(Color.accentColor)
+            TextField("e.g. Orlando, Tokyo, Paris", text: $destinationText)
+                .textFieldStyle(.plain)
+                .padding()
+                .background(Color(.secondarySystemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .submitLabel(.search)
+                .autocorrectionDisabled()
+                .focused($searchFocused)
+                .onChange(of: destinationText) { _, text in
+                    vm.destination = text
+                    completer.updateQuery(text)
+                }
+                .onChange(of: searchFocused) { _, focused in
+                    if focused && !destinationText.isEmpty {
+                        DispatchQueue.main.async {
+                            UIApplication.shared.sendAction(
+                                #selector(UIResponder.selectAll(_:)), to: nil, from: nil, for: nil
+                            )
+                        }
                     }
                 }
-                .mapStyle(categories.isEmpty
-                          ? .standard
-                          : .standard(pointsOfInterest: .including(categories)))
-                .frame(maxHeight: .infinity)
-                .task(id: poiSearchKey) { await searchPOIs() }
-                .overlay(alignment: .topLeading) {
-                    Button {
-                        completer.selectedCoordinate = nil
-                        vm.destinationCoordinate = nil
-                        poiAnnotations = []
-                    } label: {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(Color(.label))
-                            .frame(width: 44, height: 44)
-                            .background(Circle().fill(.regularMaterial))
-                            .shadow(color: .black.opacity(0.15), radius: 4, x: 0, y: 2)
-                    }
-                    .padding(8)
-                }
-            } else {
-                Spacer()
+
+            if !completer.suggestions.isEmpty {
+                suggestionsDropdown
             }
+
+            Spacer()
         }
+        .padding(.horizontal)
+        .padding(.top, 20)
         .onAppear {
             if destinationText.isEmpty { destinationText = vm.destination }
         }
@@ -391,62 +354,6 @@ private struct NameDestinationStep: View {
         destinationText          = completer.query
         vm.destination           = completer.query
         vm.destinationCoordinate = completer.selectedCoordinate
-        if let coord = completer.selectedCoordinate {
-            mapPosition = .region(MKCoordinateRegion(
-                center: coord,
-                latitudinalMeters: 30_000,
-                longitudinalMeters: 30_000
-            ))
-        }
-    }
-
-    // MARK: - POI search
-
-    private var poiSearchKey: POISearchKey? {
-        guard let coord = completer.selectedCoordinate else { return nil }
-        return POISearchKey(lat: coord.latitude, lon: coord.longitude, activities: vm.activities)
-    }
-
-    private func searchPOIs() async {
-        guard let coord = completer.selectedCoordinate, !categories.isEmpty else {
-            poiAnnotations = []
-            return
-        }
-        selectedPOIId = nil
-
-        let request = MKLocalSearch.Request()
-        request.pointOfInterestFilter = MKPointOfInterestFilter(including: categories)
-        request.resultTypes = .pointOfInterest
-        request.region = MKCoordinateRegion(
-            center: coord,
-            latitudinalMeters: 25_000,
-            longitudinalMeters: 25_000
-        )
-
-        let items = (try? await MKLocalSearch(request: request).start())?.mapItems ?? []
-        poiAnnotations = items.prefix(30).compactMap { item in
-            guard let name = item.name, !name.isEmpty else { return nil }
-            return POIAnnotation(name: name, coordinate: item.placemark.coordinate)
-        }
-    }
-
-    // MARK: - Helpers
-
-    private var poiSubtitle: String {
-        guard !categories.isEmpty, completer.selectedCoordinate != nil else {
-            return "Search for your destination."
-        }
-        var labels: [String] = []
-        let a = vm.activities
-        if a.contains(.golf)         { labels.append("golf courses") }
-        if a.contains(.beach)        { labels.append("beaches") }
-        if a.contains(.pool)         { labels.append("pools") }
-        if a.contains(.hiking)       { labels.append("parks & trails") }
-        if a.contains(.formalDinner) { labels.append("restaurants") }
-        if a.contains(.workout)      { labels.append("gyms") }
-        if a.contains(.sightseeing)  { labels.append("attractions") }
-        if a.contains(.conference), #available(iOS 18.0, *) { labels.append("convention centres") }
-        return "Showing \(labels.joined(separator: ", ")) nearby."
     }
 }
 
@@ -844,36 +751,6 @@ final class LocationSearchCompleter: NSObject, MKLocalSearchCompleterDelegate {
     func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
         suggestions = []
     }
-}
-
-// MARK: - POI support
-
-private struct POIAnnotation: Identifiable {
-    let id = UUID()
-    let name: String
-    let coordinate: CLLocationCoordinate2D
-}
-
-private struct POISearchKey: Equatable {
-    let lat: Double
-    let lon: Double
-    let activities: Set<ActivityType>
-}
-
-private func poiCategories(for activities: Set<ActivityType>) -> [MKPointOfInterestCategory] {
-    var seen  = Set<MKPointOfInterestCategory>()
-    var cats  = [MKPointOfInterestCategory]()
-    func add(_ c: MKPointOfInterestCategory) { if seen.insert(c).inserted { cats.append(c) } }
-
-    if activities.contains(.golf), #available(iOS 18, *) { add(.golf) }
-    if activities.contains(.beach)        { add(.beach); add(.marina) }
-    if activities.contains(.pool)         { add(.fitnessCenter); add(.aquarium) }
-    if activities.contains(.hiking)       { add(.nationalPark); add(.park); add(.campground) }
-    if activities.contains(.formalDinner) { add(.restaurant) }
-    if activities.contains(.workout)      { add(.fitnessCenter) }
-    if activities.contains(.sightseeing)  { add(.museum); add(.theater) }
-    if activities.contains(.conference), #available(iOS 18.0, *) { add(.conventionCenter) }
-    return cats
 }
 
 // MARK: - Enum display extensions
