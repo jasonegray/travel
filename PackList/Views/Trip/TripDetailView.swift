@@ -215,6 +215,14 @@ struct TripDetailView: View {
         } message: {
             Text("This cannot be undone.")
         }
+        .alert("Action Failed", isPresented: Binding(
+            get: { vm.alertMessage != nil },
+            set: { if !$0 { vm.alertMessage = nil } }
+        )) {
+            Button("OK") { vm.alertMessage = nil }
+        } message: {
+            Text(vm.alertMessage ?? "")
+        }
         .sheet(isPresented: $showCloneWizard) {
             NewTripView(prefilledWith: NewTripViewModel(cloning: vm.trip))
         }

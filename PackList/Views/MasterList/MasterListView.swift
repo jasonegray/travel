@@ -5,42 +5,54 @@ struct MasterListView: View {
     @Environment(\.repositories) private var repositories
 
     var body: some View {
-        List {
-            // Filter row
-            Section {
-                Picker("Type", selection: $vm.typeFilter) {
-                    ForEach(MasterItemTypeFilter.allCases, id: \.self) { filter in
-                        Text(filter.displayName).tag(filter)
+        Group {
+            if vm.loadFailed {
+                LoadErrorState(
+                    message: "The master list couldn't be loaded.",
+                    onRetry: {
+                        guard let repos = repositories else { return }
+                        Task { await vm.load(repository: repos.masterItems) }
                     }
-                }
-                .pickerStyle(.segmented)
-                .listRowSeparator(.hidden)
-            }
-            .listSectionSeparator(.hidden)
-
-            if vm.isLoading {
-                Section {
-                    HStack {
-                        Spacer()
-                        ProgressView()
-                            .padding(.vertical, 32)
-                        Spacer()
-                    }
-                }
-                .listRowSeparator(.hidden)
-                .listSectionSeparator(.hidden)
-            } else if vm.filteredGroupedItems.isEmpty {
-                emptyState
+                )
             } else {
-                ForEach(vm.filteredGroupedItems, id: \.category) { group in
-                    Section(group.category.displayName) {
-                        ForEach(group.items) { item in
-                            MasterItemRow(
-                                item: item,
-                                onTap: { vm.selectedItem = item },
-                                onToggle: { vm.toggleActive(item: item) }
-                            )
-                            .opacity(item.isActive ? 1.0 : 0.45)
+                List {
+                    // Filter row
+                    Section {
+                        Picker("Type", selection: $vm.typeFilter) {
+                            ForEach(MasterItemTypeFilter.allCases, id: \.self) { filter in
+                                Text(filter.displayName).tag(filter)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .listRowSeparator(.hidden)
+                    }
+                    .listSectionSeparator(.hidden)
+
+                    if vm.isLoading {
+                        Section {
+                            HStack {
+                                Spacer()
+                                ProgressView()
+                                    .padding(.vertical, 32)
+                                Spacer()
+                            }
+                        }
+                        .listRowSeparator(.hidden)
+                        .listSectionSeparator(.hidden)
+                    } else if vm.filteredGroupedItems.isEmpty {
+                        emptyState
+                    } else {
+                        ForEach(vm.filteredGroupedItems, id: \.category) { group in
+                            Section(group.category.displayName) {
+                                ForEach(group.items) { item in
+                                    MasterItemRow(
+                                        item: item,
+                                        onTap: { vm.selectedItem = item },
+                                        onToggle: { vm.toggleActive(item: item) }
+                                    )
+                                    .opacity(item.isActive ? 1.0 : 0.45)
+                                }
+                            }
                         }
                     }
                 }
@@ -79,6 +91,14 @@ struct MasterListView: View {
                     )
                 }
             }
+        }
+        .alert("Couldn't Add Item", isPresented: Binding(
+            get: { vm.errorMessage != nil },
+            set: { if !$0 { vm.errorMessage = nil } }
+        )) {
+            Button("OK") { vm.errorMessage = nil }
+        } message: {
+            Text(vm.errorMessage ?? "")
         }
         .task {
             guard let repos = repositories else { return }

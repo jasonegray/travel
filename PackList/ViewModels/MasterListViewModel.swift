@@ -19,6 +19,8 @@ enum MasterItemTypeFilter: String, CaseIterable {
 final class MasterListViewModel {
     private(set) var items: [MasterItem] = []
     private(set) var isLoading = false
+    private(set) var loadFailed = false
+    var errorMessage: String?
     var searchText = ""
     var typeFilter: MasterItemTypeFilter = .all
     var selectedItem: MasterItem?
@@ -59,11 +61,13 @@ final class MasterListViewModel {
     func load(repository: any MasterItemRepository) async {
         guard !isLoading else { return }
         isLoading = true
+        loadFailed = false
         defer { isLoading = false }
         do {
             items = try await repository.fetchAll()
         } catch {
             logger.error("MasterList load failed: \(error)")
+            loadFailed = true
         }
     }
 
@@ -104,6 +108,7 @@ final class MasterListViewModel {
         } catch {
             logger.error("addItem failed: \(error)")
             items.removeAll { $0.id == item.id }
+            errorMessage = "Couldn't add item — please try again"
         }
     }
 }

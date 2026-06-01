@@ -11,6 +11,7 @@ final class TripDetailViewModel {
     private(set) var isLoading = false
     private(set) var loadFailed = false
     var toastMessage: String?
+    var alertMessage: String?
     private var repo: (any TripItemRepository)?
 
     init(trip: TripSession) {
@@ -64,6 +65,7 @@ final class TripDetailViewModel {
         } catch {
             logger.error("markCompleted failed: \(error)")
             trip.manuallyCompletedAt = nil
+            toastMessage = "Couldn't mark trip as completed"
         }
     }
 
@@ -74,6 +76,7 @@ final class TripDetailViewModel {
         } catch {
             logger.error("archiveTrip failed: \(error)")
             trip.isArchived = false
+            toastMessage = "Couldn't archive trip"
         }
     }
 
@@ -84,6 +87,7 @@ final class TripDetailViewModel {
         } catch {
             logger.error("unarchiveTrip failed: \(error)")
             trip.isArchived = true
+            toastMessage = "Couldn't unarchive trip"
         }
     }
 
@@ -99,6 +103,7 @@ final class TripDetailViewModel {
             logger.error("editItem failed: \(error)")
             item.quantity = prevQuantity
             item.notes = prevNotes
+            toastMessage = "Couldn't save changes — edit was reversed"
         }
     }
 
@@ -118,6 +123,7 @@ final class TripDetailViewModel {
             logger.error("editTask failed: \(error)")
             item.recommendedTiming = prevTiming
             item.notes = prevNotes
+            toastMessage = "Couldn't save changes — edit was reversed"
         }
     }
 
@@ -127,6 +133,7 @@ final class TripDetailViewModel {
             try await sessions.delete(trip)
         } catch {
             logger.error("deleteTrip failed: \(error)")
+            toastMessage = "Couldn't delete trip"
         }
     }
 
@@ -158,6 +165,7 @@ final class TripDetailViewModel {
             trip.departureDate = prev.departure
             trip.returnDate = prev.returnDate
             trip.updatedAt = prev.updatedAt
+            toastMessage = "Couldn't save trip changes — edit was reversed"
         }
     }
 
@@ -213,6 +221,7 @@ final class TripDetailViewModel {
         } catch {
             logger.error("addCustomItem failed: \(error)")
             items.removeAll { $0.id == item.id }
+            alertMessage = "Couldn't add item — please try again"
         }
     }
 
@@ -239,6 +248,7 @@ final class TripDetailViewModel {
         } catch {
             logger.error("addCustomTask failed: \(error)")
             items.removeAll { $0.id == item.id }
+            alertMessage = "Couldn't add task — please try again"
         }
     }
 
@@ -255,6 +265,7 @@ final class TripDetailViewModel {
             if let r = repo {
                 items = (try? await r.fetchAll(for: trip.id)) ?? items
             }
+            toastMessage = "Couldn't delete item"
         }
     }
 

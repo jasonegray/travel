@@ -95,6 +95,7 @@ final class HomeViewModel {
         } catch {
             logger.error("archiveTrip failed: \(error)")
             trip.isArchived = false
+            toastMessage = "Couldn't archive trip"
             await load(sessions: sessions)
             return
         }
@@ -109,6 +110,7 @@ final class HomeViewModel {
         } catch {
             logger.error("unarchiveTrip failed: \(error)")
             trip.isArchived = true
+            toastMessage = "Couldn't unarchive trip"
             await load(sessions: sessions)
             return
         }
@@ -176,6 +178,8 @@ final class HomeViewModel {
             await load(sessions: sessions)
         } catch {
             logger.error("deleteTrip failed: \(error)")
+            toastMessage = "Couldn't delete trip"
+            await load(sessions: sessions)
         }
     }
 
