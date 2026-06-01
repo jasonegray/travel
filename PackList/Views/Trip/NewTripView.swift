@@ -246,8 +246,8 @@ private struct BinaryCard: View {
                     .fontWeight(.medium)
                     .multilineTextAlignment(.center)
             }
-            .frame(maxWidth: .infinity)
             .padding(.vertical, 18)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(isSelected ? Color.accentColor.opacity(0.1) : Color(.secondarySystemBackground))
             .overlay(
                 RoundedRectangle(cornerRadius: 10)
