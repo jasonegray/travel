@@ -13,12 +13,15 @@ final class HomeViewModel {
     private(set) var archivedTrips: [TripSession] = []
     private(set) var tripProgressMap: [UUID: (packed: Int, total: Int)] = [:]
     private(set) var isLoading = false
+    private(set) var loadFailed = false
+    var toastMessage: String?
 
     // MARK: - Load
 
     func load(sessions: any TripSessionRepository) async {
         guard !isLoading else { return }
         isLoading = true
+        loadFailed = false
         defer { isLoading = false }
         do {
             let all = try await sessions.fetchAll()
@@ -56,6 +59,7 @@ final class HomeViewModel {
             tripProgressMap = map
         } catch {
             logger.error("Load failed: \(error)")
+            loadFailed = true
         }
     }
 
@@ -73,6 +77,7 @@ final class HomeViewModel {
         } catch {
             logger.error("Save failed: \(error)")
             toggle(item: item)
+            toastMessage = "Couldn't save — change was reversed"
         }
     }
 

@@ -51,12 +51,29 @@ struct TripDetailView: View {
                 Divider()
             }
 
-            switch selectedTab {
-            case .packing:   PackingTab(vm: vm, initialLocation: initialPackingLocation)
-            case .prepTasks: PrepTab(vm: vm, onAddTask: { showAddCustomTask = true })
-            case .info:      TripInfoView(vm: infoVM)
+            if vm.isLoading {
+                ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if vm.loadFailed {
+                LoadErrorState(
+                    message: "Your packing list couldn't be loaded.",
+                    onRetry: {
+                        guard let repos = repositories else { return }
+                        Task { await vm.load(repository: repos.tripItems) }
+                    }
+                )
+            } else {
+                switch selectedTab {
+                case .packing:   PackingTab(vm: vm, initialLocation: initialPackingLocation)
+                case .prepTasks: PrepTab(vm: vm, onAddTask: { showAddCustomTask = true })
+                case .info:      TripInfoView(vm: infoVM)
+                }
             }
         }
+        .toast(message: Binding(
+            get: { vm.toastMessage },
+            set: { vm.toastMessage = $0 }
+        ))
         .navigationTitle(vm.trip.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

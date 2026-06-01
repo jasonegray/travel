@@ -25,8 +25,12 @@ final class TripInfoViewModel {
     // Accommodation
     var accommodationName: String = ""
 
+    enum SaveStatus { case idle, saving, saved, failed }
+    private(set) var saveStatus: SaveStatus = .idle
+
     private var isSaving = false
     private var saveTask: Task<Void, Never>?
+    private var savedStatusTask: Task<Void, Never>?
 
     init(trip: TripSession) {
         self.trip = trip
@@ -67,14 +71,17 @@ final class TripInfoViewModel {
     func save() async {
         guard let repo, !isSaving else { return }
         isSaving = true
+        saveStatus = .saving
         defer { isSaving = false }
 
         if let existing = trip.tripInfo {
             applyFormValues(to: existing)
             do {
                 try await repo.update(existing)
+                setSaved()
             } catch {
                 logger.error("TripInfo update failed: \(error)")
+                saveStatus = .failed
             }
         } else {
             let info = TripInfo(tripId: trip.id)
@@ -82,10 +89,22 @@ final class TripInfoViewModel {
             trip.tripInfo = info
             do {
                 try await repo.insert(info)
+                setSaved()
             } catch {
                 logger.error("TripInfo insert failed: \(error)")
                 trip.tripInfo = nil
+                saveStatus = .failed
             }
+        }
+    }
+
+    private func setSaved() {
+        saveStatus = .saved
+        savedStatusTask?.cancel()
+        savedStatusTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(2))
+            guard !Task.isCancelled else { return }
+            self?.saveStatus = .idle
         }
     }
 

@@ -16,11 +16,12 @@ final class ImportService {
         self.defaults = defaults
     }
 
-    func seedIfNeeded() async {
+    @discardableResult
+    func seedIfNeeded() async -> Bool {
         if defaults.bool(forKey: Self.seededKey) {
             // Guard against store-wipe scenario: seededKey is true but DB is actually empty
             let count = (try? await repository.fetchAll())?.count ?? 0
-            if count > 0 { return }
+            if count > 0 { return true }
             logger.warning("masterListSeeded was set but master items DB is empty — resetting and re-seeding")
             defaults.removeObject(forKey: Self.seededKey)
         }
@@ -43,8 +44,10 @@ final class ImportService {
             let finalCount = presentNames.count + seedItems.filter { !presentNames.contains($0.name) }.count
             logger.info("Seed complete — \(finalCount) master items in database")
             defaults.set(true, forKey: Self.seededKey)
+            return true
         } catch {
             logger.error("Seed failed — will retry on next launch: \(error)")
+            return false
         }
     }
 

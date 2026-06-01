@@ -10,6 +10,8 @@ final class TripDetailViewModel {
     let trip: TripSession
     private(set) var items: [TripItem] = []
     private(set) var isLoading = false
+    private(set) var loadFailed = false
+    var toastMessage: String?
     private var repo: (any TripItemRepository)?
 
     init(trip: TripSession) {
@@ -21,11 +23,13 @@ final class TripDetailViewModel {
     func load(repository: any TripItemRepository) async {
         repo = repository
         isLoading = true
+        loadFailed = false
         defer { isLoading = false }
         do {
             items = try await repository.fetchAll(for: trip.id)
         } catch {
             logger.error("Load failed: \(error)")
+            loadFailed = true
         }
     }
 
@@ -45,6 +49,7 @@ final class TripDetailViewModel {
         } catch {
             logger.error("Save failed: \(error)")
             item.completedAt = item.completedAt == nil ? Date() : nil
+            toastMessage = "Couldn't save — change was reversed"
         }
     }
 

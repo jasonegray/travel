@@ -7,6 +7,7 @@ struct HomeView: View {
     @State private var navTarget: TripNavTarget?
     @State private var tripToDelete: TripSession?
     @State private var showArchivedSection = false
+    @State private var showSeedFailureAlert = false
     @AppStorage("profile_full_name") private var profileFullName: String = ""
     @Environment(\.repositories) private var repositories
     @Query private var _allTripSessions: [TripSession]
@@ -47,6 +48,16 @@ struct HomeView: View {
                         ProgressView()
                             .frame(maxWidth: .infinity)
                             .padding(.top, 60)
+                    } else if vm.loadFailed {
+                        LoadErrorState(
+                            message: "Your trips couldn't be loaded.",
+                            onRetry: {
+                                guard let repos = repositories else { return }
+                                Task { await vm.load(sessions: repos.tripSessions) }
+                            }
+                        )
+                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal)
                     } else if vm.completedTrips.isEmpty && vm.archivedTrips.isEmpty {
                         EmptyHomeState(onNewTrip: { showNewTrip = true })
                             .frame(maxWidth: .infinity)
@@ -128,9 +139,19 @@ struct HomeView: View {
             }
             .task(id: repositories != nil) {
                 guard let repos = repositories else { return }
-                await ImportService(repository: repos.masterItems).seedIfNeeded()
+                let seedOK = await ImportService(repository: repos.masterItems).seedIfNeeded()
+                if !seedOK { showSeedFailureAlert = true }
                 await vm.load(sessions: repos.tripSessions)
             }
+            .alert("Packing List Unavailable", isPresented: $showSeedFailureAlert) {
+                Button("OK") {}
+            } message: {
+                Text("The packing item database couldn't be loaded. Trip generation may produce an empty list. This will retry on next launch.")
+            }
+            .toast(message: Binding(
+                get: { vm.toastMessage },
+                set: { vm.toastMessage = $0 }
+            ))
             .navigationDestination(item: $navTarget) { target in
                 if let trip = findTrip(id: target.tripId) {
                     TripDetailView(
