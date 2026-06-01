@@ -43,7 +43,11 @@ struct HomeView: View {
                             )
                         }
 
-                    } else if !vm.isLoading && vm.completedTrips.isEmpty && vm.archivedTrips.isEmpty {
+                    } else if vm.isLoading {
+                        ProgressView()
+                            .frame(maxWidth: .infinity)
+                            .padding(.top, 60)
+                    } else if vm.completedTrips.isEmpty && vm.archivedTrips.isEmpty {
                         EmptyHomeState(onNewTrip: { showNewTrip = true })
                             .frame(maxWidth: .infinity)
                             .padding(.horizontal)

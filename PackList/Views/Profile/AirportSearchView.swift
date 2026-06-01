@@ -27,6 +27,11 @@ struct AirportSearchView: View {
                     }
                 }
             }
+            .overlay {
+                if !vm.searchText.isEmpty && vm.results.isEmpty {
+                    ContentUnavailableView.search(text: vm.searchText)
+                }
+            }
             .searchable(text: $vm.searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search city or airport code")
             .navigationTitle("Home Airport")
             .navigationBarTitleDisplayMode(.inline)

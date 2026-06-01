@@ -238,58 +238,65 @@ private struct PackingTab: View {
 
             Divider()
 
-            switch mode {
-            case .category:
-                TabView(selection: $selectedCategoryIndex) {
-                    ForEach(Array(vm.categoryGroups.enumerated()), id: \.offset) { index, group in
-                        CategoryPageView(
-                            group: group,
-                            onToggle: { item in
-                                withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
-                                Task { await vm.save(item: item) }
-                            },
-                            onDelete: { item in
-                                Task { await vm.deleteCustomItem(item) }
-                            },
-                            onEdit: { item in
-                                guard !vm.trip.isArchived else { return }
-                                editingItem = item
-                            }
-                        )
-                        .tag(index)
+            if vm.isLoading {
+                ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if vm.categoryGroups.isEmpty && vm.packingGroups.isEmpty {
+                PackingEmptyState()
+            } else {
+                switch mode {
+                case .category:
+                    TabView(selection: $selectedCategoryIndex) {
+                        ForEach(Array(vm.categoryGroups.enumerated()), id: \.offset) { index, group in
+                            CategoryPageView(
+                                group: group,
+                                onToggle: { item in
+                                    withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
+                                    Task { await vm.save(item: item) }
+                                },
+                                onDelete: { item in
+                                    Task { await vm.deleteCustomItem(item) }
+                                },
+                                onEdit: { item in
+                                    guard !vm.trip.isArchived else { return }
+                                    editingItem = item
+                                }
+                            )
+                            .tag(index)
+                        }
                     }
-                }
-                .tabViewStyle(.page(indexDisplayMode: .always))
-                .indexViewStyle(.page(backgroundDisplayMode: .always))
-                .animation(.easeInOut(duration: 0.2), value: vm.completedPacking)
+                    .tabViewStyle(.page(indexDisplayMode: .always))
+                    .indexViewStyle(.page(backgroundDisplayMode: .always))
+                    .animation(.easeInOut(duration: 0.2), value: vm.completedPacking)
 
-            case .bags:
-                TabView(selection: $selectedBagIndex) {
-                    ForEach(Array(vm.packingGroups.enumerated()), id: \.offset) { index, group in
-                        BagPageView(
-                            group: group,
-                            onToggle: { item in
-                                withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
-                                Task { await vm.save(item: item) }
-                            },
-                            onDelete: { item in
-                                Task { await vm.deleteCustomItem(item) }
-                            },
-                            onEdit: { item in
-                                guard !vm.trip.isArchived else { return }
-                                editingItem = item
-                            }
-                        )
-                        .tag(index)
+                case .bags:
+                    TabView(selection: $selectedBagIndex) {
+                        ForEach(Array(vm.packingGroups.enumerated()), id: \.offset) { index, group in
+                            BagPageView(
+                                group: group,
+                                onToggle: { item in
+                                    withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
+                                    Task { await vm.save(item: item) }
+                                },
+                                onDelete: { item in
+                                    Task { await vm.deleteCustomItem(item) }
+                                },
+                                onEdit: { item in
+                                    guard !vm.trip.isArchived else { return }
+                                    editingItem = item
+                                }
+                            )
+                            .tag(index)
+                        }
                     }
-                }
-                .tabViewStyle(.page(indexDisplayMode: .always))
-                .indexViewStyle(.page(backgroundDisplayMode: .always))
-                .animation(.easeInOut(duration: 0.2), value: vm.completedPacking)
-                .task(id: vm.packingGroups.count) {
-                    guard let location = initialLocation, !vm.packingGroups.isEmpty else { return }
-                    if let index = vm.packingGroups.firstIndex(where: { $0.location == location }) {
-                        selectedBagIndex = index
+                    .tabViewStyle(.page(indexDisplayMode: .always))
+                    .indexViewStyle(.page(backgroundDisplayMode: .always))
+                    .animation(.easeInOut(duration: 0.2), value: vm.completedPacking)
+                    .task(id: vm.packingGroups.count) {
+                        guard let location = initialLocation, !vm.packingGroups.isEmpty else { return }
+                        if let index = vm.packingGroups.firstIndex(where: { $0.location == location }) {
+                            selectedBagIndex = index
+                        }
                     }
                 }
             }
@@ -450,6 +457,30 @@ private struct BagPageView: View {
     }
 }
 
+// MARK: - Packing empty state
+
+private struct PackingEmptyState: View {
+    var body: some View {
+        VStack(spacing: 20) {
+            Spacer()
+            Image(systemName: "checklist")
+                .font(.system(size: 56))
+                .foregroundStyle(.secondary)
+            VStack(spacing: 6) {
+                Text("No packing items")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                Text("All master list items are inactive for this trip.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            Spacer()
+        }
+        .padding(.horizontal)
+    }
+}
+
 // MARK: - Prep tasks tab
 
 private struct PrepTab: View {
@@ -475,7 +506,10 @@ private struct PrepTab: View {
 
             Divider()
 
-            if vm.taskGroups.isEmpty {
+            if vm.isLoading {
+                ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if vm.taskGroups.isEmpty {
                 PrepTasksEmptyState(onAddTask: onAddTask)
             } else {
                 TabView(selection: $selectedTaskIndex) {

@@ -18,7 +18,18 @@ struct MasterListView: View {
             }
             .listSectionSeparator(.hidden)
 
-            if vm.filteredGroupedItems.isEmpty && !vm.isLoading {
+            if vm.isLoading {
+                Section {
+                    HStack {
+                        Spacer()
+                        ProgressView()
+                            .padding(.vertical, 32)
+                        Spacer()
+                    }
+                }
+                .listRowSeparator(.hidden)
+                .listSectionSeparator(.hidden)
+            } else if vm.filteredGroupedItems.isEmpty {
                 emptyState
             } else {
                 ForEach(vm.filteredGroupedItems, id: \.category) { group in
