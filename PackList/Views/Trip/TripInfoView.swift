@@ -67,9 +67,15 @@ struct TripInfoView: View {
     // MARK: - Accommodation
 
     private var accommodationSection: some View {
-        Section(header: Label("Hotel", systemImage: "bed.double.fill")) {
+        Section {
             InfoRow("Hotel name", text: $vm.accommodationName, placeholder: "e.g. Marriott London", capitalization: .words)
                 .onChange(of: vm.accommodationName) { vm.scheduleAutoSave() }
+        } header: {
+            Label("Hotel", systemImage: "bed.double.fill")
+        } footer: {
+            if !vm.trip.isFlyingTrip {
+                Text("Flight details are only shown for trips with flying enabled.")
+            }
         }
     }
 }
