@@ -13,10 +13,13 @@ struct Airport: Identifiable, Hashable {
 @Observable
 final class AirportSearchViewModel {
     var searchText = ""
+    private(set) var loadFailed = false
     private let airports: [Airport]
 
     init() {
-        airports = Self.loadAirports()
+        let loaded = Self.loadAirports()
+        airports = loaded
+        loadFailed = loaded.isEmpty
     }
 
     var results: [Airport] {
