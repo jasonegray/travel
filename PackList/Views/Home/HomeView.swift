@@ -319,7 +319,7 @@ private struct TripStripCard: View {
         VStack(alignment: .leading, spacing: 8) {
             TripStatusBadge(status: trip.status)
 
-            Text(trip.name)
+            Text(trip.displayName)
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .lineLimit(1)
@@ -422,7 +422,7 @@ private struct CompletedTripCard: View {
     var body: some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 3) {
-                Text(trip.name)
+                Text(trip.displayName)
                     .font(.subheadline)
                     .fontWeight(.medium)
                     .lineLimit(1)
@@ -531,7 +531,7 @@ private struct ArchivedTripCard: View {
     var body: some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 3) {
-                Text(trip.name)
+                Text(trip.displayName)
                     .font(.subheadline)
                     .fontWeight(.medium)
                     .lineLimit(1)
@@ -599,7 +599,7 @@ struct ActiveTripCard: View {
             Button { onPackingTap?() } label: {
                 HStack(alignment: .top) {
                     VStack(alignment: .leading, spacing: 3) {
-                        Text(trip.name)
+                        Text(trip.displayName)
                             .font(.headline)
                         Text(trip.destination)
                             .font(.subheadline)
@@ -1028,6 +1028,16 @@ func urgencyColor(daysUntilDeparture: Int, packingFraction: Double) -> Color {
     case 1...2:  return packingFraction < 0.80 ? .red : .blue
     case 3...6:  return packingFraction < 0.50 ? .orange : .blue
     default:     return .blue
+    }
+}
+
+// MARK: - TripSession display helpers
+
+private extension TripSession {
+    /// Name stripped of the auto-appended " · date-range" suffix for display in tiles.
+    var displayName: String {
+        guard let range = name.range(of: " · ") else { return name }
+        return String(name[..<range.lowerBound])
     }
 }
 
