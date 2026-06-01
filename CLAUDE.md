@@ -46,7 +46,7 @@ At the start of every Claude Code session:
 
 Do NOT run UITests (XCUITest) as part of any PR workflow. UI tests are managed outside of Claude Code sessions. Only run the unit test suite:
 
-```
+```bash
 xcodebuild test -scheme PackList -destination 'platform=iOS Simulator,name=iPhone 17 Pro' -only-testing:PackListTests
 ```
 
@@ -69,13 +69,13 @@ The two mandatory tests that must always pass:
 Xcode 26 beta has a known bug where the project editor does not load. Use the CLI workflow exclusively for all TestFlight builds.
 
 ### Step 1 — Bump build number
-```
+```bash
 /usr/libexec/PlistBuddy -c "Set :CFBundleVersion [N]" PackList/Info.plist
 git add PackList/Info.plist && git commit -m "Bump build number to [N]" && git push origin main
 ```
 
 ### Step 2 — Archive
-```
+```bash
 xcodebuild -project PackList.xcodeproj -scheme PackList -configuration Release -destination 'generic/platform=iOS' -archivePath /tmp/PackList[N].xcarchive DEVELOPMENT_TEAM=8WXGQKFXC3 CODE_SIGN_STYLE=Automatic archive
 ```
 
@@ -93,12 +93,12 @@ Ensure /tmp/ExportOptions.plist exists:
 </dict>
 </plist>
 ```
-```
+```bash
 xcodebuild -exportArchive -archivePath /tmp/PackList[N].xcarchive -exportOptionsPlist /tmp/ExportOptions.plist -exportPath /tmp/PackListExport
 ```
 
 ### Step 4 — Upload
-```
+```bash
 xcrun altool --upload-app --type ios --file /tmp/PackListExport/PackList.ipa --username jason@level19.com --password APP_SPECIFIC_PASSWORD
 ```
 
@@ -265,58 +265,58 @@ Every PR must include confirmation that all of the following pass before opening
 
 ### Autonomous terminal workflow — Gemini review threshold
 
-8. Assess PR complexity before waiting for Gemini review.
+Assess PR complexity before waiting for Gemini review.
 
-   Skip Gemini (merge immediately when tests pass) for:
-   - UI-only changes (no model, repository, or service changes)
-   - Single-file changes under 50 lines
-   - Polish, label, copy, or icon changes
-   - Adding new Optional fields with default values
+Skip Gemini (merge immediately when tests pass) for:
+- UI-only changes (no model, repository, or service changes)
+- Single-file changes under 50 lines
+- Polish, label, copy, or icon changes
+- Adding new Optional fields with default values
 
-   Wait for Gemini review for:
-   - Any change to a @Model class or repository
-   - Any change to ChecklistEngine or ImportService
-   - Any change to PackListApp.swift or RepositoryContainer
-   - Any PR touching 3+ files with logic changes
-   - Any PR estimated medium complexity (5/10) or above
+Wait for Gemini review for:
+- Any change to a @Model class or repository
+- Any change to ChecklistEngine or ImportService
+- Any change to PackListApp.swift or RepositoryContainer
+- Any PR touching 3+ files with logic changes
+- Any PR estimated medium complexity (5/10) or above
 
-   When waiting for Gemini:
-   ```
-   gh pr view [PR#] --comments
-   ```
-   Poll every 2 minutes, max 15 minutes.
-   Handle all Gemini comments autonomously.
-   If Gemini does not review within 15 minutes, merge anyway.
+When waiting for Gemini:
+```bash
+gh pr view [PR#] --comments
+```
+Poll every 2 minutes, max 15 minutes.
+Handle all Gemini comments autonomously.
+If Gemini does not review within 15 minutes, merge anyway.
 
-10. Close issue and move to Done on the project board:
-    ```
-    gh issue close [N] --comment "Completed in PR #[PR#]."
-    ```
+When closing an issue, close and move to Done on the project board:
+```bash
+gh issue close [N] --comment "Completed in PR #[PR#]."
+```
 
-    Then explicitly move to Done via GraphQL:
-    ```
-    gh api graphql -f query='mutation {
-      updateProjectV2ItemFieldValue(input: {
-        projectId: "PVT_kwHOEMO09M4BWtlG"
-        itemId: "PVTI_ITEM_ID"
-        fieldId: "PVTSSF_lAHOEMO09M4BWtlGzhR_g7M"
-        value: { singleSelectOptionId: "39656e02" }
-      }) { projectV2Item { id } }
-    }'
-    ```
+Then explicitly move to Done via GraphQL:
+```bash
+gh api graphql -f query='mutation {
+  updateProjectV2ItemFieldValue(input: {
+    projectId: "PVT_kwHOEMO09M4BWtlG"
+    itemId: "PVTI_ITEM_ID"
+    fieldId: "PVTSSF_lAHOEMO09M4BWtlGzhR_g7M"
+    value: { singleSelectOptionId: "39656e02" }
+  }) { projectV2Item { id } }
+}'
+```
 
-    To get the item ID for the issue:
-    ```
-    gh api graphql -f query='{ 
-      repository(owner: "jasonegray", name: "travel") { 
-        issue(number: [N]) { 
-          projectItems(first: 1) { 
-            nodes { id } 
-          } 
-        } 
+To get the item ID for the issue:
+```bash
+gh api graphql -f query='{ 
+  repository(owner: "jasonegray", name: "travel") { 
+    issue(number: [N]) { 
+      projectItems(first: 1) { 
+        nodes { id } 
       } 
-    }' --jq '.data.repository.issue.projectItems.nodes[0].id'
-    ```
+    } 
+  } 
+}' --jq '.data.repository.issue.projectItems.nodes[0].id'
+```
 
 ---
 
@@ -326,15 +326,15 @@ Every PR must include confirmation that all of the following pass before opening
 Every issue created — whether via capture-issue skill, manual `gh issue create`, or any other method — must be immediately added to the project board and placed in the Backlog column. This is mandatory, not optional.
 
 After every `gh issue create` command, always run:
-```
+```bash
 gh project item-add 1 --owner jasonegray --url https://github.com/jasonegray/travel/issues/[N]
 ```
 
 Then immediately get the item ID and set its status to Backlog:
-```
+```bash
 gh api graphql -f query='{ repository(owner: "jasonegray", name: "travel") { issue(number: [N]) { projectItems(first: 1) { nodes { id } } } } }' --jq '.data.repository.issue.projectItems.nodes[0].id'
 ```
-```
+```bash
 gh api graphql -f query='mutation {
   updateProjectV2ItemFieldValue(input: {
     projectId: "PVT_kwHOEMO09M4BWtlG"
@@ -431,13 +431,6 @@ gh project item-edit \
   --field-id PVTSSF_lAHOEMO09M4BWtlGzhR_g7M \
   --single-select-option-id 39656e02
 ```
-
-### Agent responsibilities
-
-- Terminal agents do NOT run `gh` commands. They report status changes in their TERMINAL REPORT.
-- Jason runs `gh` commands in the Mac terminal.
-- Claude (chat) MUST include the board-update command alongside every issue command it generates. Never give Jason a `gh issue close` or status change command without the paired `gh project item-edit`.
-- If a TERMINAL REPORT indicates an issue is complete, the response MUST include the board-move command, not just the close command.
 
 ### Field reference
 
@@ -553,7 +546,7 @@ Spikes that recommend an API without addressing all five points will be rejected
 
 ## Terminal report format
 
-```
+```text
 TERMINAL REPORT — T[N]
 Issue: #[N] [title]
 Status: COMPLETE | NEEDS JASON
