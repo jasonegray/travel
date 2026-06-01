@@ -81,6 +81,14 @@ struct NewTripView: View {
         .onChange(of: vm.isDone) { _, done in
             if done { dismiss() }
         }
+        .alert("Couldn't Create Trip", isPresented: Binding(
+            get: { vm.errorMessage != nil },
+            set: { if !$0 { vm.errorMessage = nil } }
+        )) {
+            Button("OK") { vm.errorMessage = nil }
+        } message: {
+            Text(vm.errorMessage ?? "An unexpected error occurred. Please try again.")
+        }
         .task(id: vm.isGenerating) {
             guard vm.isGenerating, let repos = repositories else { return }
             await vm.createTrip(

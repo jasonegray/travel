@@ -8,10 +8,13 @@ private let logger = Logger(subsystem: "com.packlist", category: "PackListApp")
 @MainActor
 @main
 struct PackListApp: App {
+    static let storeWipedKey = "packListStoreWasReset"
+
     private let container: ModelContainer
     private let repositories: RepositoryContainer
     private let profile = ProfileViewModel()
     @State private var showLaunchScreen = true
+    @State private var showStoreWipeAlert = UserDefaults.standard.bool(forKey: PackListApp.storeWipedKey)
 
     init() {
         let c = Self.makeContainer()
@@ -37,6 +40,13 @@ struct PackListApp: App {
                 withAnimation(.easeInOut(duration: 0.5)) {
                     showLaunchScreen = false
                 }
+            }
+            .alert("Your data was reset", isPresented: $showStoreWipeAlert) {
+                Button("OK") {
+                    UserDefaults.standard.removeObject(forKey: PackListApp.storeWipedKey)
+                }
+            } message: {
+                Text("A database error required PackList to start fresh. Your previous trips could not be recovered.")
             }
         }
         .modelContainer(container)
@@ -64,6 +74,8 @@ struct PackListApp: App {
             }
             // Reset seed flag so ImportService re-seeds into the fresh store
             UserDefaults.standard.removeObject(forKey: ImportService.seededKey)
+            // Flag so ContentView shows a one-time data-loss alert on next launch
+            UserDefaults.standard.set(true, forKey: PackListApp.storeWipedKey)
             // swiftlint:disable:next force_try
             return try! ModelContainer(
                 for: TripSession.self,

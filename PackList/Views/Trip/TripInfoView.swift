@@ -13,12 +13,52 @@ struct TripInfoView: View {
             }
             accommodationSection
         }
+        .safeAreaInset(edge: .bottom) {
+            saveStatusFooter
+        }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 ShareLink(item: vm.shareSummary) {
                     Label("Share", systemImage: "square.and.arrow.up")
                 }
             }
+        }
+    }
+
+    @ViewBuilder
+    private var saveStatusFooter: some View {
+        switch vm.saveStatus {
+        case .idle:
+            EmptyView()
+        case .saving:
+            HStack(spacing: 6) {
+                ProgressView()
+                    .controlSize(.mini)
+                Text("Saving…")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.bottom, 8)
+        case .saved:
+            HStack(spacing: 6) {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(.green)
+                Text("Saved")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .font(.caption)
+            .padding(.bottom, 8)
+        case .failed:
+            HStack(spacing: 6) {
+                Image(systemName: "exclamationmark.circle.fill")
+                    .foregroundStyle(.red)
+                Text("Error saving")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .font(.caption)
+            .padding(.bottom, 8)
         }
     }
 

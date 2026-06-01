@@ -6,6 +6,7 @@ private let logger = Logger(subsystem: "com.packlist", category: "TasksTabView")
 struct TasksTabView: View {
     @State private var activeTrip: TripSession?
     @State private var isLoading = true
+    @State private var loadFailed = false
     @State private var showNewTrip = false
     @Environment(\.repositories) private var repositories
 
@@ -14,6 +15,12 @@ struct TasksTabView: View {
             Group {
                 if isLoading {
                     ProgressView()
+                } else if loadFailed {
+                    LoadErrorState(
+                        message: "Your prep tasks couldn't be loaded.",
+                        onRetry: { Task { await loadTrip() } }
+                    )
+                    .navigationTitle("Tasks")
                 } else if let trip = activeTrip {
                     TripDetailView(trip: trip, initialTab: .prepTasks, showTabPicker: false, onDismiss: { Task { await loadTrip() } })
                         .id(trip.id)
@@ -42,12 +49,14 @@ struct TasksTabView: View {
     private func loadTrip() async {
         guard let repos = repositories else { return }
         isLoading = true
+        loadFailed = false
         do {
             let active = try await repos.tripSessions.fetch(status: .active)
             let planning = try await repos.tripSessions.fetch(status: .planning)
             activeTrip = active.first ?? planning.first
         } catch {
             logger.error("TasksTabView load failed: \(error)")
+            loadFailed = true
         }
         isLoading = false
     }
