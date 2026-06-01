@@ -17,6 +17,7 @@ struct AddCustomTaskView: View {
                         .onSubmit {
                             let trimmed = name.trimmingCharacters(in: .whitespaces)
                             guard !trimmed.isEmpty else { return }
+                            HapticManager.rigidImpact()
                             onAdd(trimmed, timing)
                             dismiss()
                         }
@@ -39,6 +40,7 @@ struct AddCustomTaskView: View {
                     Button("Add") {
                         let trimmed = name.trimmingCharacters(in: .whitespaces)
                         guard !trimmed.isEmpty else { return }
+                        HapticManager.rigidImpact()
                         onAdd(trimmed, timing)
                         dismiss()
                     }

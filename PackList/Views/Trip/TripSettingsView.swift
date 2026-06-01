@@ -58,6 +58,7 @@ struct TripSettingsView: View {
             .alert("Regenerate Packing List?", isPresented: $vm.showConfirmation) {
                 Button("Continue", role: .destructive) {
                     guard let repos = repositories else { return }
+                    HapticManager.warning()
                     Task {
                         if let newItems = await vm.applyAndRegenerate(
                             sessions: repos.tripSessions,
