@@ -702,7 +702,9 @@ struct ActiveTripCard: View {
 
     private var daysAwayLabel: String {
         switch daysAway {
-        case ..<0: return "In progress"
+        case ..<0:
+            let returning = trip.returnDate.formatted(.dateTime.month(.abbreviated).day())
+            return "Returns \(returning)"
         case 0:    return "Today"
         case 1:    return "Tomorrow"
         default:   return "\(daysAway) days away"
