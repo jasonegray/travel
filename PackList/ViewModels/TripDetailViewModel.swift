@@ -46,6 +46,28 @@ final class TripDetailViewModel {
         }
     }
 
+    func bulkMarkPacked(location: PackingLocation, packed: Bool) async {
+        guard !trip.isArchived else { return }
+        let targets = items.filter { $0.itemType == .physical && $0.packingLocation == location }
+        guard !targets.isEmpty else { return }
+        let now = Date()
+        let prev = targets.map { ($0, $0.completedAt) }
+        for item in targets {
+            item.completedAt = packed ? now : nil
+        }
+        do {
+            for item in targets {
+                try await repo?.update(item)
+            }
+        } catch {
+            logger.error("bulkMarkPacked failed: \(error)")
+            for (item, prevState) in prev {
+                item.completedAt = prevState
+            }
+            toastMessage = "Couldn't update items"
+        }
+    }
+
     func save(item: TripItem) async {
         guard !trip.isArchived else { return }
         do {
