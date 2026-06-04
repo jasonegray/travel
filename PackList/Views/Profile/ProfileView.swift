@@ -1,9 +1,13 @@
 import SwiftUI
+import Contacts
+import UserNotifications
 
 struct ProfileView: View {
     @Environment(ProfileViewModel.self) private var vm
-    @State private var onboardingResetConfirmed = false
     @State private var showAirportPicker = false
+    @State private var showResetConfirmation = false
+    @State private var contactsStatus: CNAuthorizationStatus = .notDetermined
+    @State private var notificationsStatus: UNAuthorizationStatus = .notDetermined
 
     var body: some View {
         @Bindable var vm = vm
@@ -33,31 +37,55 @@ struct ProfileView: View {
                     }
                 }
 
-                // MARK: Section 3 — App
-                Section {
+                // MARK: Section 3 — Permissions
+                Section("Permissions") {
+                    PermissionRow(name: "Contacts",
+                                  systemImage: "person.crop.circle",
+                                  status: contactsStatus.permissionLabel)
+                    PermissionRow(name: "Notifications",
+                                  systemImage: "bell",
+                                  status: notificationsStatus.permissionLabel)
+                }
+
+                // MARK: Section 4 — App
+                Section("App") {
                     Picker("Appearance", selection: $vm.appearance) {
                         ForEach(AppearancePreference.allCases, id: \.self) { pref in
                             Text(pref.rawValue).tag(pref)
                         }
                     }
                     .onChange(of: vm.appearance) { vm.save() }
-                    LabeledContent("Version", value: appVersion)
-                    LabeledContent("Build", value: buildNumber)
                     Button("Reset Setup Wizard") {
-                        vm.resetOnboarding()
-                        onboardingResetConfirmed = true
+                        showResetConfirmation = true
                     }
                     .foregroundStyle(.orange)
                     .accessibilityIdentifier("resetOnboardingButton")
-                } header: {
-                    Text("App")
-                } footer: {
-                    if onboardingResetConfirmed {
-                        Text("Setup wizard will show on next launch")
-                    }
+                }
+
+                // MARK: Section 5 — About
+                Section("About") {
+                    LabeledContent("Version", value: appVersion)
+                    LabeledContent("Build", value: buildNumber)
                 }
             }
             .navigationTitle("Profile")
+            .confirmationDialog(
+                "Reset Setup Wizard?",
+                isPresented: $showResetConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button("Reset", role: .destructive) {
+                    vm.resetOnboarding()
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("The setup wizard will show again on next launch.")
+            }
+        }
+        .task {
+            contactsStatus = CNContactStore.authorizationStatus(for: .contacts)
+            let settings = await UNUserNotificationCenter.current().notificationSettings()
+            notificationsStatus = settings.authorizationStatus
         }
     }
 
@@ -67,6 +95,30 @@ struct ProfileView: View {
 
     private var buildNumber: String {
         Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "—"
+    }
+}
+
+// MARK: - Permission row
+
+private struct PermissionRow: View {
+    let name: String
+    let systemImage: String
+    let status: String
+
+    var body: some View {
+        Button {
+            guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+            UIApplication.shared.open(url)
+        } label: {
+            LabeledContent {
+                Text(status)
+                    .foregroundStyle(.secondary)
+            } label: {
+                Label(name, systemImage: systemImage)
+                    .foregroundStyle(.primary)
+            }
+        }
+        .foregroundStyle(.primary)
     }
 }
 
@@ -110,6 +162,33 @@ private struct ProfileRow: View {
                         }
                     }
                 }
+        }
+    }
+}
+
+// MARK: - Permission status labels
+
+private extension CNAuthorizationStatus {
+    var permissionLabel: String {
+        switch self {
+        case .authorized:    return "Granted"
+        case .denied:        return "Denied"
+        case .restricted:    return "Restricted"
+        case .notDetermined: return "Not Set"
+        @unknown default:    return "Unknown"
+        }
+    }
+}
+
+private extension UNAuthorizationStatus {
+    var permissionLabel: String {
+        switch self {
+        case .authorized:    return "Granted"
+        case .denied:        return "Denied"
+        case .provisional:   return "Provisional"
+        case .ephemeral:     return "Ephemeral"
+        case .notDetermined: return "Not Set"
+        @unknown default:    return "Unknown"
         }
     }
 }
