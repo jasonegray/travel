@@ -268,7 +268,7 @@ private struct NameDestinationStep: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 6) {
-                Text("Where are you headed?")
+                Text("Where Are You Headed?")
                     .font(.title2).fontWeight(.bold)
                 Text("Search for your destination.")
                     .font(.subheadline)
@@ -366,7 +366,7 @@ private struct DatesStep: View {
     }
 
     var body: some View {
-        StepShell(title: "When are you travelling?") {
+        StepShell(title: "When Are You Travelling?") {
             VStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 10) {
                     Label("Departure", systemImage: "airplane.departure")
@@ -425,7 +425,7 @@ private struct ActivitiesStep: View {
     private let addOnColumns  = [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)]
 
     var body: some View {
-        StepShell(title: "What will you be doing?") {
+        StepShell(title: "What Will You Be Doing?") {
             VStack(alignment: .leading, spacing: 24) {
                 // Flying toggle
                 VStack(alignment: .leading, spacing: 10) {
@@ -433,7 +433,7 @@ private struct ActivitiesStep: View {
                         .font(.subheadline)
                         .fontWeight(.semibold)
                         .foregroundStyle(.secondary)
-                    BinaryPicker(yesLabel: "Flying", noLabel: "Not flying", yesIcon: "airplane", noIcon: "car.fill", value: $vm.isFlyingTrip)
+                    BinaryPicker(yesLabel: "Flying", noLabel: "Not Flying", yesIcon: "airplane", noIcon: "car.fill", value: $vm.isFlyingTrip)
                 }
 
                 // Trip Types
@@ -553,7 +553,7 @@ private struct CarryOnStep: View {
     @Bindable var vm: NewTripViewModel
 
     var body: some View {
-        StepShell(title: "Carry-on only?", subtitle: "No checked bag on this trip.") {
+        StepShell(title: "Carry-On Only?", subtitle: "No checked bag on this trip.") {
             BinaryPicker(yesLabel: "Yes, carry-on only", noLabel: "No, I'm checking a bag", yesIcon: "bag.fill", noIcon: "shippingbox.fill", value: $vm.carryOnOnly)
         }
     }
@@ -565,7 +565,7 @@ private struct LaundryStep: View {
     @Bindable var vm: NewTripViewModel
 
     var body: some View {
-        StepShell(title: "Will laundry be available?", subtitle: "Affects how many clothes we suggest.") {
+        StepShell(title: "Will Laundry Be Available?", subtitle: "Affects how many clothes we suggest.") {
             BinaryPicker(yesLabel: "Yes, laundry access", noLabel: "No laundry access", yesIcon: "washer.fill", noIcon: "xmark.circle.fill", value: $vm.laundryAvailable)
         }
     }
@@ -579,7 +579,7 @@ private struct ConfirmStep: View {
     @FocusState private var nameFocused: Bool
 
     var body: some View {
-        StepShell(title: "Ready to pack?",
+        StepShell(title: "Ready to Pack?",
                   subtitle: "Here's your trip name — tap the pencil to change it.") {
             VStack(alignment: .leading, spacing: 24) {
 
@@ -653,7 +653,7 @@ private struct GeneratingStepView: View {
                 .scaleEffect(1.4)
                 .tint(.accentColor)
             VStack(spacing: 8) {
-                Text("Generating your list…")
+                Text("Generating Your List…")
                     .font(.headline)
                 Text("Matching items to your trip profile")
                     .font(.subheadline)
@@ -774,7 +774,7 @@ extension ActivityType {
         case .beach:        return "Beach"
         case .pool:         return "Pool"
         case .hiking:       return "Hiking"
-        case .formalDinner: return "Formal dinner"
+        case .formalDinner: return "Formal Dinner"
         case .workout:      return "Workout"
         case .sightseeing:  return "Sightseeing"
         case .conference:   return "Conference"

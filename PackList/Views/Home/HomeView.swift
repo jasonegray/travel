@@ -274,7 +274,7 @@ private struct OtherTripsStrip: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Other trips")
+            Text("Other Trips")
                 .font(.headline)
                 .padding(.horizontal)
 
@@ -821,7 +821,7 @@ struct UpNextView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Up next")
+            Text("Up Next")
                 .font(.headline)
 
             VStack(spacing: 0) {
@@ -915,7 +915,7 @@ private struct EmptyHomeState: View {
                 .foregroundStyle(.secondary)
 
             VStack(spacing: 8) {
-                Text("No trips planned")
+                Text("No Trips Planned")
                     .font(.title2)
                     .fontWeight(.semibold)
                 Text("Nothing booked yet. Time to go somewhere!")
@@ -960,7 +960,7 @@ struct ProgressRow: View {
                 Spacer()
                 HStack(spacing: 4) {
                     Image(systemName: "checkmark.circle.fill")
-                    Text(unit == "items" ? "All packed" : "All done")
+                    Text(unit == "items" ? "All Packed" : "All Done")
                 }
                 .font(.caption)
                 .fontWeight(.medium)

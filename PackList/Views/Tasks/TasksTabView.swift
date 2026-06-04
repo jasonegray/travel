@@ -78,7 +78,7 @@ struct NoActiveTripState: View {
                 .foregroundStyle(.secondary)
 
             VStack(spacing: 6) {
-                Text("No active trip")
+                Text("No Active Trip")
                     .font(.title2)
                     .fontWeight(.semibold)
                 Text(message)

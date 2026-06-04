@@ -114,7 +114,7 @@ struct MasterListView: View {
                     Image(systemName: "list.bullet.rectangle")
                         .font(.largeTitle)
                         .foregroundStyle(.secondary)
-                    Text(vm.searchText.isEmpty ? "No items" : "No results for \"\(vm.searchText)\"")
+                    Text(vm.searchText.isEmpty ? "No Items" : "No Results for \"\(vm.searchText)\"")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }

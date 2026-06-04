@@ -217,7 +217,7 @@ private struct NameStep: View {
 
     var body: some View {
         OnboardingStepShell(
-            title: "Your name",
+            title: "Your Name",
             subtitle: "Used when sharing trip details with your emergency contact",
             onContinue: onContinue,
             onSkip: onSkip
@@ -244,7 +244,7 @@ private struct AirportStep: View {
 
     var body: some View {
         OnboardingStepShell(
-            title: "Home airport",
+            title: "Home Airport",
             subtitle: "Your usual departure airport",
             onContinue: onContinue,
             onSkip: onSkip
@@ -287,7 +287,7 @@ private struct DoneStep: View {
                     .foregroundStyle(.green)
 
                 VStack(spacing: 8) {
-                    Text("You're all set")
+                    Text("You're All Set")
                         .font(.title2)
                         .fontWeight(.bold)
                     Text("You are ready to pack")
@@ -302,7 +302,7 @@ private struct DoneStep: View {
                 HapticManager.success()
                 onCreateFirstTrip()
             } label: {
-                Text("Create your first trip")
+                Text("Create Your First Trip")
                     .font(.body)
                     .fontWeight(.semibold)
                     .frame(maxWidth: .infinity)

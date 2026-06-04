@@ -41,7 +41,7 @@ struct TripDetailView: View {
             if showTabPicker {
                 Picker("", selection: $selectedTab) {
                     Text("Packing").tag(Tab.packing)
-                    Text("Prep tasks").tag(Tab.prepTasks)
+                    Text("Prep Tasks").tag(Tab.prepTasks)
                     Text("Info").tag(Tab.info)
                 }
                 .pickerStyle(.segmented)
@@ -409,12 +409,12 @@ private struct CategoryPageView: View {
                     .font(.headline)
                 Spacer()
                 if allPacked {
-                    Label("All packed", systemImage: "checkmark")
+                    Label("All Packed", systemImage: "checkmark")
                         .font(.caption)
                         .fontWeight(.medium)
                         .foregroundStyle(Color.green)
                 } else {
-                    Text("\(remaining) remaining")
+                    Text("\(remaining) Remaining")
                         .font(.caption)
                         .fontWeight(.medium)
                         .foregroundStyle(Color.red)
@@ -471,12 +471,12 @@ private struct BagPageView: View {
                     .font(.headline)
                 Spacer()
                 if allPacked {
-                    Label("All packed", systemImage: "checkmark")
+                    Label("All Packed", systemImage: "checkmark")
                         .font(.caption)
                         .fontWeight(.medium)
                         .foregroundStyle(Color.green)
                 } else {
-                    Text("\(remaining) remaining")
+                    Text("\(remaining) Remaining")
                         .font(.caption)
                         .fontWeight(.medium)
                         .foregroundStyle(Color.red)
@@ -538,7 +538,7 @@ private struct PackingEmptyState: View {
                 .font(.system(size: 56))
                 .foregroundStyle(.secondary)
             VStack(spacing: 6) {
-                Text("No packing items")
+                Text("No Packing Items")
                     .font(.title2)
                     .fontWeight(.semibold)
                 Text("All master list items are inactive for this trip.")
@@ -633,7 +633,7 @@ private struct PrepTasksEmptyState: View {
                 .foregroundStyle(.secondary)
 
             VStack(spacing: 6) {
-                Text("No prep tasks yet")
+                Text("No Prep Tasks Yet")
                     .font(.title2)
                     .fontWeight(.semibold)
                 Text("Add tasks to prep before your trip.")
@@ -678,7 +678,7 @@ private struct TaskPageView: View {
                     .font(.headline)
                 Spacer()
                 if allDone {
-                    Label("All done", systemImage: "checkmark")
+                    Label("All Done", systemImage: "checkmark")
                         .font(.caption)
                         .fontWeight(.medium)
                         .foregroundStyle(Color.green)
@@ -872,7 +872,7 @@ private struct TripCompletedBanner: View {
         HStack(spacing: 8) {
             Image(systemName: "checkmark.circle.fill")
                 .foregroundStyle(.green)
-            Text(manuallyCompletedAt != nil ? "Completed early" : "Completed")
+            Text(manuallyCompletedAt != nil ? "Completed Early" : "Completed")
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .foregroundStyle(.green)
@@ -900,7 +900,7 @@ private struct ArchivedBanner: View {
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .foregroundStyle(.secondary)
-            Text("· Read only")
+            Text("· Read Only")
                 .font(.caption)
                 .foregroundStyle(.secondary)
             Spacer()
@@ -916,13 +916,13 @@ private struct ArchivedBanner: View {
 extension TaskTiming {
     var sectionLabel: String {
         switch self {
-        case .weekBefore:      return "A week before"
-        case .threeDaysBefore: return "3 days before"
-        case .dayBefore:       return "Day before"
-        case .morningOf:       return "Morning of"
-        case .atAirport:       return "At the airport"
-        case .onPlane:         return "On the plane"
-        case .uponArrival:     return "Upon arrival"
+        case .weekBefore:      return "A Week Before"
+        case .threeDaysBefore: return "3 Days Before"
+        case .dayBefore:       return "Day Before"
+        case .morningOf:       return "Morning Of"
+        case .atAirport:       return "At the Airport"
+        case .onPlane:         return "On the Plane"
+        case .uponArrival:     return "Upon Arrival"
         }
     }
 
