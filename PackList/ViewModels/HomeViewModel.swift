@@ -84,6 +84,21 @@ final class HomeViewModel {
         }
     }
 
+    func bulkMarkPacked(location: PackingLocation, packed: Bool, items: [TripItem], repository: any TripItemRepository) async {
+        let targets = items.filter { $0.itemType == .physical && $0.packingLocation == location }
+        guard !targets.isEmpty else { return }
+        let now = Date()
+        let prev = targets.map { ($0, $0.completedAt) }
+        for item in targets { item.completedAt = packed ? now : nil }
+        do {
+            for item in targets { try await repository.update(item) }
+        } catch {
+            logger.error("bulkMarkPacked failed: \(error)")
+            for (item, prevState) in prev { item.completedAt = prevState }
+            toastMessage = "Couldn't update items"
+        }
+    }
+
     // MARK: - Archive / Unarchive
 
     func archiveTrip(_ trip: TripSession, sessions: any TripSessionRepository) async {
