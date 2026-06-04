@@ -284,7 +284,10 @@ private struct PackingTab: View {
                                     Task { await vm.deleteCustomItem(item) }
                                 },
                                 onEdit: { item in
-                                    guard !vm.trip.isArchived else { return }
+                                    guard !vm.trip.isArchived else {
+                                        vm.toastMessage = "Archived trips can't be edited — unarchive to make changes"
+                                        return
+                                    }
                                     editingItem = item
                                 }
                             )
@@ -308,7 +311,10 @@ private struct PackingTab: View {
                                     Task { await vm.deleteCustomItem(item) }
                                 },
                                 onEdit: { item in
-                                    guard !vm.trip.isArchived else { return }
+                                    guard !vm.trip.isArchived else {
+                                        vm.toastMessage = "Archived trips can't be edited — unarchive to make changes"
+                                        return
+                                    }
                                     editingItem = item
                                 }
                             )
@@ -561,7 +567,10 @@ private struct PrepTab: View {
                                 Task { await vm.deleteCustomItem(item) }
                             },
                             onEdit: { item in
-                                guard !vm.trip.isArchived else { return }
+                                guard !vm.trip.isArchived else {
+                                    vm.toastMessage = "Archived trips can't be edited — unarchive to make changes"
+                                    return
+                                }
                                 editingTask = item
                             }
                         )
