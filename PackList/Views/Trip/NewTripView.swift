@@ -565,7 +565,7 @@ private struct LaundryStep: View {
 
     var body: some View {
         StepShell(title: "Will laundry be available?", subtitle: "Affects how many clothes we suggest.") {
-            BinaryPicker(yesLabel: "Yes, laundry access", noLabel: "No, packing for the full trip", yesIcon: "washer.fill", noIcon: "xmark.circle.fill", value: $vm.laundryAvailable)
+            BinaryPicker(yesLabel: "Yes, laundry access", noLabel: "No laundry access", yesIcon: "washer.fill", noIcon: "xmark.circle.fill", value: $vm.laundryAvailable)
         }
     }
 }
