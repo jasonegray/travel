@@ -373,6 +373,7 @@ private struct CompletedTripsSection: View {
                     .listRowSeparator(.hidden)
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         Button {
+                            HapticManager.mediumImpact()
                             onArchive(trip)
                         } label: {
                             Label("Archive", systemImage: "archivebox")
@@ -380,6 +381,7 @@ private struct CompletedTripsSection: View {
                         .tint(.indigo)
                         .accessibilityIdentifier("archive_swipe_button")
                         Button(role: .destructive) {
+                            HapticManager.warning()
                             onDelete(trip)
                         } label: {
                             Label("Delete", systemImage: "trash")
@@ -462,6 +464,7 @@ private struct ArchivedTripsSection: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Button {
+                HapticManager.lightImpact()
                 withAnimation(.easeInOut(duration: 0.2)) { isExpanded.toggle() }
             } label: {
                 HStack {
@@ -488,6 +491,7 @@ private struct ArchivedTripsSection: View {
                         .listRowSeparator(.hidden)
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                             Button {
+                                HapticManager.mediumImpact()
                                 onUnarchive(trip)
                             } label: {
                                 Label("Unarchive", systemImage: "archivebox")
@@ -495,6 +499,7 @@ private struct ArchivedTripsSection: View {
                             .tint(.indigo)
                             .accessibilityIdentifier("unarchive_swipe_button")
                             Button(role: .destructive) {
+                                HapticManager.warning()
                                 onDelete(trip)
                             } label: {
                                 Label("Delete", systemImage: "trash")
@@ -696,6 +701,9 @@ struct ActiveTripCard: View {
         .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .animation(.easeInOut(duration: 0.2), value: isReadyToGo)
+        .onChange(of: isReadyToGo) { _, ready in
+            if ready { HapticManager.success() }
+        }
     }
 
     private var daysAway: Int { daysUntilDeparture(from: trip.departureDate) }
