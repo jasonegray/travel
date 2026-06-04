@@ -396,7 +396,7 @@ private struct CategoryPageView: View {
                     .font(.headline)
                 Spacer()
                 if allPacked {
-                    Text("All packed ✓")
+                    Label("All packed", systemImage: "checkmark")
                         .font(.caption)
                         .fontWeight(.medium)
                         .foregroundStyle(Color.green)
@@ -454,7 +454,7 @@ private struct BagPageView: View {
                     .font(.headline)
                 Spacer()
                 if allPacked {
-                    Text("All packed ✓")
+                    Label("All packed", systemImage: "checkmark")
                         .font(.caption)
                         .fontWeight(.medium)
                         .foregroundStyle(Color.green)
@@ -637,7 +637,7 @@ private struct TaskPageView: View {
                     .font(.headline)
                 Spacer()
                 if allDone {
-                    Text("All done ✓")
+                    Label("All done", systemImage: "checkmark")
                         .font(.caption)
                         .fontWeight(.medium)
                         .foregroundStyle(Color.green)
