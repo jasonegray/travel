@@ -18,6 +18,8 @@
 		0C60AAD2AF89792CCCA7F97C /* TripSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18C8E3DF2BAC53703E2E96B /* TripSession.swift */; };
 		0DB060D4C6B1488D7C1D5B1C /* TripItemRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A02A7347CFB68D84511C78D3 /* TripItemRepository.swift */; };
 		0F6D19B39FDEDE13574FCA9E /* PackListApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95D6D8FFFD3B47DCCE24824 /* PackListApp.swift */; };
+		89DF8DE5AAC17D7FDCF92307 /* ShortcutRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33AFC594B911ADD49D405F03 /* ShortcutRouter.swift */; };
+		5B76A8B66057E1A966ED2E70 /* RootContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A110D977BB918E8D56145ED4 /* RootContainerView.swift */; };
 		11F96F14846B00669D5CE485 /* ItemInsight.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4635534DA022F06CB2DC68E /* ItemInsight.swift */; };
 		197B7E87309A1669D45F8BDB /* NewTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A782456B8A965F7C840C4C20 /* NewTripView.swift */; };
 		20B1F59084706451335AEBA2 /* MasterItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E173319E9FA785CD701E449 /* MasterItem.swift */; };
@@ -136,6 +138,8 @@
 		A94FE458BD7A12AC86FCCB74 /* PackListTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PackListTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B194C4473A49789ECED2D9EF /* ItemInsightRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemInsightRepository.swift; sourceTree = "<group>"; };
 		B95D6D8FFFD3B47DCCE24824 /* PackListApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackListApp.swift; sourceTree = "<group>"; };
+		33AFC594B911ADD49D405F03 /* ShortcutRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutRouter.swift; sourceTree = "<group>"; };
+		A110D977BB918E8D56145ED4 /* RootContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootContainerView.swift; sourceTree = "<group>"; };
 		C4635534DA022F06CB2DC68E /* ItemInsight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemInsight.swift; sourceTree = "<group>"; };
 		CF3AFD96EBEB15D7D1FD2A37 /* ReplaceabilityRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplaceabilityRule.swift; sourceTree = "<group>"; };
 		D1207BA2945A0FAFFDEDA826 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
@@ -235,6 +239,8 @@
 				76ADB60C49104044689AF712 /* ContentView.swift */,
 				E49F0BDA6C45F55FC7F0C694 /* Info.plist */,
 				B95D6D8FFFD3B47DCCE24824 /* PackListApp.swift */,
+				33AFC594B911ADD49D405F03 /* ShortcutRouter.swift */,
+				A110D977BB918E8D56145ED4 /* RootContainerView.swift */,
 				0D15CBFBF00AFFC618952B4F /* Models */,
 				F905BA73A04BE0A35285C8FC /* Repositories */,
 				F4E000595D488C9C7DF0BA9A /* Resources */,
@@ -568,6 +574,8 @@
 				197B7E87309A1669D45F8BDB /* NewTripView.swift in Sources */,
 				7286832A86DDC4FD1E540B15 /* NewTripViewModel.swift in Sources */,
 				0F6D19B39FDEDE13574FCA9E /* PackListApp.swift in Sources */,
+				89DF8DE5AAC17D7FDCF92307 /* ShortcutRouter.swift in Sources */,
+				5B76A8B66057E1A966ED2E70 /* RootContainerView.swift in Sources */,
 				6CAFB2A1EC1111E83BEAA99E /* PendingSuggestion.swift in Sources */,
 				98E56A316F147171C2A4B7CC /* PendingSuggestionRepository.swift in Sources */,
 				49C539B3EDBDF8214C8778B5 /* QuantityRule.swift in Sources */,

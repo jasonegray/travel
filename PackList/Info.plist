@@ -22,6 +22,41 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>New Trip</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.packlist.shortcut.newtrip</string>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>plus.circle.fill</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>View Next Trip</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.packlist.shortcut.nexttrip</string>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>suitcase.fill</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Master List</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.packlist.shortcut.masterlist</string>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>checklist</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Profile</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.packlist.shortcut.profile</string>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>person.fill</string>
+		</dict>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict/>
 	<key>UISupportedInterfaceOrientations</key>
