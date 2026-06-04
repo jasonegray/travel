@@ -485,26 +485,13 @@ private struct BagPageView: View {
             }
             .padding(.horizontal)
             .padding(.vertical, 12)
-            .contextMenu {
-                if !group.items.isEmpty {
-                    if !allPacked {
-                        Button {
-                            HapticManager.success()
-                            onMarkAllPacked()
-                        } label: {
-                            Label("Mark all packed", systemImage: "checkmark.circle.fill")
-                        }
-                    }
-                    if anyPacked {
-                        Button {
-                            HapticManager.warning()
-                            onMarkAllUnpacked()
-                        } label: {
-                            Label("Mark all unpacked", systemImage: "circle")
-                        }
-                    }
-                }
-            }
+            .bagBulkToggleContextMenu(
+                isEmpty: group.items.isEmpty,
+                allPacked: allPacked,
+                anyPacked: anyPacked,
+                onMarkAllPacked: onMarkAllPacked,
+                onMarkAllUnpacked: onMarkAllUnpacked
+            )
 
             Divider()
 
@@ -984,6 +971,39 @@ extension ItemCategory {
         case .health:          return 6
         case .meds:            return 7
         case .misc:            return 8
+        }
+    }
+}
+
+// MARK: - Bag bulk toggle context menu (shared between TripDetailView and HomeView)
+
+extension View {
+    func bagBulkToggleContextMenu(
+        isEmpty: Bool,
+        allPacked: Bool,
+        anyPacked: Bool,
+        onMarkAllPacked: @escaping () -> Void,
+        onMarkAllUnpacked: @escaping () -> Void
+    ) -> some View {
+        contextMenu {
+            if !isEmpty {
+                if !allPacked {
+                    Button {
+                        HapticManager.success()
+                        onMarkAllPacked()
+                    } label: {
+                        Label("Mark all packed", systemImage: "checkmark.circle.fill")
+                    }
+                }
+                if anyPacked {
+                    Button {
+                        HapticManager.warning()
+                        onMarkAllUnpacked()
+                    } label: {
+                        Label("Mark all unpacked", systemImage: "circle")
+                    }
+                }
+            }
         }
     }
 }

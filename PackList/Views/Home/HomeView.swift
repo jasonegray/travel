@@ -233,6 +233,14 @@ private struct HeroSection: View {
                     summary: bags,
                     onBagTap: { location in
                         navTarget = TripNavTarget(tripId: tripId, tab: .packing, location: location)
+                    },
+                    onBulkMarkPacked: { location in
+                        guard let repos = repositories else { return }
+                        Task { await vm.bulkMarkPacked(location: location, packed: true, items: items, repository: repos.tripItems) }
+                    },
+                    onBulkMarkUnpacked: { location in
+                        guard let repos = repositories else { return }
+                        Task { await vm.bulkMarkPacked(location: location, packed: false, items: items, repository: repos.tripItems) }
                     }
                 )
                 .padding(.horizontal)
@@ -733,6 +741,8 @@ struct ActiveTripCard: View {
 struct BagsProgressView: View {
     let summary: [(location: PackingLocation, packed: Int, total: Int)]
     var onBagTap: ((PackingLocation) -> Void)? = nil
+    var onBulkMarkPacked: ((PackingLocation) -> Void)? = nil
+    var onBulkMarkUnpacked: ((PackingLocation) -> Void)? = nil
 
     private let columns = [
         GridItem(.flexible(), spacing: 12),
@@ -756,6 +766,13 @@ struct BagsProgressView: View {
                         )
                     }
                     .buttonStyle(.plain)
+                    .bagBulkToggleContextMenu(
+                        isEmpty: entry.total == 0,
+                        allPacked: entry.total > 0 && entry.packed == entry.total,
+                        anyPacked: entry.packed > 0,
+                        onMarkAllPacked: { onBulkMarkPacked?(entry.location) },
+                        onMarkAllUnpacked: { onBulkMarkUnpacked?(entry.location) }
+                    )
                 }
             }
         }
