@@ -17,7 +17,7 @@ struct TripSettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Trip type") {
+                Section("Trip Type") {
                     ForEach(tripTypeActivities, id: \.self) { activity in
                         activityToggleRow(activity)
                     }
