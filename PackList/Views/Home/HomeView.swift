@@ -324,11 +324,6 @@ private struct TripStripCard: View {
                 .fontWeight(.semibold)
                 .lineLimit(1)
 
-            Text(trip.destination)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-
             Text(trip.departureDate, format: .dateTime.month(.abbreviated).day().year())
                 .font(.caption)
                 .foregroundStyle(.secondary)
