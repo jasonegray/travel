@@ -432,10 +432,16 @@ private struct CompletedTripCard: View {
 
             Spacer()
 
-            Image(systemName: "checkmark.circle.fill")
-                .foregroundStyle(.green)
-                .font(.title3)
-                .accessibilityLabel("Completed")
+            HStack(spacing: 6) {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(.green)
+                    .font(.title3)
+                    .accessibilityLabel("Completed")
+                Image(systemName: "chevron.right")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                    .accessibilityHidden(true)
+            }
         }
         .padding(14)
         .background(Color(.secondarySystemBackground))
@@ -543,10 +549,16 @@ private struct ArchivedTripCard: View {
 
             Spacer()
 
-            Image(systemName: "archivebox.fill")
-                .foregroundStyle(.secondary)
-                .font(.title3)
-                .accessibilityLabel("Archived")
+            HStack(spacing: 6) {
+                Image(systemName: "archivebox.fill")
+                    .foregroundStyle(.secondary)
+                    .font(.title3)
+                    .accessibilityLabel("Archived")
+                Image(systemName: "chevron.right")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                    .accessibilityHidden(true)
+            }
         }
         .padding(14)
         .background(Color(.secondarySystemBackground))
