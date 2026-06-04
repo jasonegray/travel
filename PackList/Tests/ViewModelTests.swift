@@ -189,8 +189,8 @@ final class NewTripViewModelTests: XCTestCase {
         let vm = NewTripViewModel()
         vm.destination = "Orlando"
 
-        XCTAssertEqual(vm.generatedTripName, "Conference in Orlando",
-                       "Default activities include .conference — generated name must be 'Conference in Orlando'")
+        XCTAssertEqual(vm.generatedTripName, "Orlando Conference",
+                       "Default activities include .conference — generated name must be 'Orlando Conference'")
         XCTAssertTrue(vm.generatedTripName.contains("Conference"),
                       "Generated name must include the primary activity type")
     }
@@ -1024,8 +1024,8 @@ final class NewTripViewModelCoverageTests: XCTestCase {
         vm.destination = "London"
         vm.activities = [.conference]
 
-        XCTAssertEqual(vm.generatedTripName, "Conference in London",
-                       "Conference activity must produce 'Conference in [Destination]'")
+        XCTAssertEqual(vm.generatedTripName, "London Conference",
+                       "Conference activity must produce '[Destination] Conference'")
     }
 
     // generatedTripName uses destination when multiple city components present

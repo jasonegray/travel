@@ -122,7 +122,7 @@ final class NewTripViewModel {
         let shortDest = dest.isEmpty ? "Trip" : dest
 
         if let typeLabel = primaryTripTypeLabel {
-            return "\(typeLabel) in \(shortDest)"
+            return "\(shortDest) \(typeLabel)"
         }
         return shortDest
     }
