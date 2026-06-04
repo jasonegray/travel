@@ -316,6 +316,12 @@ private struct PackingTab: View {
                                         return
                                     }
                                     editingItem = item
+                                },
+                                onMarkAllPacked: {
+                                    Task { await vm.bulkMarkPacked(location: group.location, packed: true) }
+                                },
+                                onMarkAllUnpacked: {
+                                    Task { await vm.bulkMarkPacked(location: group.location, packed: false) }
                                 }
                             )
                             .tag(index)
@@ -447,9 +453,12 @@ private struct BagPageView: View {
     let onToggle: (TripItem) -> Void
     let onDelete: (TripItem) -> Void
     let onEdit: (TripItem) -> Void
+    let onMarkAllPacked: () -> Void
+    let onMarkAllUnpacked: () -> Void
 
     private var remaining: Int { group.items.filter { $0.completedAt == nil }.count }
     private var allPacked: Bool { remaining == 0 }
+    private var anyPacked: Bool { remaining < group.items.count }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -475,6 +484,26 @@ private struct BagPageView: View {
             }
             .padding(.horizontal)
             .padding(.vertical, 12)
+            .contextMenu {
+                if !group.items.isEmpty {
+                    if !allPacked {
+                        Button {
+                            HapticManager.success()
+                            onMarkAllPacked()
+                        } label: {
+                            Label("Mark all packed", systemImage: "checkmark.circle.fill")
+                        }
+                    }
+                    if anyPacked {
+                        Button {
+                            HapticManager.warning()
+                            onMarkAllUnpacked()
+                        } label: {
+                            Label("Mark all unpacked", systemImage: "circle")
+                        }
+                    }
+                }
+            }
 
             Divider()
 
