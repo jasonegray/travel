@@ -438,6 +438,7 @@ private struct CategoryPageView: View {
                     Spacer(minLength: 60)
                 }
             }
+            .ignoresSafeArea(.container, edges: .bottom)
         }
         .onChange(of: allPacked) { old, new in
             guard !old && new else { return }
@@ -520,6 +521,7 @@ private struct BagPageView: View {
                     Spacer(minLength: 60)
                 }
             }
+            .ignoresSafeArea(.container, edges: .bottom)
         }
         .onChange(of: allPacked) { old, new in
             guard !old && new else { return }
@@ -712,6 +714,7 @@ private struct TaskPageView: View {
                     Spacer(minLength: 60)
                 }
             }
+            .ignoresSafeArea(.container, edges: .bottom)
         }
     }
 }
