@@ -930,31 +930,16 @@ final class NewTripViewModelCoverageTests: XCTestCase {
         XCTAssertEqual(vm.wizardTitle, "Tokyo", "wizardTitle must use first comma-separated component of destination")
     }
 
-    // skipsMedicalStep for canada and us
-    func testSkipsMedicalStepForCanadaAndUS() {
-        let vm = NewTripViewModel()
-        vm.region = .canada
-        XCTAssertTrue(vm.skipsMedicalStep, "Medical step must be skipped for Canada")
-
-        vm.region = .us
-        XCTAssertTrue(vm.skipsMedicalStep, "Medical step must be skipped for US")
-
-        vm.region = .japan
-        XCTAssertFalse(vm.skipsMedicalStep, "Medical step must NOT be skipped for Japan")
-
-        vm.region = .europe
-        XCTAssertFalse(vm.skipsMedicalStep, "Medical step must NOT be skipped for Europe")
-    }
-
-    // totalSteps and displayStep
+    // totalSteps: 6 when flying, 5 when not flying (carryOnOnly step skipped)
     func testTotalStepsAndDisplayStep() {
         let vm = NewTripViewModel()
-        vm.region = .canada  // skipsMedicalStep = true → 7 steps
-        XCTAssertEqual(vm.totalSteps, 7, "Canada trip has 7 wizard steps")
+        vm.isFlyingTrip = true
+        XCTAssertEqual(vm.totalSteps, 6, "Flying trip has 6 wizard steps")
 
-        vm.region = .europe  // skipsMedicalStep = false → 8 steps
-        XCTAssertEqual(vm.totalSteps, 8, "International trip has 8 wizard steps")
+        vm.isFlyingTrip = false
+        XCTAssertEqual(vm.totalSteps, 5, "Non-flying trip has 5 wizard steps (no carry-on step)")
 
+        vm.isFlyingTrip = true
         vm.currentStep = .confirm
         XCTAssertEqual(vm.displayStep, vm.totalSteps, "displayStep at confirm step must equal totalSteps")
     }
@@ -979,7 +964,7 @@ final class NewTripViewModelCoverageTests: XCTestCase {
         XCTAssertTrue(vm.isLastStep, "isLastStep must be true at the confirm step")
     }
 
-    // Wizard forward navigation
+    // Wizard forward navigation (flying trip: 6 steps)
     func testWizardNextNavigation() {
         let vm = NewTripViewModel()
         XCTAssertEqual(vm.currentStep, .activities)
@@ -998,28 +983,7 @@ final class NewTripViewModelCoverageTests: XCTestCase {
         XCTAssertEqual(vm.currentStep, .laundry)
 
         vm.next()
-        XCTAssertEqual(vm.currentStep, .interac)
-    }
-
-    // Wizard skips medical step for Canada
-    func testWizardSkipsMedicalStepForCanada() {
-        let vm = NewTripViewModel()
-        vm.destination = "Toronto, Canada"
-        vm.currentStep = .interac
-        vm.region = .canada
-        vm.next()
-        XCTAssertEqual(vm.currentStep, .confirm,
-                       "Wizard must skip medicalAppointments step for Canada region")
-    }
-
-    // Wizard does NOT skip medical step for international
-    func testWizardIncludesMedicalStepForInternational() {
-        let vm = NewTripViewModel()
-        vm.currentStep = .interac
-        vm.region = .japan
-        vm.next()
-        XCTAssertEqual(vm.currentStep, .medicalAppointments,
-                       "Wizard must include medicalAppointments step for international region")
+        XCTAssertEqual(vm.currentStep, .confirm)
     }
 
     // Wizard back navigation
@@ -1046,19 +1010,12 @@ final class NewTripViewModelCoverageTests: XCTestCase {
         XCTAssertEqual(vm.currentStep, .activities, "back() at activities step must not change step")
     }
 
-    // back() from confirm goes to medicalAppointments for international, interac for Canada
+    // back() from confirm always goes to laundry
     func testBackFromConfirmStep() {
         let vm = NewTripViewModel()
-        vm.region = .canada
         vm.currentStep = .confirm
         vm.back()
-        XCTAssertEqual(vm.currentStep, .interac, "Back from confirm must go to interac for Canada")
-
-        vm.region = .japan
-        vm.currentStep = .confirm
-        vm.back()
-        XCTAssertEqual(vm.currentStep, .medicalAppointments,
-                       "Back from confirm must go to medicalAppointments for international")
+        XCTAssertEqual(vm.currentStep, .laundry, "Back from confirm must go to laundry")
     }
 
     // generatedTripName across month boundary
@@ -1097,19 +1054,24 @@ final class NewTripViewModelCoverageTests: XCTestCase {
                        "finalTripName must fall back to generatedTripName when tripName is whitespace")
     }
 
-    // InteracChoice computed properties
-    func testInteracChoiceComputedProperties() {
-        XCTAssertFalse(NewTripViewModel.InteracChoice.none.interacPhone)
-        XCTAssertFalse(NewTripViewModel.InteracChoice.none.interacLaptop)
+    // clientDevices extra drives both interacPhone and interacLaptop in createTrip
+    func testClientDevicesActivityDrivesInteracFields() {
+        let vm = NewTripViewModel()
+        XCTAssertFalse(vm.activities.contains(.clientDevices),
+                       "clientDevices must not be selected by default")
+        vm.activities.insert(.clientDevices)
+        XCTAssertTrue(vm.activities.contains(.clientDevices),
+                      "clientDevices must be selectable as an activity extra")
+    }
 
-        XCTAssertTrue(NewTripViewModel.InteracChoice.phoneOnly.interacPhone)
-        XCTAssertFalse(NewTripViewModel.InteracChoice.phoneOnly.interacLaptop)
-
-        XCTAssertFalse(NewTripViewModel.InteracChoice.laptopOnly.interacPhone)
-        XCTAssertTrue(NewTripViewModel.InteracChoice.laptopOnly.interacLaptop)
-
-        XCTAssertTrue(NewTripViewModel.InteracChoice.both.interacPhone)
-        XCTAssertTrue(NewTripViewModel.InteracChoice.both.interacLaptop)
+    // medical extra is selectable as an activity extra
+    func testMedicalActivityIsSelectable() {
+        let vm = NewTripViewModel()
+        XCTAssertFalse(vm.activities.contains(.medical),
+                       "medical must not be selected by default")
+        vm.activities.insert(.medical)
+        XCTAssertTrue(vm.activities.contains(.medical),
+                      "medical must be selectable as an activity extra")
     }
 
     // inferRegion runs via next() at the dates step
