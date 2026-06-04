@@ -851,27 +851,30 @@ private struct UpNextRow: View {
     let onTap: () -> Void
 
     var body: some View {
-        Button(action: onTap) {
-            HStack {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(task.name)
-                        .font(.subheadline)
-                        .strikethrough(isCompleting, color: .secondary)
-                        .foregroundStyle(isCompleting ? .secondary : .primary)
-                    Text("by \(deadline.formatted(.dateTime.month(.abbreviated).day()))")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                Spacer()
+        HStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 3) {
+                Text(task.name)
+                    .font(.subheadline)
+                    .strikethrough(isCompleting, color: .secondary)
+                    .foregroundStyle(isCompleting ? .secondary : .primary)
+                Text("by \(deadline.formatted(.dateTime.month(.abbreviated).day()))")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.leading, 16)
+            .padding(.vertical, 12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            Button(action: onTap) {
                 Image(systemName: isCompleting ? "checkmark.circle.fill" : "circle")
                     .foregroundStyle(isCompleting ? Color.accentColor : Color.secondary)
                     .animation(.easeInOut(duration: 0.2), value: isCompleting)
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
-            .contentShape(Rectangle())
+            .buttonStyle(.plain)
+            .frame(width: 44, height: 44)
+            .padding(.trailing, 8)
+            .disabled(isCompleting)
         }
-        .buttonStyle(.plain)
     }
 }
 
