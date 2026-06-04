@@ -12,23 +12,7 @@ final class NewTripViewModel {
         case dates = 3
         case carryOnOnly = 4
         case laundry = 5
-        case interac = 6
-        case medicalAppointments = 7
-        case confirm = 8
-    }
-
-    enum InteracChoice: CaseIterable {
-        case none, phoneOnly, laptopOnly, both
-        var displayName: String {
-            switch self {
-            case .none:       return "None"
-            case .phoneOnly:  return "Phone only"
-            case .laptopOnly: return "Laptop only"
-            case .both:       return "Both"
-            }
-        }
-        var interacPhone: Bool  { self == .phoneOnly  || self == .both }
-        var interacLaptop: Bool { self == .laptopOnly || self == .both }
+        case confirm = 6
     }
 
     // MARK: - Per-step state
@@ -46,8 +30,6 @@ final class NewTripViewModel {
     var isFlyingTrip = true
     var carryOnOnly = true
     var laundryAvailable = true
-    var interacChoice: InteracChoice = .none
-    var hasMedicalAppointment = false
 
     // MARK: - Clone state
 
@@ -75,22 +57,18 @@ final class NewTripViewModel {
         region = source.region
         purposes = Set(source.purposes)
         companions = Set(source.companions)
-        activities = Set(source.activities)
         weather = source.weather
         isFlyingTrip = source.isFlyingTrip
         carryOnOnly = source.carryOnOnly
         laundryAvailable = source.laundryAvailable
-        hasMedicalAppointment = source.hasMedicalAppointment
         departureDate = today
         returnDate = ret
-        interacChoice = {
-            switch (source.interacPhone, source.interacLaptop) {
-            case (true,  true):  return .both
-            case (true,  false): return .phoneOnly
-            case (false, true):  return .laptopOnly
-            default:             return .none
-            }
-        }()
+
+        var acts = Set(source.activities)
+        if source.hasMedicalAppointment { acts.insert(.medical) }
+        if source.interacPhone || source.interacLaptop { acts.insert(.clientDevices) }
+        activities = acts
+
         currentStep = .dates
     }
 
@@ -105,11 +83,9 @@ final class NewTripViewModel {
         return shortDest
     }
 
-    var skipsMedicalStep: Bool { region == .canada || region == .us }
     var skipsCarryOnStep: Bool { !isFlyingTrip }
     var totalSteps: Int {
         var count = WizardStep.allCases.count
-        if skipsMedicalStep { count -= 1 }
         if skipsCarryOnStep { count -= 1 }
         return count
     }
@@ -180,11 +156,7 @@ final class NewTripViewModel {
                 currentStep = .carryOnOnly
             }
         case .carryOnOnly:      currentStep = .laundry
-        case .laundry:          currentStep = .interac
-        case .interac:
-            skipsMedicalStep ? (currentStep = .confirm) : (currentStep = .medicalAppointments)
-        case .medicalAppointments:
-            currentStep = .confirm
+        case .laundry:          currentStep = .confirm
         case .confirm:
             isGenerating = true
         }
@@ -192,15 +164,12 @@ final class NewTripViewModel {
 
     func back() {
         switch currentStep {
-        case .activities:           break
-        case .nameDestination:      currentStep = .activities
-        case .dates:                currentStep = .nameDestination
-        case .carryOnOnly:          currentStep = .dates
-        case .laundry:              currentStep = skipsCarryOnStep ? .dates : .carryOnOnly
-        case .interac:              currentStep = .laundry
-        case .medicalAppointments:  currentStep = .interac
-        case .confirm:
-            skipsMedicalStep ? (currentStep = .interac) : (currentStep = .medicalAppointments)
+        case .activities:       break
+        case .nameDestination:  currentStep = .activities
+        case .dates:            currentStep = .nameDestination
+        case .carryOnOnly:      currentStep = .dates
+        case .laundry:          currentStep = skipsCarryOnStep ? .dates : .carryOnOnly
+        case .confirm:          currentStep = .laundry
         }
     }
 
@@ -267,9 +236,9 @@ final class NewTripViewModel {
             laundryAvailable:      laundryAvailable,
             carryOnOnly:           carryOnOnly,
             business:              purposes.contains(.business),
-            interacPhone:          interacChoice.interacPhone,
-            interacLaptop:         interacChoice.interacLaptop,
-            hasMedicalAppointment: hasMedicalAppointment,
+            interacPhone:          activities.contains(.clientDevices),
+            interacLaptop:         activities.contains(.clientDevices),
+            hasMedicalAppointment: activities.contains(.medical),
             isFlyingTrip:          isFlyingTrip
         )
 
