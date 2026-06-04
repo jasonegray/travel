@@ -232,7 +232,7 @@ private struct BinaryCard: View {
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
+        Button(action: { HapticManager.selectionChanged(); action() }) {
             VStack(spacing: 8) {
                 if let icon {
                     Image(systemName: icon)
@@ -347,6 +347,7 @@ private struct NameDestinationStep: View {
 
     @MainActor
     private func pick(_ suggestion: MKLocalSearchCompletion) async {
+        HapticManager.lightImpact()
         searchFocused = false
         _ = await completer.select(suggestion)
         destinationText          = completer.query
@@ -490,7 +491,7 @@ private struct ActivityChip: View {
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
+        Button(action: { HapticManager.selectionChanged(); action() }) {
             VStack(spacing: 8) {
                 Image(systemName: icon)
                     .font(.title2)
@@ -520,7 +521,7 @@ private struct AddOnChip: View {
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
+        Button(action: { HapticManager.selectionChanged(); action() }) {
             VStack(spacing: 4) {
                 Image(systemName: icon)
                     .font(.title3)
