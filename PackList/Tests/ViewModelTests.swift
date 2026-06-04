@@ -189,19 +189,19 @@ final class NewTripViewModelTests: XCTestCase {
         let vm = NewTripViewModel()
         vm.destination = "Orlando"
 
-        var depComps = DateComponents()
-        depComps.year = 2027; depComps.month = 5; depComps.day = 24; depComps.hour = 12
-        var retComps = DateComponents()
-        retComps.year = 2027; retComps.month = 5; retComps.day = 27; retComps.hour = 12
+        XCTAssertEqual(vm.generatedTripName, "Orlando Conference",
+                       "Default activities include .conference — generated name must be 'Orlando Conference'")
+        XCTAssertTrue(vm.generatedTripName.contains("Conference"),
+                      "Generated name must include the primary activity type")
+    }
 
-        let cal = Calendar(identifier: .gregorian)
-        vm.departureDate = cal.date(from: depComps)!
-        vm.returnDate    = cal.date(from: retComps)!
-
-        XCTAssertEqual(vm.generatedTripName, "Orlando · May 24–27",
-                       "Generated name must be 'Destination · Month DayStart–DayEnd'")
-        XCTAssertFalse(vm.generatedTripName.contains("Conference"),
-                       "Generated name must not include activity names")
+    func testGeneratedNameNoActivitiesUsesDestinationOnly() {
+        let vm = NewTripViewModel()
+        vm.destination = "Paris"
+        vm.activities = []
+        vm.purposes = []
+        XCTAssertEqual(vm.generatedTripName, "Paris",
+                       "With no recognized activities or purposes, generated name must be just the destination")
     }
 }
 
@@ -1018,22 +1018,25 @@ final class NewTripViewModelCoverageTests: XCTestCase {
         XCTAssertEqual(vm.currentStep, .laundry, "Back from confirm must go to laundry")
     }
 
-    // generatedTripName across month boundary
-    func testGeneratedTripNameSpanningMonths() {
+    // generatedTripName with conference activity includes type and destination
+    func testGeneratedTripNameConferenceActivity() {
         let vm = NewTripViewModel()
         vm.destination = "London"
+        vm.activities = [.conference]
 
-        var depComps = DateComponents()
-        depComps.year = 2027; depComps.month = 5; depComps.day = 30; depComps.hour = 12
-        var retComps = DateComponents()
-        retComps.year = 2027; retComps.month = 6; retComps.day = 3; retComps.hour = 12
-        let cal = Calendar(identifier: .gregorian)
-        vm.departureDate = cal.date(from: depComps)!
-        vm.returnDate    = cal.date(from: retComps)!
+        XCTAssertEqual(vm.generatedTripName, "London Conference",
+                       "Conference activity must produce '[Destination] Conference'")
+    }
 
-        XCTAssertTrue(vm.generatedTripName.contains("London"), "Generated name must contain destination")
-        XCTAssertTrue(vm.generatedTripName.contains("May"), "Generated name must contain departure month")
-        XCTAssertTrue(vm.generatedTripName.contains("Jun"), "Generated name must contain return month for cross-month trip")
+    // generatedTripName uses destination when multiple city components present
+    func testGeneratedTripNameStripsRegionSuffix() {
+        let vm = NewTripViewModel()
+        vm.destination = "London, England, UK"
+        vm.activities = []
+        vm.purposes = []
+
+        XCTAssertEqual(vm.generatedTripName, "London",
+                       "Generated name must strip region/country suffix after first comma")
     }
 
     // finalTripName prefers custom tripName when set
