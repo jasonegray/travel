@@ -113,14 +113,12 @@ struct NewTripView: View {
     @ViewBuilder
     private var stepContent: some View {
         switch vm.currentStep {
-        case .activities:           ActivitiesStep(vm: vm)
-        case .nameDestination:      NameDestinationStep(vm: vm)
-        case .dates:                DatesStep(vm: vm)
-        case .carryOnOnly:          CarryOnStep(vm: vm)
-        case .laundry:              LaundryStep(vm: vm)
-        case .interac:              InteracStep(vm: vm)
-        case .medicalAppointments:  MedicalStep(vm: vm)
-        case .confirm:              ConfirmStep(vm: vm)
+        case .activities:      ActivitiesStep(vm: vm)
+        case .nameDestination: NameDestinationStep(vm: vm)
+        case .dates:           DatesStep(vm: vm)
+        case .carryOnOnly:     CarryOnStep(vm: vm)
+        case .laundry:         LaundryStep(vm: vm)
+        case .confirm:         ConfirmStep(vm: vm)
         }
     }
 }
@@ -417,7 +415,7 @@ private struct DatesStep: View {
 // MARK: - Step 1: Activities
 
 private let tripTypeActivities: [ActivityType] = [.conference, .golf]
-private let addOnActivities: [ActivityType]    = [.beach, .pool, .hiking, .formalDinner, .workout, .sightseeing]
+private let addOnActivities: [ActivityType]    = [.beach, .formalDinner, .workout, .sightseeing, .medical, .clientDevices]
 
 private struct ActivitiesStep: View {
     @Bindable var vm: NewTripViewModel
@@ -568,41 +566,6 @@ private struct LaundryStep: View {
     var body: some View {
         StepShell(title: "Will laundry be available?", subtitle: "Affects how many clothes we suggest.") {
             BinaryPicker(yesLabel: "Yes, laundry access", noLabel: "No, packing for the full trip", yesIcon: "washer.fill", noIcon: "xmark.circle.fill", value: $vm.laundryAvailable)
-        }
-    }
-}
-
-// MARK: - Step 6: Interac
-
-private struct InteracStep: View {
-    @Bindable var vm: NewTripViewModel
-
-    var body: some View {
-        StepShell(title: "Are you travelling with electronics?", subtitle: "We'll include the right charging cables and accessories.") {
-            VStack(spacing: 10) {
-                ForEach(NewTripViewModel.InteracChoice.allCases, id: \.self) { choice in
-                    OptionCard(
-                        title: choice.displayName,
-                        isSelected: vm.interacChoice == choice,
-                        action: { vm.interacChoice = choice }
-                    )
-                }
-            }
-        }
-    }
-}
-
-// MARK: - Step 7: Medical appointments
-
-private struct MedicalStep: View {
-    @Bindable var vm: NewTripViewModel
-
-    var body: some View {
-        StepShell(
-            title: "Any medical appointments?",
-            subtitle: "We'll add relevant items like your health card, referral letters, and any specific supplies."
-        ) {
-            BinaryPicker(yesLabel: "Yes, I have appointments", noLabel: "No appointments", yesIcon: "cross.case.fill", noIcon: "xmark.circle.fill", value: $vm.hasMedicalAppointment)
         }
     }
 }
@@ -814,6 +777,8 @@ extension ActivityType {
         case .workout:      return "Workout"
         case .sightseeing:  return "Sightseeing"
         case .conference:   return "Conference"
+        case .medical:       return "Medical"
+        case .clientDevices: return "Client Devices"
         }
     }
 
@@ -827,6 +792,8 @@ extension ActivityType {
         case .workout:      return "figure.run"
         case .sightseeing:  return "camera"
         case .conference:   return "building.2.fill"
+        case .medical:       return "cross.case.fill"
+        case .clientDevices: return "laptopcomputer"
         }
     }
 }

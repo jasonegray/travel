@@ -284,7 +284,10 @@ private struct PackingTab: View {
                                     Task { await vm.deleteCustomItem(item) }
                                 },
                                 onEdit: { item in
-                                    guard !vm.trip.isArchived else { return }
+                                    guard !vm.trip.isArchived else {
+                                        vm.toastMessage = "Archived trips can't be edited — unarchive to make changes"
+                                        return
+                                    }
                                     editingItem = item
                                 }
                             )
@@ -308,7 +311,10 @@ private struct PackingTab: View {
                                     Task { await vm.deleteCustomItem(item) }
                                 },
                                 onEdit: { item in
-                                    guard !vm.trip.isArchived else { return }
+                                    guard !vm.trip.isArchived else {
+                                        vm.toastMessage = "Archived trips can't be edited — unarchive to make changes"
+                                        return
+                                    }
                                     editingItem = item
                                 }
                             )
@@ -392,11 +398,12 @@ private struct CategoryPageView: View {
                 Image(systemName: group.category.sfSymbol)
                     .font(.headline)
                     .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
                 Text(group.category.displayName)
                     .font(.headline)
                 Spacer()
                 if allPacked {
-                    Text("All packed ✓")
+                    Label("All packed", systemImage: "checkmark")
                         .font(.caption)
                         .fontWeight(.medium)
                         .foregroundStyle(Color.green)
@@ -450,11 +457,12 @@ private struct BagPageView: View {
                 Image(systemName: group.location.sfSymbol)
                     .font(.headline)
                     .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
                 Text(group.location.displayName)
                     .font(.headline)
                 Spacer()
                 if allPacked {
-                    Text("All packed ✓")
+                    Label("All packed", systemImage: "checkmark")
                         .font(.caption)
                         .fontWeight(.medium)
                         .foregroundStyle(Color.green)
@@ -559,7 +567,10 @@ private struct PrepTab: View {
                                 Task { await vm.deleteCustomItem(item) }
                             },
                             onEdit: { item in
-                                guard !vm.trip.isArchived else { return }
+                                guard !vm.trip.isArchived else {
+                                    vm.toastMessage = "Archived trips can't be edited — unarchive to make changes"
+                                    return
+                                }
                                 editingTask = item
                             }
                         )
@@ -633,11 +644,12 @@ private struct TaskPageView: View {
                 Image(systemName: group.timing.sfSymbol)
                     .font(.headline)
                     .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
                 Text(group.timing.sectionLabel)
                     .font(.headline)
                 Spacer()
                 if allDone {
-                    Text("All done ✓")
+                    Label("All done", systemImage: "checkmark")
                         .font(.caption)
                         .fontWeight(.medium)
                         .foregroundStyle(Color.green)
