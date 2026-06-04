@@ -105,16 +105,6 @@ struct HomeView: View {
             }
             .navigationTitle("Trips")
             .toolbar {
-                if vm.heroTrip != nil {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            tripToDelete = vm.heroTrip
-                        } label: {
-                            Image(systemName: "trash")
-                        }
-                        .tint(.red)
-                    }
-                }
                 if vm.hasAnyTrips {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button(action: { showNewTrip = true }) {
