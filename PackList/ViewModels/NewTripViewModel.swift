@@ -119,21 +119,25 @@ final class NewTripViewModel {
         let dest = destination
             .components(separatedBy: ",").first?
             .trimmingCharacters(in: .whitespaces) ?? destination
-        let name = dest.isEmpty ? "Trip" : dest
+        let shortDest = dest.isEmpty ? "Trip" : dest
 
-        let cal = Calendar(identifier: .gregorian)
-        let depMonth = cal.component(.month, from: departureDate)
-        let retMonth = cal.component(.month, from: returnDate)
-        let depDay   = cal.component(.day,   from: departureDate)
-        let retDay   = cal.component(.day,   from: returnDate)
-        let depMonthStr = departureDate.formatted(.dateTime.month(.abbreviated))
-
-        if depMonth == retMonth {
-            return "\(name) · \(depMonthStr) \(depDay)–\(retDay)"
-        } else {
-            let retMonthStr = returnDate.formatted(.dateTime.month(.abbreviated))
-            return "\(name) · \(depMonthStr) \(depDay)–\(retMonthStr) \(retDay)"
+        if let typeLabel = primaryTripTypeLabel {
+            return "\(typeLabel) in \(shortDest)"
         }
+        return shortDest
+    }
+
+    private var primaryTripTypeLabel: String? {
+        if activities.contains(.conference)                     { return "Conference" }
+        if activities.contains(.golf) || purposes.contains(.golf) { return "Golf" }
+        if activities.contains(.beach)                          { return "Beach" }
+        if activities.contains(.hiking)                         { return "Hiking" }
+        if activities.contains(.pool)                           { return "Pool" }
+        if activities.contains(.workout)                        { return "Workout" }
+        if activities.contains(.sightseeing)                    { return "Sightseeing" }
+        if purposes.contains(.business)                         { return "Business" }
+        if purposes.contains(.family)                           { return "Family" }
+        return nil
     }
 
     var finalTripName: String {
