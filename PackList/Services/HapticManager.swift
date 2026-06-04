@@ -22,12 +22,12 @@ enum HapticManager {
 
     // MARK: - Impact
 
-    /// Lightweight navigation: expand/collapse, wizard advance, form save.
+    /// Lightweight navigation: expand/collapse, form save.
     static func lightImpact() {
         lightGenerator.impactOccurred()
     }
 
-    /// Meaningful but non-destructive state commit: item un-complete, archive.
+    /// Meaningful state commit: wizard step advance, item un-complete, archive.
     static func mediumImpact() {
         mediumGenerator.impactOccurred()
     }
