@@ -440,6 +440,7 @@ private struct CompletedTripCard: View {
             Image(systemName: "checkmark.circle.fill")
                 .foregroundStyle(.green)
                 .font(.title3)
+                .accessibilityLabel("Completed")
         }
         .padding(14)
         .background(Color(.secondarySystemBackground))
@@ -550,6 +551,7 @@ private struct ArchivedTripCard: View {
             Image(systemName: "archivebox.fill")
                 .foregroundStyle(.secondary)
                 .font(.title3)
+                .accessibilityLabel("Archived")
         }
         .padding(14)
         .background(Color(.secondarySystemBackground))
@@ -610,6 +612,7 @@ struct ActiveTripCard: View {
                         HStack(spacing: 4) {
                             Image(systemName: trip.weather.sfSymbol)
                                 .foregroundStyle(trip.weather.iconColor)
+                                .accessibilityHidden(true)
                             Text(trip.departureDate, format: .dateTime.month(.abbreviated).day().year())
                         }
                         .font(.subheadline)
@@ -633,6 +636,7 @@ struct ActiveTripCard: View {
                     Image(systemName: "checkmark.circle.fill")
                         .font(.title2)
                         .foregroundStyle(.green)
+                        .accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Good to go")
                             .font(.subheadline)
