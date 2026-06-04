@@ -9,8 +9,7 @@ struct RootContainerView: View {
 
     @State private var selectedTab = 0
     @State private var showOnboarding = !UserDefaults.standard.bool(forKey: UserDefaults.onboardingCompletedKey)
-    @State private var showNewTripAfterOnboarding = false
-    @State private var showNewTripFromShortcut = false
+    @State private var showNewTrip = false
 
     // Tab index constants
     private enum Tab {
@@ -40,14 +39,11 @@ struct RootContainerView: View {
             OnboardingView { createFirstTrip in
                 showOnboarding = false
                 if createFirstTrip {
-                    showNewTripAfterOnboarding = true
+                    showNewTrip = true
                 }
             }
         }
-        .sheet(isPresented: $showNewTripAfterOnboarding) {
-            NewTripView()
-        }
-        .sheet(isPresented: $showNewTripFromShortcut) {
+        .sheet(isPresented: $showNewTrip) {
             NewTripView()
         }
         // Route on first appear (handles cold-launch shortcut already in router)
@@ -64,7 +60,7 @@ struct RootContainerView: View {
         switch action {
         case .newTrip:
             selectedTab = Tab.trips
-            showNewTripFromShortcut = true
+            showNewTrip = true
         case .nextTrip:
             selectedTab = Tab.trips
         case .masterList:

@@ -7,6 +7,7 @@ private let logger = Logger(subsystem: "com.packlist", category: "PackListApp")
 
 // MARK: - App delegate (shortcut handling)
 
+@MainActor
 final class AppDelegate: NSObject, UIApplicationDelegate {
     // Cold-launch: shortcut arrives in launchOptions before the SwiftUI tree is ready.
     // Store it here; PackListApp wires it to ShortcutRouter once the scene is running.
@@ -46,7 +47,7 @@ struct PackListApp: App {
     private let container: ModelContainer
     private let repositories: RepositoryContainer
     private let profile = ProfileViewModel()
-    private let shortcutRouter = ShortcutRouter()
+    @State private var shortcutRouter = ShortcutRouter()
 
     @State private var showLaunchScreen = true
     @AppStorage("packListStoreWasReset") private var showStoreWipeAlert = false
@@ -72,8 +73,10 @@ struct PackListApp: App {
             }
             .task {
                 // Wire AppDelegate → router for app-already-running shortcut callbacks.
+                // AppDelegate is @MainActor; assumeIsolated asserts the call site is already
+                // on the main actor without the overhead of creating an extra Task.
                 appDelegate.onShortcutAction = { [shortcutRouter] item in
-                    Task { @MainActor in shortcutRouter.handle(item) }
+                    MainActor.assumeIsolated { shortcutRouter.handle(item) }
                 }
                 // Flush any shortcut that arrived during cold launch.
                 if let item = appDelegate.coldLaunchShortcutItem {
