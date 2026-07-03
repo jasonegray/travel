@@ -320,6 +320,24 @@ gh api graphql -f query='{
 
 ---
 
+## Terminal agent working directory isolation — MANDATORY
+
+Every terminal agent MUST work in an isolated git worktree, NOT in the main project checkout at `~/Documents/Projects/PackList`. This prevents concurrent-terminal collisions where one agent's branch switch or commit disrupts another agent's working state.
+
+Setup pattern for each terminal at session start:
+1. Create a per-terminal worktree: `git worktree add ~/Documents/Projects/PackList/.claude/worktrees/T1-issue-<num> -b fix/issue-<num>-<slug>`
+2. `cd` into the worktree for all work
+3. Never `cd` back to the main checkout during the session
+4. On completion, clean up: `git worktree remove ~/Documents/Projects/PackList/.claude/worktrees/T1-issue-<num>`
+
+The main checkout at `~/Documents/Projects/PackList/` is reserved for Jason's manual work and orchestration by Claude Chat / Claude Code chat context. Terminal agents that touch it directly are considered a bug — stop and report `NEEDS JASON`.
+
+Detection: agents can check if they are in a worktree via `git rev-parse --show-toplevel` — if it does NOT contain "worktrees" in the path, the agent is in the wrong location and must set up a worktree before proceeding.
+
+Existing worktree infrastructure: the `.claude/worktrees/` directory already exists in the project. Use it.
+
+---
+
 ## Project board workflow — mandatory for every issue
 
 ### Adding issues to the board (mandatory)
