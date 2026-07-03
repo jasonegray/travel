@@ -36,6 +36,14 @@ struct TripDetailView: View {
             } else if vm.trip.status == .completed {
                 TripCompletedBanner(manuallyCompletedAt: vm.trip.manuallyCompletedAt)
                 Divider()
+            } else if vm.trip.status == .active {
+                MarkCompletedBanner {
+                    Task {
+                        guard let repos = repositories else { return }
+                        await vm.markCompleted(sessions: repos.tripSessions)
+                    }
+                }
+                Divider()
             }
 
             if showTabPicker {
@@ -876,6 +884,34 @@ private struct TripCompletedBanner: View {
         .padding(.horizontal)
         .padding(.vertical, 10)
         .background(Color.green.opacity(0.08))
+    }
+}
+
+// MARK: - Mark completed banner
+
+private struct MarkCompletedBanner: View {
+    let onComplete: () -> Void
+
+    var body: some View {
+        Button(action: onComplete) {
+            HStack(spacing: 8) {
+                Image(systemName: "checkmark.circle")
+                Text("Back from your trip? Mark it complete")
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .foregroundStyle(Color.accentColor)
+            .padding(.horizontal)
+            .frame(minHeight: 44)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .background(Color.accentColor.opacity(0.08))
+        .accessibilityIdentifier("mark_completed_banner")
     }
 }
 
