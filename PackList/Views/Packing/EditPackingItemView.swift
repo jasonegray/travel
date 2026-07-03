@@ -33,14 +33,17 @@ struct EditPackingItemView: View {
             .navigationTitle(item.name)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
+                    Button("Done") {
+                        let trimmed = notes.trimmingCharacters(in: .whitespacesAndNewlines)
+                        onSave(quantity, trimmed.isEmpty ? nil : trimmed)
+                        dismiss()
+                    }
                 }
             }
-        }
-        .onDisappear {
-            let trimmed = notes.trimmingCharacters(in: .whitespacesAndNewlines)
-            onSave(quantity, trimmed.isEmpty ? nil : trimmed)
         }
     }
 }
