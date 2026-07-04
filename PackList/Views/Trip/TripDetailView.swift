@@ -585,6 +585,7 @@ private struct PrepTab: View {
                         TaskPageView(
                             group: group,
                             deadline: vm.deadline(for: group.timing),
+                            compressed: vm.isDeadlineCompressed(for: group.timing),
                             onToggle: { item in
                                 withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
                                 Task { await vm.save(item: item) }
@@ -656,6 +657,7 @@ private struct PrepTasksEmptyState: View {
 private struct TaskPageView: View {
     let group: (timing: TaskTiming, items: [TripItem])
     let deadline: Date
+    var compressed: Bool = false
     let onToggle: (TripItem) -> Void
     let onDelete: (TripItem) -> Void
     let onEdit: (TripItem) -> Void
@@ -663,6 +665,9 @@ private struct TaskPageView: View {
     private var remaining: Int { group.items.filter { $0.completedAt == nil }.count }
     private var allDone: Bool { remaining == 0 }
     private var overdue: Bool { !allDone && deadline < Calendar.current.startOfDay(for: .now) }
+    private var sectionLabel: String {
+        compressed ? TaskTiming.compressedSectionLabel : group.timing.sectionLabel
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -671,7 +676,7 @@ private struct TaskPageView: View {
                     .font(.headline)
                     .foregroundStyle(.secondary)
                     .accessibilityHidden(true)
-                Text(group.timing.sectionLabel)
+                Text(sectionLabel)
                     .font(.headline)
                 Spacer()
                 if allDone {
@@ -951,6 +956,10 @@ extension TaskTiming {
         case .uponArrival:     return "Upon Arrival"
         }
     }
+
+    /// Shown when a bucket's lead time was longer than the trip's, so its
+    /// deadline collapsed to the day the trip was created (#350).
+    static let compressedSectionLabel = "As Soon As Possible"
 
     var sfSymbol: String {
         switch self {
