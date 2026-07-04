@@ -218,7 +218,7 @@ private struct NameStep: View {
     var body: some View {
         OnboardingStepShell(
             title: "Your Name",
-            subtitle: "Used when sharing trip details with your emergency contact",
+            subtitle: "Used to personalize your trips and packing lists",
             onContinue: onContinue,
             onSkip: onSkip
         ) {
