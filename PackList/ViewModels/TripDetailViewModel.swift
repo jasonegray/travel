@@ -315,7 +315,8 @@ final class TripDetailViewModel {
     var completedTasks: Int { items.filter { $0.itemType == .task && $0.completedAt != nil }.count }
     var totalTasks:     Int { items.filter { $0.itemType == .task }.count }
 
-    func deadline(for timing: TaskTiming) -> Date {
+    /// The raw lead-time deadline for a bucket, as a fixed offset from departure.
+    private func rawDeadline(for timing: TaskTiming) -> Date {
         let cal = Calendar.current
         let dep = trip.departureDate
         switch timing {
@@ -327,5 +328,26 @@ final class TripDetailViewModel {
         case .onPlane:         return dep
         case .uponArrival:     return dep
         }
+    }
+
+    /// The earliest a deadline can meaningfully fall. A trip created inside a
+    /// bucket's lead window never gave the user that window, so its deadline is
+    /// pinned to the day the trip was created rather than a date in the past.
+    private var earliestDeadline: Date {
+        Calendar.current.startOfDay(for: trip.createdAt)
+    }
+
+    /// The effective deadline shown to the user, clamped so it never predates
+    /// trip creation. This prevents short-lead trips from surfacing a wall of
+    /// tasks that are "overdue" the instant the trip is created (#350).
+    func deadline(for timing: TaskTiming) -> Date {
+        max(rawDeadline(for: timing), earliestDeadline)
+    }
+
+    /// True when a bucket's raw lead time exceeded the trip's lead time, so its
+    /// deadline collapsed to "as soon as possible". Drives a date-aware section
+    /// label instead of a misleading one (e.g. "A Week Before" on a 4-day trip).
+    func isDeadlineCompressed(for timing: TaskTiming) -> Bool {
+        rawDeadline(for: timing) < earliestDeadline
     }
 }

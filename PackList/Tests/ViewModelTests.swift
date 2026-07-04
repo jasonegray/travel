@@ -847,6 +847,56 @@ final class TripDetailViewModelCoverageTests: XCTestCase {
         XCTAssertNotNil(fetched?.completedAt,
                         "completedAt must be persisted to the store after save(item:) — not just held in memory")
     }
+
+    // MARK: - Deadline clamping (#350)
+
+    /// Build a trip departing `daysOut` days from now, created `createdDaysAgo`
+    /// days ago, without persisting (deadline math needs no store).
+    private func trip(daysOut: Int, createdDaysAgo: Int = 0) -> TripSession {
+        let cal = Calendar.current
+        let dep = cal.date(byAdding: .day, value: daysOut, to: .now)!
+        let ret = cal.date(byAdding: .day, value: daysOut + 3, to: .now)!
+        let created = cal.date(byAdding: .day, value: -createdDaysAgo, to: .now)!
+        return TripSession(name: "T", destination: "X", departureDate: dep,
+                           returnDate: ret, createdAt: created)
+    }
+
+    func testDeadlineClampedToCreationForShortTrip() {
+        // 4-day-out trip created today: the "week before" bucket is unreachable.
+        let vm = TripDetailViewModel(trip: trip(daysOut: 4))
+        let cal = Calendar.current
+        let deadline = vm.deadline(for: .weekBefore)
+
+        XCTAssertGreaterThanOrEqual(deadline, cal.startOfDay(for: .now),
+            "A week-before deadline on a 4-day trip must not fall before the trip was created")
+        XCTAssertFalse(deadline < cal.startOfDay(for: .now),
+            "The clamped deadline must not read as overdue on the day the trip is created")
+        XCTAssertTrue(vm.isDeadlineCompressed(for: .weekBefore),
+            "The week-before bucket is unreachable on a 4-day trip, so it should be flagged compressed")
+    }
+
+    func testDeadlineNotClampedForLongLeadTrip() {
+        // 21-day-out trip: every bucket fits, so deadlines keep their real offsets.
+        let vm = TripDetailViewModel(trip: trip(daysOut: 21))
+        let cal = Calendar.current
+        let expected = cal.date(byAdding: .day, value: 14, to: cal.startOfDay(for: .now))!
+
+        XCTAssertEqual(cal.startOfDay(for: vm.deadline(for: .weekBefore)),
+                       cal.startOfDay(for: expected),
+            "On a long-lead trip the week-before deadline stays 7 days before departure")
+        XCTAssertFalse(vm.isDeadlineCompressed(for: .weekBefore),
+            "No bucket should be compressed when the trip has ample lead time")
+        XCTAssertFalse(vm.isDeadlineCompressed(for: .threeDaysBefore))
+    }
+
+    func testDeadlineBecomesOverdueDayAfterCreation() {
+        // Trip created yesterday, departing in 3 days: yesterday's clamped
+        // week-before deadline is now genuinely in the past → overdue is correct.
+        let vm = TripDetailViewModel(trip: trip(daysOut: 3, createdDaysAgo: 1))
+        let cal = Calendar.current
+        XCTAssertTrue(vm.deadline(for: .weekBefore) < cal.startOfDay(for: .now),
+            "A clamped task left untouched past its creation day should legitimately become overdue")
+    }
 }
 
 // MARK: - NewTripViewModel additional coverage tests
