@@ -562,15 +562,34 @@ Any spike evaluating an external API or third-party service must address all of 
 
 Spikes that recommend an API without addressing all five points will be rejected.
 
-## Terminal report format
+## Terminal report format — MANDATORY
+
+> **Background:** T4 completed issues #351 and #354 — branches pushed, draft PRs #359 and #360 opened, worktree clean — then ended its session without producing a TERMINAL REPORT. The work was only reconstructable afterward by manually searching PRs, remote branches, board state, and worktrees. Neither Jason nor Claude Chat could reconcile board state, confirm the work happened, or run the merge/close lifecycle, because no report ever reached them. This rule closes that gap.
+
+### Every session MUST produce a report — no exceptions
+
+Every terminal agent session MUST produce a TERMINAL REPORT before ending, **regardless of outcome**. This includes:
+
+- **Successful completion** — report includes PR link, files changed, and tests passing / simulator build confirmation
+- **Blocked / needs guidance** — report includes the blocker and what was tried
+- **Failed build or test failures** — report includes the failure and the current state of the branch
+- **Time-out or agent-side termination** — report includes progress reached at the termination point
+
+There is no exception. Terminal Reports are not optional. **Silently ending a session without a report is a bug** — the orchestrator (Jason and Claude Chat) cannot reconcile board state, verify that work happened, or diagnose problems without one.
+
+The "background job safety rule" some agents invoke is **NOT** a rule that permits skipping the report. Draft PRs are permitted (the agent uses judgment on merge vs. draft), but the TERMINAL REPORT documenting the draft state — and why it was left as a draft — is still mandatory.
+
+If a terminal session ends without a report reaching Jason, **the session is considered failed and must be re-run from scratch after investigation.**
+
+### Report format
 
 ```text
 TERMINAL REPORT — T[N]
 Issue: #[N] [title]
-Status: COMPLETE | NEEDS JASON
-PR: #[N] [url] — merged
+Status: COMPLETE | NEEDS JASON | BLOCKED | FAILED | TERMINATED
+PR: #[N] [url] — merged | draft (reason) | not opened
 Files changed: [list]
 Summary: [1-2 sentences max]
-If NEEDS JASON: [one sentence]
+If not COMPLETE: [the blocker/failure and what was tried, or progress at termination]
 Next: ready for new assignment
 ```
