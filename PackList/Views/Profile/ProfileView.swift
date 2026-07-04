@@ -41,10 +41,12 @@ struct ProfileView: View {
                 Section("Permissions") {
                     PermissionRow(name: "Contacts",
                                   systemImage: "person.crop.circle",
-                                  status: contactsStatus.permissionLabel)
+                                  status: contactsStatus.permissionLabel,
+                                  isGranted: contactsStatus.isGranted)
                     PermissionRow(name: "Notifications",
                                   systemImage: "bell",
-                                  status: notificationsStatus.permissionLabel)
+                                  status: notificationsStatus.permissionLabel,
+                                  isGranted: notificationsStatus.isGranted)
                 }
 
                 // MARK: Section 4 — App
@@ -104,15 +106,28 @@ private struct PermissionRow: View {
     let name: String
     let systemImage: String
     let status: String
+    let isGranted: Bool
 
     var body: some View {
         Button {
+            // Already granted → nothing to change in Settings. Acknowledge the
+            // tap with a subtle haptic instead of a jarring app-switch to Settings.
+            guard !isGranted else {
+                HapticManager.selectionChanged()
+                return
+            }
             guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
             UIApplication.shared.open(url)
         } label: {
             LabeledContent {
-                Text(status)
-                    .foregroundStyle(.secondary)
+                HStack(spacing: 6) {
+                    Text(status)
+                        .foregroundStyle(.secondary)
+                    if isGranted {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                    }
+                }
             } label: {
                 Label(name, systemImage: systemImage)
                     .foregroundStyle(.primary)
@@ -178,6 +193,8 @@ private extension CNAuthorizationStatus {
         @unknown default:    return "Unknown"
         }
     }
+
+    var isGranted: Bool { self == .authorized }
 }
 
 private extension UNAuthorizationStatus {
@@ -191,4 +208,6 @@ private extension UNAuthorizationStatus {
         @unknown default:    return "Unknown"
         }
     }
+
+    var isGranted: Bool { self == .authorized }
 }
