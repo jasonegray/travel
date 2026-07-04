@@ -248,15 +248,18 @@ private struct HeroSection: View {
 
             let upNext = vm.upNextTasks(from: items, departure: trip.departureDate)
             if !upNext.isEmpty {
+                let prep = vm.prepProgress(from: items)
                 UpNextView(
                     tasks: upNext,
+                    totalIncomplete: prep.total - prep.completed,
                     departure: trip.departureDate,
                     deadlineFor: vm.recommendedByDate,
                     onComplete: { item in
                         withAnimation(.easeInOut(duration: 0.2)) { vm.toggle(item: item) }
                         guard let repos = repositories else { return }
                         Task { await vm.save(item: item, repository: repos.tripItems) }
-                    }
+                    },
+                    onSeeAll: { navTarget = TripNavTarget(tripId: tripId, tab: .prepTasks) }
                 )
                 .padding(.horizontal)
             }
@@ -830,11 +833,15 @@ private struct BagCard: View {
 
 struct UpNextView: View {
     let tasks: [TripItem]
+    let totalIncomplete: Int
     let departure: Date
     let deadlineFor: (TaskTiming?, Date) -> Date
     let onComplete: (TripItem) -> Void
+    let onSeeAll: () -> Void
 
     @State private var completingIDs: Set<UUID> = []
+
+    private var overflowCount: Int { max(0, totalIncomplete - tasks.count) }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -865,6 +872,30 @@ struct UpNextView: View {
                         Divider()
                             .padding(.leading, 16)
                     }
+                }
+
+                if overflowCount > 0 {
+                    Divider()
+                        .padding(.leading, 16)
+                    Button(action: onSeeAll) {
+                        HStack(spacing: 4) {
+                            Text("+\(overflowCount) more")
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                                .foregroundStyle(Color.accentColor)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .accessibilityHidden(true)
+                        }
+                        .padding(.horizontal, 16)
+                        .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("upnext_see_all")
+                    .accessibilityLabel("See all \(totalIncomplete) prep tasks")
                 }
             }
             .background(Color(.secondarySystemBackground))
