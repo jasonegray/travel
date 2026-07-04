@@ -10,13 +10,20 @@ final class RepositoryContainer {
     let itemInsights: any ItemInsightRepository
     let pendingSuggestions: any PendingSuggestionRepository
 
+    /// Shared coordinator for the one-time master-list seed. Every path that
+    /// depends on the seed (HomeView, trip creation) awaits this instance so the
+    /// seed runs exactly once and callers never race a partially-seeded store.
+    let seedCoordinator: SeedCoordinator
+
     init(modelContext: ModelContext) {
-        masterItems = SwiftDataMasterItemRepository(context: modelContext)
+        let masterItems = SwiftDataMasterItemRepository(context: modelContext)
+        self.masterItems = masterItems
         tripSessions = SwiftDataTripSessionRepository(context: modelContext)
         tripItems = SwiftDataTripItemRepository(context: modelContext)
         tripInfo = SwiftDataTripInfoRepository(context: modelContext)
         itemInsights = SwiftDataItemInsightRepository(context: modelContext)
         pendingSuggestions = SwiftDataPendingSuggestionRepository(context: modelContext)
+        seedCoordinator = SeedCoordinator(repository: masterItems)
     }
 }
 

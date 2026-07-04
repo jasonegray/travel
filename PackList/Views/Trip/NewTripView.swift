@@ -94,7 +94,8 @@ struct NewTripView: View {
             await vm.createTrip(
                 sessions:    repos.tripSessions,
                 tripItems:   repos.tripItems,
-                masterItems: repos.masterItems
+                masterItems: repos.masterItems,
+                seedCoordinator: repos.seedCoordinator
             )
         }
     }
