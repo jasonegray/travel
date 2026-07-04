@@ -63,10 +63,6 @@ struct RootContainerView: View {
             showNewTrip = true
         case .nextTrip:
             selectedTab = Tab.trips
-        case .masterList:
-            selectedTab = Tab.profile
-        case .profile:
-            selectedTab = Tab.profile
         }
     }
 
