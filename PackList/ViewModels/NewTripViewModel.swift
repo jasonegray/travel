@@ -224,7 +224,8 @@ final class NewTripViewModel {
     func createTrip(
         sessions:    any TripSessionRepository,
         tripItems:   any TripItemRepository,
-        masterItems: any MasterItemRepository
+        masterItems: any MasterItemRepository,
+        seedCoordinator: SeedCoordinator? = nil
     ) async {
         let session = TripSession(
             parentTripId:          parentTripId,
@@ -247,6 +248,12 @@ final class NewTripViewModel {
         )
 
         do {
+            // #348: guarantee the master-list seed has finished before reading it.
+            // On a fresh install the seed runs asynchronously; without this a fast
+            // user can confirm a trip before it completes and get an empty/partial
+            // packing list. The coordinator memoizes the seed, so once seeded this
+            // returns instantly — no added latency on the normal path.
+            await seedCoordinator?.ensureSeeded()
             let activeItems = try await masterItems.fetchActive()
             let generated   = ChecklistEngine().generateItems(for: session, from: activeItems)
             try await sessions.insert(session)

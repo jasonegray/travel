@@ -1406,6 +1406,100 @@ final class ImportServiceCoverageTests: XCTestCase {
     }
 }
 
+// MARK: - SeedCoordinator (#348 first-run seed race)
+
+@MainActor
+final class SeedCoordinatorTests: XCTestCase {
+
+    var container: ModelContainer!
+    var context: ModelContext!
+    var repos: RepositoryContainer!
+
+    override func setUpWithError() throws {
+        let schema = Schema([TripSession.self, TripInfo.self, MasterItem.self,
+                             TripItem.self, ItemInsight.self, PendingSuggestion.self])
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        container = try ModelContainer(for: schema, configurations: config)
+        context = ModelContext(container)
+        repos = RepositoryContainer(modelContext: context)
+    }
+
+    override func tearDown() {
+        repos = nil
+        context = nil
+        container = nil
+    }
+
+    // ensureSeeded() populates the master list on a fresh store
+    func testEnsureSeededPopulatesMasterItems() async throws {
+        let isolated = UserDefaults(suiteName: UUID().uuidString)!
+        let coordinator = SeedCoordinator(repository: repos.masterItems, defaults: isolated)
+
+        let ok = await coordinator.ensureSeeded()
+        XCTAssertTrue(ok, "ensureSeeded must succeed on a fresh store with the bundled seed data")
+
+        let items = try context.fetch(FetchDescriptor<MasterItem>())
+        XCTAssertGreaterThan(items.count, 200, "ensureSeeded must populate the master list; got \(items.count)")
+    }
+
+    // Concurrent + repeated calls run the seed exactly once (memoized, no double-insert race)
+    func testEnsureSeededRunsSeedOnlyOnce() async throws {
+        let isolated = UserDefaults(suiteName: UUID().uuidString)!
+        let coordinator = SeedCoordinator(repository: repos.masterItems, defaults: isolated)
+
+        // Fire three overlapping calls, then one more after they settle
+        async let r1 = coordinator.ensureSeeded()
+        async let r2 = coordinator.ensureSeeded()
+        async let r3 = coordinator.ensureSeeded()
+        let concurrent = await [r1, r2, r3]
+        XCTAssertEqual(concurrent, [true, true, true], "All concurrent callers must observe a successful seed")
+
+        let countAfterConcurrent = try context.fetch(FetchDescriptor<MasterItem>()).count
+        XCTAssertGreaterThan(countAfterConcurrent, 200, "Seed must have populated the master list")
+
+        let again = await coordinator.ensureSeeded()
+        XCTAssertTrue(again, "A later call must still report seeded")
+        let countAfterRepeat = try context.fetch(FetchDescriptor<MasterItem>()).count
+        XCTAssertEqual(countAfterConcurrent, countAfterRepeat,
+                       "Overlapping and repeated ensureSeeded calls must not double-insert items")
+    }
+
+    // The #348 fix: creating a trip against an unseeded store, awaiting the
+    // coordinator inside createTrip, must produce a full (non-empty) packing list
+    func testCreateTripAwaitsSeedAndProducesFullList() async throws {
+        let isolated = UserDefaults(suiteName: UUID().uuidString)!
+        let coordinator = SeedCoordinator(repository: repos.masterItems, defaults: isolated)
+
+        // Pre-condition: store is NOT seeded yet — mirrors the first-run race window
+        let before = try context.fetch(FetchDescriptor<MasterItem>()).count
+        XCTAssertEqual(before, 0, "Pre-condition: master list must be empty before createTrip")
+
+        let vm = NewTripViewModel()
+        vm.destination = "Toronto, Canada"
+        vm.region = .canada
+        vm.tripName = "Race Test"
+        vm.departureDate = Calendar.current.date(byAdding: .day, value: 14, to: .now)!
+        vm.returnDate    = Calendar.current.date(byAdding: .day, value: 17, to: .now)!
+        vm.activities = [.conference]
+        vm.carryOnOnly = true
+        vm.laundryAvailable = true
+
+        await vm.createTrip(sessions: repos.tripSessions,
+                            tripItems: repos.tripItems,
+                            masterItems: repos.masterItems,
+                            seedCoordinator: coordinator)
+
+        XCTAssertTrue(vm.isDone, "createTrip must complete successfully")
+        XCTAssertNil(vm.errorMessage, "createTrip must not error")
+
+        let sessions = try await repos.tripSessions.fetchAll()
+        let tripId = try XCTUnwrap(sessions.first?.id)
+        let items = try await repos.tripItems.fetchAll(for: tripId)
+        XCTAssertGreaterThan(items.count, 0,
+                             "createTrip must await the seed and generate a full packing list, not an empty one (#348)")
+    }
+}
+
 // MARK: - MasterItemRepository coverage tests
 
 @MainActor

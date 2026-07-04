@@ -129,7 +129,7 @@ struct HomeView: View {
             }
             .task(id: repositories != nil) {
                 guard let repos = repositories else { return }
-                let seedOK = await ImportService(repository: repos.masterItems).seedIfNeeded()
+                let seedOK = await repos.seedCoordinator.ensureSeeded()
                 if !seedOK { showSeedFailureAlert = true }
                 await vm.load(sessions: repos.tripSessions)
             }

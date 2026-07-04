@@ -40,6 +40,7 @@
 		651889942C79EB3911D85E4D /* ReplaceabilityRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3AFD96EBEB15D7D1FD2A37 /* ReplaceabilityRule.swift */; };
 		6CAFB2A1EC1111E83BEAA99E /* PendingSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B42C07F95BAEB97E313D96 /* PendingSuggestion.swift */; };
 		6EAEE6A4EC973B50035A6384 /* ImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CACB655272A95791F66BFF /* ImportService.swift */; };
+		SEED000200000000SEED0002 /* SeedCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = SEED000100000000SEED0001 /* SeedCoordinator.swift */; };
 		6F0C749F7F4FD16D7179E9F2 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1207BA2945A0FAFFDEDA826 /* HomeViewModel.swift */; };
 		6F53752846501D9650898894 /* RepositoryContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8FE75F40765FAADB8A1176 /* RepositoryContainer.swift */; };
 		7286832A86DDC4FD1E540B15 /* NewTripViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ECB5F8B386514C654BBE1E9 /* NewTripViewModel.swift */; };
@@ -109,6 +110,7 @@
 		24D01AADFE4616BE261ABDCF /* WeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
 		2B0049C3396D34C32E9C1B5A /* SwiftDataMasterItemRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataMasterItemRepository.swift; sourceTree = "<group>"; };
 		33CACB655272A95791F66BFF /* ImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportService.swift; sourceTree = "<group>"; };
+		SEED000100000000SEED0001 /* SeedCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedCoordinator.swift; sourceTree = "<group>"; };
 		3D5D1649BA80085AB9AE5112 /* PendingSuggestionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingSuggestionRepository.swift; sourceTree = "<group>"; };
 		41ECDB90C4FDC693C96EC06B /* TripDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripDetailView.swift; sourceTree = "<group>"; };
 		BB151001BB151001BB151001 /* EditTripMetadataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTripMetadataView.swift; sourceTree = "<group>"; };
@@ -219,6 +221,7 @@
 				220BA469B114F4CA9F76D5B9 /* ChecklistEngine.swift */,
 				HAPT000100000000HAPT0001 /* HapticManager.swift */,
 				33CACB655272A95791F66BFF /* ImportService.swift */,
+				SEED000100000000SEED0001 /* SeedCoordinator.swift */,
 				24D01AADFE4616BE261ABDCF /* WeatherService.swift */,
 			);
 			path = Services;
@@ -567,6 +570,7 @@
 				79C7FC5697C79F9639F8BA72 /* HomeView.swift in Sources */,
 				6F0C749F7F4FD16D7179E9F2 /* HomeViewModel.swift in Sources */,
 				6EAEE6A4EC973B50035A6384 /* ImportService.swift in Sources */,
+				SEED000200000000SEED0002 /* SeedCoordinator.swift in Sources */,
 				11F96F14846B00669D5CE485 /* ItemInsight.swift in Sources */,
 				617F0F6F1AAE606CABE756E7 /* ItemInsightRepository.swift in Sources */,
 				20B1F59084706451335AEBA2 /* MasterItem.swift in Sources */,
