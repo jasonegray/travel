@@ -38,6 +38,9 @@ struct ChecklistEngine {
         }
         if session.activities.contains(.workout) { tags.insert(.workout) }
         if session.activities.contains(.conference) { tags.formUnion([.conference, .business]) }
+        // Informal social / leisure travel — casual day-bag and personal-downtime items,
+        // never business or conference gear.
+        if session.activities.contains(.guysTrip) { tags.formUnion([.casual, .personal]) }
 
         // Trip context
         if session.business { tags.insert(.business) }

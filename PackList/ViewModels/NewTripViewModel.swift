@@ -26,7 +26,7 @@ final class NewTripViewModel {
     var purposes: Set<TripPurpose> = []
     var weather: WeatherProfile = .mild
     var companions: Set<TravelCompanion> = [.solo]
-    var activities: Set<ActivityType> = [.conference]
+    var activities: Set<ActivityType> = []
     var isFlyingTrip = true
     var carryOnOnly = true
     var laundryAvailable = true
@@ -137,6 +137,8 @@ final class NewTripViewModel {
         if activities.contains(.sightseeing)                    { return "Sightseeing" }
         if purposes.contains(.business)                         { return "Business" }
         if purposes.contains(.family)                           { return "Family" }
+        // Lowest priority: existing types above win when both are selected.
+        if activities.contains(.guysTrip)                       { return "Guys Trip" }
         return nil
     }
 

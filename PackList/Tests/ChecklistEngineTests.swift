@@ -129,6 +129,29 @@ final class ChecklistEngineTests: XCTestCase {
         XCTAssertEqual(result.count, 1, "Business-tagged items must be included when conference is selected")
     }
 
+    func testTagMatch_guysTripActivity_activatesCasualAndPersonalTags() {
+        let session = makeSession(activities: [.guysTrip])
+        let active  = engine.activeTags(for: session)
+        XCTAssertTrue(active.contains(.casual),   ".guysTrip activity must activate .casual tag")
+        XCTAssertTrue(active.contains(.personal), ".guysTrip activity must activate .personal tag")
+    }
+
+    func testTagMatch_guysTripActivity_doesNotActivateBusinessOrConference() {
+        let session = makeSession(activities: [.guysTrip])
+        let active  = engine.activeTags(for: session)
+        XCTAssertFalse(active.contains(.business),   ".guysTrip must never activate .business tag")
+        XCTAssertFalse(active.contains(.conference), ".guysTrip must never activate .conference tag")
+    }
+
+    func testTagMatch_guysTripItem_includesCasualItem_excludesBusinessItem() {
+        let session     = makeSession(activities: [.guysTrip])
+        let dayBag      = makeItem(name: "Fanny pack",  tags: [.casual])
+        let dressShirt  = makeItem(name: "Dress shirt", tags: [.business])
+        let result      = engine.generateItems(for: session, from: [dayBag, dressShirt])
+        XCTAssertEqual(result.count, 1, "Guys Trip includes casual items but no business items")
+        XCTAssertEqual(result[0].name, "Fanny pack")
+    }
+
     func testTagMatch_japanRegion_activatesJapanAsiaInternational() {
         let session = makeSession(region: .japan, isFlyingTrip: true)
         let active  = engine.activeTags(for: session)
