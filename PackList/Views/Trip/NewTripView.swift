@@ -415,7 +415,7 @@ private struct DatesStep: View {
 
 // MARK: - Step 1: Activities
 
-private let tripTypeActivities: [ActivityType] = [.conference, .golf]
+private let tripTypeActivities: [ActivityType] = [.guysTrip, .golf, .conference]
 private let addOnActivities: [ActivityType]    = [.beach, .formalDinner, .workout, .sightseeing, .medical, .clientDevices]
 
 private struct ActivitiesStep: View {
@@ -780,6 +780,7 @@ extension ActivityType {
         case .conference:   return "Conference"
         case .medical:       return "Medical"
         case .clientDevices: return "Client Devices"
+        case .guysTrip:      return "Guys Trip"
         }
     }
 
@@ -795,6 +796,7 @@ extension ActivityType {
         case .conference:   return "building.2.fill"
         case .medical:       return "cross.case.fill"
         case .clientDevices: return "laptopcomputer"
+        case .guysTrip:      return "wineglass"
         }
     }
 }

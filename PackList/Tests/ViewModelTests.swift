@@ -181,18 +181,32 @@ final class NewTripViewModelTests: XCTestCase {
         let vm = NewTripViewModel()
         XCTAssertTrue(vm.carryOnOnly,      "Default carryOnOnly must be true")
         XCTAssertTrue(vm.laundryAvailable, "Default laundryAvailable must be true")
-        XCTAssertTrue(vm.activities.contains(.conference),
-                      "Default activities must include .conference")
+        XCTAssertTrue(vm.activities.isEmpty,
+                      "No trip type may be pre-selected by default (#349)")
     }
 
     func testNewTripViewModelGeneratedNameFormat() {
         let vm = NewTripViewModel()
         vm.destination = "Orlando"
 
-        XCTAssertEqual(vm.generatedTripName, "Orlando Conference",
-                       "Default activities include .conference — generated name must be 'Orlando Conference'")
-        XCTAssertTrue(vm.generatedTripName.contains("Conference"),
-                      "Generated name must include the primary activity type")
+        XCTAssertEqual(vm.generatedTripName, "Orlando",
+                       "With no activity pre-selected, generated name is the destination only (#349)")
+    }
+
+    func testGeneratedNameUsesGuysTripAsPrimaryType() {
+        let vm = NewTripViewModel()
+        vm.destination = "Louisville, KY"
+        vm.activities = [.guysTrip]
+        XCTAssertEqual(vm.generatedTripName, "Louisville Guys Trip",
+                       "Guys Trip must drive the generated name when selected (#349)")
+    }
+
+    func testGeneratedNameExistingTypeBeatsGuysTrip() {
+        let vm = NewTripViewModel()
+        vm.destination = "Scottsdale"
+        vm.activities = [.guysTrip, .conference]
+        XCTAssertEqual(vm.generatedTripName, "Scottsdale Conference",
+                       "Existing trip types outrank Guys Trip when both are selected (#349)")
     }
 
     func testGeneratedNameNoActivitiesUsesDestinationOnly() {
