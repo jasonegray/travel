@@ -910,6 +910,8 @@ private struct UpNextRow: View {
     let isCompleting: Bool
     let onTap: () -> Void
 
+    private var isOverdue: Bool { !isCompleting && deadline < Calendar.current.startOfDay(for: .now) }
+
     var body: some View {
         HStack(spacing: 0) {
             VStack(alignment: .leading, spacing: 3) {
@@ -919,7 +921,7 @@ private struct UpNextRow: View {
                     .foregroundStyle(isCompleting ? .secondary : .primary)
                 Text("by \(deadline.formatted(.dateTime.month(.abbreviated).day()))")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(isOverdue ? Color.red : Color.secondary)
             }
             .padding(.leading, 16)
             .padding(.vertical, 12)
