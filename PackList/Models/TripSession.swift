@@ -41,6 +41,17 @@ final class TripSession {
         return daysUntilDep <= 7 ? .active : .planning
     }
 
+    /// True once the trip has passed its midpoint, indicating the traveler may
+    /// be returning soon or is already back. Drives the "Back from your trip?"
+    /// prompt so it never appears on trips that haven't departed or are only
+    /// just underway. Once `returnDate` passes, `status` becomes `.completed`.
+    var isPastMidpoint: Bool {
+        let midpoint = departureDate.addingTimeInterval(
+            returnDate.timeIntervalSince(departureDate) / 2
+        )
+        return Date.now >= midpoint
+    }
+
     init(
         id: UUID = UUID(),
         ownerId: UUID? = nil,

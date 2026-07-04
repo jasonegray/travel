@@ -36,7 +36,7 @@ struct TripDetailView: View {
             } else if vm.trip.status == .completed {
                 TripCompletedBanner(manuallyCompletedAt: vm.trip.manuallyCompletedAt)
                 Divider()
-            } else if vm.trip.status == .active {
+            } else if vm.trip.status == .active && vm.trip.isPastMidpoint {
                 MarkCompletedBanner {
                     Task {
                         guard let repos = repositories else { return }
